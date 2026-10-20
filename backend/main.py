@@ -13,7 +13,9 @@ from backend.db.connect import get_db_session, SessionLocal
 from backend.db import schemas as db_schemas, utils as db_utils
 
 DEBUG = config("DEBUG", cast=bool, default=False)
-FRONTEND_ORIGINS = config("FRONTEND_ORIGINS", cast=lambda x: [s.strip() for s in x.split(",")], default="")
+FRONTEND_ORIGINS = config(
+    "FRONTEND_ORIGINS", cast=lambda x: [s.strip() for s in x.split(",")], default=""
+)
 
 
 app = FastAPI()
@@ -22,43 +24,56 @@ app.add_middleware(
     allow_origins=FRONTEND_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
+
 
 @app.get("/hello-world")
 def read_hello_world():
-    return {
-        "hello": "world",
-        "Debug": DEBUG
-    }
-    
+    return {"hello": "world", "Debug": DEBUG}
+
+
 @app.post("/predict")
-def write_to_predit(prediction_req: db_schemas.PredictSchema, ai_session: RequestsSession = Depends(get_mindsdb_session)):
+def write_to_predit(
+    prediction_req: db_schemas.PredictSchema,
+    ai_session: RequestsSession = Depends(get_mindsdb_session),
+):
     request_data = prediction_req.model_dump()
-    predictions = predict.predict_query(**request_data,)
+    predictions = predict.predict_query(
+        **request_data,
+    )
     if len(predictions) == 0:
         return {}
-    recommendation = predict.recommended_flight(user_data = request_data, forecast_data=predictions)
-    return {
-        "recommendation": recommendation, 
-        "predictions": predictions
-    }
-    
+    recommendation = predict.recommended_flight(
+        user_data=request_data, forecast_data=predictions
+    )
+    return {"recommendation": recommendation, "predictions": predictions}
+
 
 @app.get("/airports", response_model=List[db_schemas.AirportSchema])
-def read_flight_prices(offset: int = 0, limit: int = 100, db_session: SessionLocal = Depends(get_db_session)):
+def read_airports(
+    offset: int = 0,
+    limit: int = 100,
+    db_session: SessionLocal = Depends(get_db_session),
+):
     return db_utils.get_airports(db_session, offset=offset, limit=limit)
-    
-    
+
+
 @app.get("/flights", response_model=List[db_schemas.FlightPriceSchema])
-def read_flight_prices(offset: int = 0, limit: int = 100, db_session: SessionLocal = Depends(get_db_session)):
+def read_flights(
+    offset: int = 0,
+    limit: int = 100,
+    db_session: SessionLocal = Depends(get_db_session),
+):
     return db_utils.get_flight_prices(db_session, offset=offset, limit=limit)
 
 
 @app.get("/flights/{flight_price}", response_model=db_schemas.FlightPriceDetailSchema)
-def read_flight_price(flight_price: int, db_session: SessionLocal = Depends(get_db_session)):
+def read_flight_price(
+    flight_price: int, db_session: SessionLocal = Depends(get_db_session)
+):
     df_flight_value = db_utils.get_flight_price(db_session, flight_price)
     if df_flight_value is None:
         raise HTTPException(status_code=404, detail="Flight Price not Found")
-    
+
     return df_flight_value

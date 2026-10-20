@@ -8,7 +8,7 @@ export default function FlightListPage() {
 
   if (error) return <div>failed to load</div>
   if (isLoading) return <div>loading...</div>
-  
+
   const myvar = "word"
 
   const renderListData = (row, idx) => {
@@ -28,7 +28,7 @@ export default function FlightListPage() {
         </p>
     </div>
   }
-  
+
   return (
       <div>
         <h1 className="text-4xl font-bold">Hello! {myvar}</h1>

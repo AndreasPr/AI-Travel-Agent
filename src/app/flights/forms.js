@@ -47,15 +47,15 @@ export default function FlightPredictForm(props){
     const btnClassName = predictData.loading ? "btn-disabled" : "btn-primary"
     const btnLabel = predictData.loading ? "Loading..." : "Help me"
 
-    return <div> 
+    return <div>
         <form className="space-y-2 md:space-y-3" onSubmit={handleSubmit}>
             <div className="grid md:grid-cols-2 md:gap-3">
                 <div>
                     <label htmlFor="startingAirport">
                     Starting Airport
                     </label>
-                    <AirportDropdown 
-                        name='startingAirport' 
+                    <AirportDropdown
+                        name='startingAirport'
                         value={startAirportVal}
                         onChange = {e => setStartAirportVal(e.target.value)} />
                 </div>
@@ -63,8 +63,8 @@ export default function FlightPredictForm(props){
                     <label htmlFor="destinationAirport">
                     Destination Airport
                     </label>
-                    <AirportDropdown 
-                        name='destinationAirport' 
+                    <AirportDropdown
+                        name='destinationAirport'
                         value={endAirportVal}
                         onChange = {e => setEndAirportVal(e.target.value)}
                         filterval={startAirportVal}/>

@@ -1,4 +1,4 @@
-"use client" 
+"use client"
 import performAPIGetRequest from '@/app/utils/apiClient'
 
 
@@ -7,7 +7,7 @@ export default function AirportDropdown({name, value, filterval, onChange}) {
     if (error) return <select><option>---Error---</option></select>
     if (isLoading) return <select><option>---Loading---</option></select>
     const displayData = [...data].filter(x => `${x.value}`.toLocaleLowerCase() != `${filterval}`.toLocaleLowerCase())
-    
+
     const handleChange = (event) => {
         if (onChange){
             onChange(event)

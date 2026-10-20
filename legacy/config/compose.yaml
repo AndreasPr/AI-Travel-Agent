@@ -1,3 +1,6 @@
+# Legacy reference configuration only.
+# This compose file is not used by the default stack.
+
 services:
   db:
     image: mariadb:lts

@@ -9,6 +9,7 @@ DATABASE_URL is not None
 engine = create_engine(str(DATABASE_URL))
 SessionLocal = sessionmaker(bind=engine)
 
+
 def get_db_session():
     session = SessionLocal()
     try:

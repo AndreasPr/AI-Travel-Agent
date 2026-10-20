@@ -9,7 +9,7 @@ providers:
         limits: { rpm: 15, tpm: 250000, rpd: 500 }
         supports: { tools: true, structured_output: true }
       gemini-3.8-flash:
-        limits: { rpm: 5, tpm: 250000, rpd: 20 }     
+        limits: { rpm: 5, tpm: 250000, rpd: 20 }
         supports: { tools: true, structured_output: true }
     safety_margin: 0.8        # use at most 80% of any limit; leaves room for retries
 

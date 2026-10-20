@@ -4,7 +4,7 @@ import useSWR from 'swr'
 export const API_BASE_URL = "http://127.0.0.1:8080"
 const fetcher = async url => {
     const res = await fetch(url)
-   
+
     // If the status code is not in the range 200-299,
     // we still try to parse and throw it.
     if (!res.ok) {
@@ -14,7 +14,7 @@ const fetcher = async url => {
       error.statusCode = res.status
       throw error
     }
-   
+
     return res.json()
 }
 
