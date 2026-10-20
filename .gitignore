@@ -1,8 +1,36 @@
 __pycache__/
 private/
 venv/
+.venv/
 .env
+.env.*
+!.env.example
+*.pem
+*.key
+node_modules/
+.next/
+.DS_Store
+.coverage
+coverage.xml
+*.sqlite
+*.db
 
+# model and local runtime caches
+.hf_cache/
+.cache/
+.cache/huggingface/
+.cache/ollama/
+hf_cache/
+ollama/
+
+# evaluation outputs
+eval/results/raw/
+!eval/results/*.md
+!eval/results/*.json
+
+# recordings of private data
+recordings/
+**/recordings/
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
