@@ -1,6 +1,7 @@
 from sqlalchemy import Column, BigInteger, Date, Integer, String, Boolean, Float
 from sqlalchemy.orm import DeclarativeBase
 
+
 class Base(DeclarativeBase):
     pass
 
@@ -9,7 +10,7 @@ class Base(DeclarativeBase):
 class Airport(Base):
     __tablename__ = "airports"
     __table_args__ = {"extend_existing": True}
-    id = Column("index", BigInteger, primary_key = True)
+    id = Column("index", BigInteger, primary_key=True)
     name = Column(String)
     icao = Column(String)
     iata = Column(String)
@@ -29,12 +30,10 @@ class FlightPrice(Base):
     __table_args__ = {"extend_existing": True}
     id = Column("index", BigInteger, primary_key=True)
     flightDate = Column(Date)
-    startingAirport = Column(String)                
-    destinationAirport = Column(String)             
-    isBasicEconomy = Column(Boolean)                   
-    isRefundable = Column(Boolean)                     
-    isNonStop = Column(Boolean)                        
-    segmentsAirlineName = Column(String)          
-    totalFare = Column(Integer)  
-
-
+    startingAirport = Column(String)
+    destinationAirport = Column(String)
+    isBasicEconomy = Column(Boolean)
+    isRefundable = Column(Boolean)
+    isNonStop = Column(Boolean)
+    segmentsAirlineName = Column(String)
+    totalFare = Column(Integer)
