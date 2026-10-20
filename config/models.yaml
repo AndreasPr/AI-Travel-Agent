@@ -1,0 +1,56 @@
+# Single source of truth for models and free-tier limits. No model names in code.
+# Limits come from aistudio.google.com/rate-limit; they change, so re-check monthly.
+
+providers:
+  gemini:
+    api_key_env: GEMINI_API_KEY
+    models:
+      gemini-3.5-flash-lite:
+        limits: { rpm: 15, tpm: 250000, rpd: 500 }
+        supports: { tools: true, structured_output: true }
+      gemini-3.8-flash:
+        limits: { rpm: 5, tpm: 250000, rpd: 20 }     
+        supports: { tools: true, structured_output: true }
+    safety_margin: 0.8        # use at most 80% of any limit; leaves room for retries
+
+  ollama:
+    base_url_env: OLLAMA_BASE_URL    # default http://localhost:11434
+    models:
+      llama3.2:3b:
+        limits: { rpm: 30, tpm: null, rpd: null }    # local; limit is your hardware
+        supports: { tools: true, structured_output: false }   # use JSON-mode fallback
+
+# Roles used by the router. First entry is tried first; the rest are fallbacks.
+roles:
+  extract:                       # intent, constraint extraction, query rewriting, summaries
+    chain:
+      - { provider: gemini, model: gemini-3.5-flash-lite }
+      - { provider: ollama, model: llama3.2:3b }
+  plan:                          # itinerary planning and edits
+    chain:
+      - { provider: gemini, model: gemini-3.5-flash-lite }
+      - { provider: ollama, model: llama3.2:3b }
+  judge:                         # evaluation only
+    chain:
+      - { provider: gemini, model: gemini-3.8-flash }   # spend the 20/day here
+      - { provider: gemini, model: gemini-3.5-flash-lite }
+
+# Optional per-run override for demos: use the stronger model for planning.
+profiles:
+  demo_live:
+    plan:
+      chain:
+        - { provider: gemini, model: gemini-3.8-flash }
+        - { provider: gemini, model: gemini-3.5-flash-lite }
+
+embeddings:
+  model: BAAI/bge-small-en-v1.5
+  dimensions: 384                # must match the vector(384) column
+reranker:
+  model: cross-encoder/ms-marco-MiniLM-L-6-v2
+
+# Shadow cost for reports only (estimate, $0 actually paid). Fill from the public
+# pricing page when you write the docs; leave null until then.
+shadow_pricing_usd_per_1m_tokens:
+  gemini-3.5-flash-lite: { input: null, output: null }
+  gemini-3.8-flash: { input: null, output: null }
