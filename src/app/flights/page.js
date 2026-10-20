@@ -1,10 +1,10 @@
 "use client" // make for client component only
 import Link from '@/app/utils/link'
-import performAPIGetRequest from '@/app/utils/apiClient'
+import useApiGetRequest from '@/app/utils/apiClient'
 
 
 export default function FlightListPage() {
-  const { data, error, isLoading } = performAPIGetRequest('/flights')
+  const { data, error, isLoading } = useApiGetRequest('/flights')
 
   if (error) return <div>failed to load</div>
   if (isLoading) return <div>loading...</div>
