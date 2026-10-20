@@ -1,31 +1,46 @@
 from typing import List
-from fastapi import FastAPI, Depends, HTTPException
+
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-
 from requests import Session as RequestsSession
+from sqlalchemy import text
 
-from backend.env import config
 from backend.ai import predict
 from backend.ai.connect import get_mindsdb_session
-
-
-from backend.db.connect import get_db_session, SessionLocal
 from backend.db import schemas as db_schemas, utils as db_utils
+from backend.db.connect import SessionLocal, get_db_session
+from backend.env import config
 
 DEBUG = config("DEBUG", cast=bool, default=False)
 FRONTEND_ORIGINS = config(
-    "FRONTEND_ORIGINS", cast=lambda x: [s.strip() for s in x.split(",")], default=""
+    "FRONTEND_ORIGINS",
+    cast=lambda x: [s.strip() for s in x.split(",") if s.strip()],
+    default="",
 )
 
 
-app = FastAPI()
+app = FastAPI(title="AI Travel Agent API")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=FRONTEND_ORIGINS,
+    allow_origins=FRONTEND_ORIGINS or ["http://localhost:3000", "http://127.0.0.1:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/healthz")
+def healthz():
+    return {"status": "ok"}
+
+
+@app.get("/readyz")
+def readyz(db_session: SessionLocal = Depends(get_db_session)):
+    try:
+        db_session.execute(text("SELECT 1"))
+        return {"status": "ready"}
+    except Exception as exc:  # pragma: no cover - only used in container readiness
+        raise HTTPException(status_code=503, detail=f"database unavailable: {exc}") from exc
 
 
 @app.get("/hello-world")
