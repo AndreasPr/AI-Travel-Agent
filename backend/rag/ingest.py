@@ -5,12 +5,13 @@ import json
 from pathlib import Path
 from typing import Any
 
-from sqlalchemy import inspect
+from sqlalchemy import inspect, select, func
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import ProgrammingError
 
 from backend.db.connect import SessionLocal
 from backend.db.models import Document, DocumentChunk
-from backend.rag.config import read_cities
+from backend.rag.config import read_city_country_map, read_cities
 from backend.rag.embeddings import LocalEmbedder
 from backend.rag.ingestion.chunker import chunk_document
 from backend.rag.ingestion.wikivoyage import fetch_city_pages
@@ -34,6 +35,7 @@ def assert_rag_tables_exist() -> None:
 def ingest_cities(cities_path: str | Path | None = None, max_pages: int | None = None) -> list[dict[str, Any]]:
     assert_rag_tables_exist()
     selected = read_cities(cities_path)
+    country_map = read_city_country_map(cities_path)
     if max_pages is not None:
         selected = selected[:max_pages]
     if not selected:
@@ -49,7 +51,7 @@ def ingest_cities(cities_path: str | Path | None = None, max_pages: int | None =
     embedder = LocalEmbedder()
     for page in pages:
         city = page.get("city") or _safe_city_name(page.get("title", "city"))
-        country = page.get("country") or "Unknown"
+        country = page.get("country") or country_map.get(city) or "Unknown"
         text = page.get("text") or ""
         chunks = chunk_document(
             title=page.get("title") or city,
@@ -71,29 +73,63 @@ def ingest_cities(cities_path: str | Path | None = None, max_pages: int | None =
             ) from exc
         try:
             with SessionLocal() as session:
-                document = Document(
-                    source_url=page.get("url") or "",
-                    title=page.get("title") or city,
-                    license=page.get("license") or "CC BY-SA 4.0",
-                    city=city,
-                    country=country,
-                    season=None,
-                    topic="other",
-                    text=text,
-                )
-                session.add(document)
-                session.flush()
+                document = session.execute(
+                    select(Document)
+                    .where(Document.source_url == (page.get("url") or ""))
+                    .where(Document.title == (page.get("title") or city))
+                    .order_by(Document.id.asc())
+                    .limit(1)
+                ).scalar_one_or_none()
+                if document is None:
+                    document = Document(
+                        source_url=page.get("url") or "",
+                        title=page.get("title") or city,
+                        license=page.get("license") or "CC BY-SA 4.0",
+                        city=city,
+                        country=country,
+                        season=None,
+                        topic="other",
+                        text=text,
+                    )
+                    session.add(document)
+                    session.flush()
                 for index, chunk in enumerate(chunks):
+                    chunk_id = str(chunk["chunk_id"])
                     chunk_embedding = embeddings[index] if index < len(embeddings) else [0.0] * 384
-                    db_chunk = DocumentChunk(
+                    stmt = insert(DocumentChunk).values(
+                        chunk_id=chunk_id,
                         document_id=document.id,
                         chunk_index=index,
+                        city=city,
+                        country=country,
+                        season=chunk.get("season") or None,
+                        topic=chunk.get("topic") or "other",
+                        revision_id=str(page.get("revision_id") or "" or ""),
+                        retrieved_at=page.get("retrieved_at"),
+                        source_url=page.get("url") or "",
+                        license=page.get("license") or "CC BY-SA 4.0",
                         text=chunk["text"],
                         embedding=chunk_embedding,
+                        search_vector=func.to_tsvector("english", chunk["text"]),
+                    ).on_conflict_do_update(
+                        index_elements=["chunk_id"],
+                        set_={
+                            "document_id": document.id,
+                            "chunk_index": index,
+                            "city": city,
+                            "country": country,
+                            "season": chunk.get("season") or None,
+                            "topic": chunk.get("topic") or "other",
+                            "source_url": page.get("url") or "",
+                            "license": page.get("license") or "CC BY-SA 4.0",
+                            "text": chunk["text"],
+                            "embedding": chunk_embedding,
+                            "search_vector": func.to_tsvector("english", chunk["text"]),
+                        },
                     )
-                    session.add(db_chunk)
+                    session.execute(stmt)
                     inserted.append({
-                        "chunk_id": chunk["chunk_id"],
+                        "chunk_id": chunk_id,
                         "document_id": document.id,
                         "city": city,
                         "country": country,

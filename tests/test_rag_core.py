@@ -1,8 +1,6 @@
 from datetime import date
 from decimal import Decimal
 
-from sqlalchemy import inspect
-
 from backend.rag.citations import CitedClaim, CitationVerifier
 from backend.rag.ingest import assert_rag_tables_exist, ingest_cities
 from backend.rag.ingestion.chunker import chunk_document
@@ -50,6 +48,14 @@ def test_metadata_filters_keep_supported_candidates():
     ]
     filtered = apply_metadata_filters(rows, city="Lisbon", topic="see")
     assert [row["id"] for row in filtered] == [1]
+
+
+def test_extract_filters_maps_museum_queries_to_supported_topic_bucket():
+    filters, _ = search.__globals__["_extract_filters"]("quiet museums in Lisbon in winter")
+    assert filters["city"] == "Lisbon"
+    assert filters["country"] == "Portugal"
+    assert filters["season"] == "winter"
+    assert filters["topic"] == "see"
 
 
 def test_citation_verifier_flags_unsupported_claims():

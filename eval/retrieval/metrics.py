@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import csv
 import json
+import math
 from pathlib import Path
 
 
@@ -39,9 +39,10 @@ def ndcg_at_k(relevant: list[str], ranked: list[str], k: int) -> float:
     ideal = 0.0
     for idx, item in enumerate(ranked[:k], start=1):
         if item in relevant:
-            dcg += 1.0 / (idx if idx == 1 else idx)
-    for idx in range(1, min(len(relevant), k) + 1):
-        ideal += 1.0 / idx
+            dcg += 1.0 / math.log2(idx + 1)
+    ideal_hits = min(len(relevant), k)
+    for idx in range(1, ideal_hits + 1):
+        ideal += 1.0 / math.log2(idx + 1)
     return dcg / ideal if ideal else 0.0
 
 
@@ -64,7 +65,7 @@ def main() -> None:
     queries = load_queries(queries_path)
     labeled = [record for record in queries if (record.get("relevant_chunk_ids") or [])]
     if not labeled:
-        print("No labeled queries found. Add relevant_chunk_ids to queries.jsonl to compute scores.")
+        print("not run")
         return
 
     metrics = {key: 0.0 for key in ["recall@1", "recall@3", "recall@5", "recall@10", "mrr", "ndcg@10"]}
