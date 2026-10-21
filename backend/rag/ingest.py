@@ -64,8 +64,11 @@ def ingest_cities(cities_path: str | Path | None = None, max_pages: int | None =
             continue
         try:
             embeddings = embedder.encode([chunk["text"] for chunk in chunks])
-        except RuntimeError:
-            embeddings = [[0.0] * 384 for _ in chunks]
+        except RuntimeError as exc:
+            raise RuntimeError(
+                "Embedding model unavailable. The model download failed because the environment is offline or the network is unavailable. "
+                "Install the model cache or restore connectivity before retrying."
+            ) from exc
         try:
             with SessionLocal() as session:
                 document = Document(

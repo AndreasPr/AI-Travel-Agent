@@ -52,8 +52,11 @@ def search(query: str, limit: int = 5) -> list[dict[str, Any]]:
     embedder = LocalEmbedder()
     try:
         query_vector = embedder.encode_query(query)
-    except RuntimeError:
-        query_vector = [0.0] * 384
+    except RuntimeError as exc:
+        raise RuntimeError(
+            "Embedding model unavailable. The model download failed because the environment is offline or the network is unavailable. "
+            "Install the model cache or restore connectivity before retrying."
+        ) from exc
     vector_rank = []
     for row in candidates:
         vector = row.get("embedding") or []

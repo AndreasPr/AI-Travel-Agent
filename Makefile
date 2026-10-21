@@ -1,6 +1,7 @@
 .PHONY: up down logs seed migrate test lint fmt demo eval
 
 up:
+	docker compose pull db
 	docker compose up --build -d --wait
 	docker compose exec -T api alembic -c backend/alembic.ini upgrade head
 	docker compose exec -T api python -m backend.scripts.seed_inventory

@@ -4,9 +4,10 @@ from decimal import Decimal
 from sqlalchemy import inspect
 
 from backend.rag.citations import CitedClaim, CitationVerifier
-from backend.rag.ingest import assert_rag_tables_exist
+from backend.rag.ingest import assert_rag_tables_exist, ingest_cities
 from backend.rag.ingestion.chunker import chunk_document
 from backend.rag.retrieval.hybrid import reciprocal_rank_fusion, apply_metadata_filters
+from backend.rag.search import search
 from backend.scripts.seed_inventory import normalize_flight_row
 
 
@@ -101,3 +102,61 @@ def test_normalize_flight_row_coerces_types():
     assert normalized["flight_date"] == date(2022, 4, 18)
     assert normalized["starting_airport"] == "ATL"
     assert normalized["price"] == Decimal("570.0")
+
+
+def test_search_raises_when_embedding_model_fails(monkeypatch):
+    class FakeChunk:
+        id = 1
+        document_id = 1
+        chunk_index = 0
+        text = "Quiet museums in Lisbon in winter."
+        embedding = None
+
+    class FakeDocument:
+        title = "Lisbon"
+        source_url = "https://example.com/lisbon"
+        license = "CC BY-SA 4.0"
+
+    class FakeResult:
+        def all(self):
+            return [(FakeChunk(), FakeDocument())]
+
+    class FakeSession:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def execute(self, *_args, **_kwargs):
+            return FakeResult()
+
+    monkeypatch.setattr("backend.rag.search.SessionLocal", lambda: FakeSession())
+
+    def fake_encode_query(_self, _text):
+        raise RuntimeError("Model download failed because the environment is offline or the network is unavailable.")
+
+    monkeypatch.setattr("backend.rag.search.LocalEmbedder.encode_query", fake_encode_query)
+
+    try:
+        search("quiet museums in Lisbon in winter")
+        assert False, "Expected RuntimeError when embeddings are unavailable"
+    except RuntimeError as exc:
+        assert "network" in str(exc).lower() or "model" in str(exc).lower()
+
+
+def test_ingest_raises_when_embedding_model_fails(monkeypatch):
+    monkeypatch.setattr("backend.rag.ingest.read_cities", lambda _path=None: ["Lisbon"])
+    monkeypatch.setattr("backend.rag.ingest.assert_rag_tables_exist", lambda: None)
+    monkeypatch.setattr("backend.rag.ingest.fetch_city_pages", lambda _cities: [{"city": "Lisbon", "title": "Lisbon", "text": "Lisbon museums are great.", "url": "https://example.com", "license": "CC BY-SA 4.0"}])
+
+    def fake_encode(_self, _texts):
+        raise RuntimeError("Model download failed because the environment is offline or the network is unavailable.")
+
+    monkeypatch.setattr("backend.rag.ingest.LocalEmbedder.encode", fake_encode)
+
+    try:
+        ingest_cities("config/cities.yaml")
+        assert False, "Expected RuntimeError when embeddings are unavailable"
+    except RuntimeError as exc:
+        assert "network" in str(exc).lower() or "model" in str(exc).lower()

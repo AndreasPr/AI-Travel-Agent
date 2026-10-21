@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
 from backend.rag.config import get_embedding_model_name
 
@@ -37,7 +36,7 @@ class LocalEmbedder:
             texts = [texts]
         model = self._model or self._load_model()
         vectors = model.encode(texts, normalize_embeddings=True, convert_to_numpy=True)
-        return vectors.tolist() if isinstance(vectors, Any) else vectors
+        return vectors.tolist() if hasattr(vectors, "tolist") else vectors
 
     def encode_query(self, text: str):
         vectors = self.encode(text)
