@@ -10,6 +10,7 @@ from backend.ai.connect import get_mindsdb_session
 from backend.db import schemas as db_schemas, utils as db_utils
 from backend.db.connect import SessionLocal, get_db_session
 from backend.env import config
+from backend.rag.search import search as rag_search
 
 DEBUG = config("DEBUG", cast=bool, default=False)
 FRONTEND_ORIGINS = config(
@@ -22,7 +23,12 @@ FRONTEND_ORIGINS = config(
 app = FastAPI(title="AI Travel Agent API")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=FRONTEND_ORIGINS or ["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=FRONTEND_ORIGINS or [
+        "http://localhost:3100",
+        "http://127.0.0.1:3100",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,6 +52,24 @@ def readyz(db_session: SessionLocal = Depends(get_db_session)):
 @app.get("/hello-world")
 def read_hello_world():
     return {"hello": "world", "Debug": DEBUG}
+
+
+@app.get("/rag/search")
+def rag_search_endpoint(query: str, limit: int = 5):
+    results = rag_search(query, limit=limit)
+    payload = []
+    for result in results:
+        payload.append(
+            {
+                "chunk_id": result.get("id"),
+                "text": result.get("text"),
+                "title": result.get("title"),
+                "url": result.get("source_url"),
+                "license": result.get("license") or "CC BY-SA 4.0",
+                "attribution": result.get("attribution") or "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            }
+        )
+    return {"query": query, "results": payload}
 
 
 @app.post("/predict")
