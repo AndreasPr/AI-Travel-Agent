@@ -22,6 +22,7 @@ coverage.xml
 .cache/ollama/
 hf_cache/
 ollama/
+data/raw/
 
 # evaluation outputs
 eval/results/raw/

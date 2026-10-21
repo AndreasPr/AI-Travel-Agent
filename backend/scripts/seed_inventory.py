@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import csv
 import os
+from datetime import date
+from decimal import Decimal
 from pathlib import Path
 
 from sqlalchemy import create_engine, text
@@ -14,6 +16,31 @@ DATASET_DIR = ROOT / "datasets"
 def ensure_schema(engine) -> None:
     with engine.begin() as conn:
         conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+
+
+def normalize_flight_row(row: dict[str, str]) -> dict[str, object]:
+    flight_date_raw = (row.get("flightDate") or row.get("flight_date") or "2024-01-01").strip()
+    try:
+        flight_date = date.fromisoformat(flight_date_raw)
+    except ValueError:
+        flight_date = date.fromisoformat("2024-01-01")
+
+    start = (row.get("startingAirport") or row.get("starting_airport") or "BOS").strip()
+    dest = (row.get("destinationAirport") or row.get("destination_airport") or "SFO").strip()
+    airline = (row.get("segmentsAirlineName") or row.get("airline") or "Synthetic Air").strip()
+    price_raw = (row.get("totalFare") or row.get("price") or "0").strip()
+    try:
+        price = Decimal(str(price_raw))
+    except Exception:
+        price = Decimal("0")
+
+    return {
+        "flight_date": flight_date,
+        "starting_airport": start,
+        "destination_airport": dest,
+        "airline": airline,
+        "price": price,
+    }
 
 
 def load_flights(engine) -> int:
@@ -33,17 +60,8 @@ def load_flights(engine) -> int:
         with csv_path.open(newline="", encoding="utf-8") as handle:
             reader = csv.DictReader(handle)
             for row in reader:
-                flight_date = (row.get("flightDate") or row.get("flight_date") or "2024-01-01").strip()
-                start = (row.get("startingAirport") or row.get("starting_airport") or "BOS").strip()
-                dest = (row.get("destinationAirport") or row.get("destination_airport") or "SFO").strip()
-                airline = (row.get("segmentsAirlineName") or row.get("airline") or "Synthetic Air").strip()
-                price_raw = (row.get("totalFare") or row.get("price") or "0").strip()
-                try:
-                    price = float(price_raw)
-                except ValueError:
-                    price = 0.0
-
-                key = (flight_date, start, dest, airline, price)
+                normalized = normalize_flight_row(row)
+                key = tuple(normalized[k] for k in ("flight_date", "starting_airport", "destination_airport", "airline", "price"))
                 if key in seen:
                     continue
                 seen.add(key)
@@ -53,24 +71,18 @@ def load_flights(engine) -> int:
                         text(
                             """
                             INSERT INTO flights (flight_date, starting_airport, destination_airport, airline, price)
-                            SELECT :flight_date, :starting_airport, :destination_airport, :airline, :price
+                            SELECT CAST(:flight_date AS DATE), CAST(:starting_airport AS VARCHAR), CAST(:destination_airport AS VARCHAR), CAST(:airline AS VARCHAR), CAST(:price AS NUMERIC)
                             WHERE NOT EXISTS (
                                 SELECT 1 FROM flights
-                                WHERE flight_date = :flight_date
-                                  AND starting_airport = :starting_airport
-                                  AND destination_airport = :destination_airport
-                                  AND airline = :airline
-                                  AND price = :price
+                                WHERE flight_date = CAST(:flight_date AS DATE)
+                                  AND starting_airport = CAST(:starting_airport AS VARCHAR)
+                                  AND destination_airport = CAST(:destination_airport AS VARCHAR)
+                                  AND airline = CAST(:airline AS VARCHAR)
+                                  AND price = CAST(:price AS NUMERIC)
                             )
                             """
                         ),
-                        {
-                            "flight_date": flight_date,
-                            "starting_airport": start,
-                            "destination_airport": dest,
-                            "airline": airline,
-                            "price": price,
-                        },
+                        normalized,
                     )
                 rows_loaded += 1
     return rows_loaded
@@ -97,10 +109,12 @@ def load_hotels(engine) -> int:
                     text(
                         """
                         INSERT INTO hotels (name, city, country, price_per_night, rating, season)
-                        SELECT :name, :city, :country, :price_per_night, :rating, :season
+                        SELECT CAST(:name AS VARCHAR), CAST(:city AS VARCHAR), CAST(:country AS VARCHAR), CAST(:price_per_night AS NUMERIC), CAST(:rating AS FLOAT), CAST(:season AS VARCHAR)
                         WHERE NOT EXISTS (
                             SELECT 1 FROM hotels
-                            WHERE name = :name AND city = :city AND country = :country
+                            WHERE name = CAST(:name AS VARCHAR)
+                              AND city = CAST(:city AS VARCHAR)
+                              AND country = CAST(:country AS VARCHAR)
                         )
                         """
                     ),
