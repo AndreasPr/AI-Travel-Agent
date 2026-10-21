@@ -134,8 +134,17 @@ class Document(Base):
 class DocumentChunk(Base):
     __tablename__ = "document_chunks"
     id = Column(Integer, primary_key=True, autoincrement=True)
+    chunk_id = Column(String(64), unique=True, nullable=False, index=True)
     document_id = Column(Integer, ForeignKey("documents.id"), nullable=False)
     chunk_index = Column(Integer, nullable=False)
+    city = Column(String(255), nullable=False, default="Unknown")
+    country = Column(String(255), nullable=False, default="Unknown")
+    season = Column(String(50), nullable=True)
+    topic = Column(String(255), nullable=True)
+    revision_id = Column(String(128), nullable=True)
+    retrieved_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    source_url = Column(String(500), nullable=True)
+    license = Column(String(128), nullable=True)
     text = Column(Text, nullable=False)
     embedding = Column(Vector(384), nullable=True)
     search_vector = Column(TSVECTOR, nullable=True)

@@ -1,26 +1,51 @@
 cities:
-  - Lisbon
-  - Porto
-  - Madrid
-  - Barcelona
-  - Valencia
-  - Seville
-  - Rome
-  - Florence
-  - Naples
-  - Milan
-  - Paris
-  - Lyon
-  - Berlin
-  - Munich
-  - Prague
-  - Vienna
-  - Budapest
-  - Krakow
-  - Amsterdam
-  - Copenhagen
-  - Stockholm
-  - Helsinki
-  - Dublin
-  - Athens
-  - Brussels
+  - name: Lisbon
+    country: Portugal
+  - name: Porto
+    country: Portugal
+  - name: Madrid
+    country: Spain
+  - name: Barcelona
+    country: Spain
+  - name: Valencia
+    country: Spain
+  - name: Seville
+    country: Spain
+  - name: Rome
+    country: Italy
+  - name: Florence
+    country: Italy
+  - name: Naples
+    country: Italy
+  - name: Milan
+    country: Italy
+  - name: Paris
+    country: France
+  - name: Lyon
+    country: France
+  - name: Berlin
+    country: Germany
+  - name: Munich
+    country: Germany
+  - name: Prague
+    country: Czechia
+  - name: Vienna
+    country: Austria
+  - name: Budapest
+    country: Hungary
+  - name: Krakow
+    country: Poland
+  - name: Amsterdam
+    country: Netherlands
+  - name: Copenhagen
+    country: Denmark
+  - name: Stockholm
+    country: Sweden
+  - name: Helsinki
+    country: Finland
+  - name: Dublin
+    country: Ireland
+  - name: Athens
+    country: Greece
+  - name: Brussels
+    country: Belgium

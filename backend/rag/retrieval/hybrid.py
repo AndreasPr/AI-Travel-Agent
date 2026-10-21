@@ -4,28 +4,80 @@ import re
 from collections import defaultdict
 from typing import Any, Protocol
 
+from backend.rag.config import read_city_country_map
+
 
 class QueryRewriter(Protocol):
     def rewrite(self, user_request: str) -> list[str]:
         ...
 
 
-class DefaultQueryRewriter:
+class RuleBasedQueryRewriter:
+    def __init__(self, city_map: dict[str, str] | None = None):
+        self.city_map = city_map or read_city_country_map()
+
     def rewrite(self, user_request: str) -> list[str]:
-        text = user_request.strip()
+        text = (user_request or "").strip()
         if not text:
             return []
+        lowered = text.lower()
+        city = None
+        for candidate in sorted(self.city_map, key=len, reverse=True):
+            if re.search(rf"\b{re.escape(candidate.lower())}\b", lowered):
+                city = candidate
+                break
+
+        season = None
+        for candidate in ("winter", "spring", "summer", "autumn", "fall"):
+            if re.search(rf"\b{candidate}\b", lowered):
+                season = candidate
+                break
+
+        topic = None
+        topic_aliases = {
+            "museum": "see",
+            "museums": "see",
+            "food": "eat",
+            "foods": "eat",
+            "hotel": "sleep",
+            "hotels": "sleep",
+            "transport": "get around",
+            "walking": "do",
+            "hike": "do",
+            "nightlife": "do",
+            "history": "understand",
+        }
+        for candidate in topic_aliases:
+            if re.search(rf"\b{re.escape(candidate)}\b", lowered):
+                topic = topic_aliases[candidate]
+                break
+
         cleaned = re.sub(r"\s+", " ", text)
-        tokens = [part.strip() for part in cleaned.split(" ") if part.strip()]
-        if not tokens:
-            return []
-        base = " ".join(tokens[:8])
-        variants = [base]
-        if len(tokens) > 3:
-            variants.append(" ".join(tokens[:4]))
-        if len(tokens) > 5:
-            variants.append(" ".join(tokens[:6]))
-        return variants[:3]
+        variants: list[str] = []
+        if city or season or topic:
+            parts = []
+            if city:
+                parts.append(city)
+            if topic:
+                parts.append(topic)
+            if season:
+                parts.append(season)
+            variants.append(" ".join(parts))
+        variants.append(cleaned)
+        if len(cleaned.split()) > 4:
+            variants.append(" ".join(cleaned.split()[:8]))
+        if len(cleaned.split()) > 8:
+            variants.append(" ".join(cleaned.split()[:12]))
+        deduped: list[str] = []
+        for variant in variants:
+            normalized = " ".join(variant.split())
+            if normalized and normalized not in deduped:
+                deduped.append(normalized)
+        return deduped[:3]
+
+
+class DefaultQueryRewriter(RuleBasedQueryRewriter):
+    pass
 
 
 def rewrite_user_query(user_request: str, rewriter: QueryRewriter | None = None) -> list[str]:
@@ -33,11 +85,7 @@ def rewrite_user_query(user_request: str, rewriter: QueryRewriter | None = None)
 
 
 def reciprocal_rank_fusion(*rankings: list[str], k: int = 60) -> list[tuple[str, float]]:
-    """Fuse rankings with reciprocal rank fusion.
-
-    The function accepts one or more ordered rankings and returns a score-sorted list of
-    (item, score) tuples.
-    """
+    """Fuse rankings with reciprocal rank fusion."""
     if not rankings:
         return []
     score_by_item: dict[str, float] = defaultdict(float)
@@ -49,6 +97,7 @@ def reciprocal_rank_fusion(*rankings: list[str], k: int = 60) -> list[tuple[str,
 
 
 def apply_metadata_filters(rows: list[dict[str, Any]], **filters: Any) -> list[dict[str, Any]]:
+    """Apply exact-match metadata filtering in-memory for tests and adapters."""
     filtered = list(rows)
     for key, value in filters.items():
         if value is None or value == "":

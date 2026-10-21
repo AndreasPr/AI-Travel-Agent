@@ -5,13 +5,12 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 from backend.db.models import Base
+from backend.env import config as app_config
 
 config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-
-from backend.env import config as app_config
 
 database_url = os.getenv("DATABASE_URL") or app_config(
     "DATABASE_URL",

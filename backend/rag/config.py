@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any
 
@@ -31,12 +30,35 @@ def get_reranker_model_name() -> str:
     return payload.get("reranker", {}).get("model", "cross-encoder/ms-marco-MiniLM-L-6-v2")
 
 
+def read_city_country_map(path: str | Path | None = None) -> dict[str, str]:
+    target = Path(path) if path else CONFIG_DIR / "cities.yaml"
+    data = read_yaml(target)
+    mapping: dict[str, str] = {}
+    for entry in data.get("cities", []) or []:
+        if isinstance(entry, dict):
+            name = str(entry.get("name") or entry.get("city") or "").strip()
+            country = str(entry.get("country") or entry.get("country_name") or "").strip()
+            if name and country:
+                mapping[name] = country
+        elif isinstance(entry, str):
+            mapping[str(entry).strip()] = "Unknown"
+    return mapping
+
+
 def read_cities(path: str | Path | None = None) -> list[str]:
     target = Path(path) if path else CONFIG_DIR / "cities.yaml"
     data = read_yaml(target)
     cities = data.get("cities")
     if isinstance(cities, list):
-        return [str(city) for city in cities]
+        entries: list[str] = []
+        for city in cities:
+            if isinstance(city, dict):
+                name = city.get("name") or city.get("city")
+                if name:
+                    entries.append(str(name))
+            elif city:
+                entries.append(str(city))
+        return entries
     if isinstance(cities, dict):
         return [str(city_name) for city_name in cities.keys()]
     return []
