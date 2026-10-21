@@ -33,6 +33,23 @@ def test_chunk_document_splits_and_tracks_metadata():
     assert any(chunk["topic"] for chunk in chunks)
 
 
+def test_chunk_document_handles_overlapping_chunk_boundaries():
+    tokens = " ".join(f"token{i}" for i in range(400))
+    chunks = chunk_document(
+        title="Lisbon",
+        city="Lisbon",
+        country="Portugal",
+        text=tokens,
+        source_url="https://example.com/lisbon",
+        license="CC BY-SA 4.0",
+        chunk_size=260,
+        overlap=40,
+    )
+    assert chunks
+    assert all(chunk["text"] for chunk in chunks)
+    assert all("token" in chunk["text"] for chunk in chunks)
+
+
 def test_rrf_fusion_combines_rankings():
     vector_rank = ["a", "b", "c"]
     bm25_rank = ["c", "a", "d"]

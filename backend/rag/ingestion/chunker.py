@@ -108,6 +108,20 @@ def _chunk_tokens(tokens: list[str], chunk_size: int = 260, overlap: int = 40) -
     return chunks
 
 
+def _chunk_ranges(total_tokens: int, chunk_size: int = 260, overlap: int = 40) -> list[tuple[int, int]]:
+    if total_tokens == 0:
+        return []
+    ranges: list[tuple[int, int]] = []
+    start = 0
+    while start < total_tokens:
+        end = min(total_tokens, start + chunk_size)
+        ranges.append((start, end))
+        if end >= total_tokens:
+            break
+        start += max(1, chunk_size - overlap)
+    return ranges
+
+
 def _slice_text_by_tokens(text: str, start_token_index: int, end_token_index: int, token_spans: list[tuple[int, int]]) -> str:
     if not token_spans:
         return text.strip()
@@ -115,6 +129,8 @@ def _slice_text_by_tokens(text: str, start_token_index: int, end_token_index: in
         start_token_index = 0
     if end_token_index > len(token_spans):
         end_token_index = len(token_spans)
+    if start_token_index >= len(token_spans):
+        return ""
     start_pos = token_spans[start_token_index][0]
     end_pos = token_spans[end_token_index - 1][1]
     return text[start_pos:end_pos].strip()
@@ -142,15 +158,9 @@ def chunk_document(
         if not tokens:
             continue
         token_groups = _chunk_tokens(tokens, chunk_size=chunk_size, overlap=overlap)
+        chunk_ranges = _chunk_ranges(len(tokens), chunk_size=chunk_size, overlap=overlap)
         for chunk_index, token_group in enumerate(token_groups):
-            start_token_index = 0
-            running = 0
-            for idx, group in enumerate(token_groups):
-                if idx == chunk_index:
-                    break
-                running += len(group)
-            start_token_index = running
-            end_token_index = start_token_index + len(token_group)
+            start_token_index, end_token_index = chunk_ranges[chunk_index]
             chunk_text = _slice_text_by_tokens(section_text, start_token_index, end_token_index, token_spans)
             if not chunk_text:
                 chunk_text = " ".join(token_group)
