@@ -16,24 +16,19 @@ class RuleBasedQueryRewriter:
     def __init__(self, city_map: dict[str, str] | None = None):
         self.city_map = city_map or read_city_country_map()
 
-    def rewrite(self, user_request: str) -> list[str]:
-        text = (user_request or "").strip()
-        if not text:
-            return []
-        lowered = text.lower()
-        city = None
+    def _extract_city(self, lowered: str) -> str | None:
         for candidate in sorted(self.city_map, key=len, reverse=True):
             if re.search(rf"\b{re.escape(candidate.lower())}\b", lowered):
-                city = candidate
-                break
+                return candidate
+        return None
 
-        season = None
+    def _extract_season(self, lowered: str) -> str | None:
         for candidate in ("winter", "spring", "summer", "autumn", "fall"):
             if re.search(rf"\b{candidate}\b", lowered):
-                season = candidate
-                break
+                return candidate
+        return None
 
-        topic = None
+    def _extract_topic(self, lowered: str) -> str | None:
         topic_aliases = {
             "museum": "see",
             "museums": "see",
@@ -47,21 +42,42 @@ class RuleBasedQueryRewriter:
             "nightlife": "do",
             "history": "understand",
         }
-        for candidate in topic_aliases:
+        for candidate, mapped in topic_aliases.items():
             if re.search(rf"\b{re.escape(candidate)}\b", lowered):
-                topic = topic_aliases[candidate]
-                break
+                return mapped
+        return None
 
+    def extract_metadata(self, user_request: str) -> dict[str, str | None]:
+        text = (user_request or "").strip()
+        if not text:
+            return {"city": None, "country": None, "season": None, "topic": None}
+        lowered = text.lower()
+        city = self._extract_city(lowered)
+        season = self._extract_season(lowered)
+        topic = self._extract_topic(lowered)
+        return {
+            "city": city,
+            "country": self.city_map.get(city) if city else None,
+            "season": season,
+            "topic": topic,
+        }
+
+    def rewrite(self, user_request: str) -> list[str]:
+        text = (user_request or "").strip()
+        if not text:
+            return []
+        lowered = text.lower()
+        metadata = self.extract_metadata(text)
         cleaned = re.sub(r"\s+", " ", text)
         variants: list[str] = []
-        if city or season or topic:
+        if metadata["city"] or metadata["season"] or metadata["topic"]:
             parts = []
-            if city:
-                parts.append(city)
-            if topic:
-                parts.append(topic)
-            if season:
-                parts.append(season)
+            if metadata["city"]:
+                parts.append(metadata["city"])
+            if metadata["topic"]:
+                parts.append(metadata["topic"])
+            if metadata["season"]:
+                parts.append(metadata["season"])
             variants.append(" ".join(parts))
         variants.append(cleaned)
         if len(cleaned.split()) > 4:

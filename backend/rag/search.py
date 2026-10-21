@@ -8,9 +8,8 @@ from sqlalchemy import and_, func, select
 
 from backend.db.connect import SessionLocal
 from backend.db.models import Document, DocumentChunk
-from backend.rag.config import read_city_country_map
 from backend.rag.embeddings import LocalEmbedder
-from backend.rag.retrieval.hybrid import reciprocal_rank_fusion, rewrite_user_query
+from backend.rag.retrieval.hybrid import RuleBasedQueryRewriter, reciprocal_rank_fusion, rewrite_user_query
 from backend.rag.retrieval.rerank import CrossEncoderReranker
 
 
@@ -47,62 +46,52 @@ def _candidate_row(row: Any) -> dict[str, Any]:
 
 
 def _extract_filters(query: str) -> tuple[dict[str, str | None], str]:
-    text = query.strip()
-    city_map = read_city_country_map()
-    city = None
-    for candidate in sorted(city_map, key=len, reverse=True):
-        if candidate.lower() in text.lower():
-            city = candidate
-            break
-    season = None
-    for candidate in ("winter", "spring", "summer", "autumn", "fall"):
-        if candidate in text.lower():
-            season = candidate
-            break
-    topic = None
-    topic_aliases = {
-        "museum": "see",
-        "museums": "see",
-        "food": "eat",
-        "foods": "eat",
-        "hotel": "sleep",
-        "hotels": "sleep",
-        "transport": "get around",
-        "walking": "do",
-        "hike": "do",
-        "nightlife": "do",
-        "history": "understand",
-    }
-    lowered = text.lower()
-    for candidate, mapped in topic_aliases.items():
-        if candidate in lowered:
-            topic = mapped
-            break
-    filters = {"city": city, "country": city_map.get(city) if city else None, "season": season, "topic": topic}
-    return filters, text
+    rewriter = RuleBasedQueryRewriter()
+    metadata = rewriter.extract_metadata(query)
+    return {
+        "city": metadata.get("city"),
+        "country": metadata.get("country"),
+        "season": metadata.get("season"),
+        "topic": metadata.get("topic"),
+    }, query.strip()
 
 
 def search(query: str, limit: int = 5, mode: str = "hybrid", city: str | None = None, country: str | None = None, season: str | None = None, topic: str | None = None, rerank: bool = False) -> list[dict[str, Any]]:
-    filters, query_text = _extract_filters(query)
+    extracted_filters, query_text = _extract_filters(query)
+    hard_filters: dict[str, str | None] = {}
     if city:
-        filters["city"] = city
+        hard_filters["city"] = city
+    elif extracted_filters.get("city"):
+        hard_filters["city"] = extracted_filters["city"]
     if country:
-        filters["country"] = country
-    if season:
-        filters["season"] = season
-    if topic:
-        filters["topic"] = topic
+        hard_filters["country"] = country
+    elif extracted_filters.get("country"):
+        hard_filters["country"] = extracted_filters["country"]
+    if season is not None:
+        hard_filters["season"] = season
+    if topic is not None:
+        hard_filters["topic"] = topic
 
-    def _select_candidates(active_filters: dict[str, str | None]) -> tuple[list[dict[str, Any]], list[str]]:
+    soft_filters: dict[str, str | None] = {}
+    if season is None and extracted_filters.get("season") is not None:
+        soft_filters["season"] = extracted_filters["season"]
+    if topic is None and extracted_filters.get("topic") is not None:
+        soft_filters["topic"] = extracted_filters["topic"]
+
+    query_variants = rewrite_user_query(query_text, rewriter=RuleBasedQueryRewriter()) or [query_text]
+    if not query_variants:
+        query_variants = [query_text]
+
+    def _fetch_ranking_for_variant(variant: str, filters_by_field: dict[str, str | None]) -> tuple[list[str], dict[str, dict[str, Any]]]:
         clauses = []
-        if active_filters.get("city"):
-            clauses.append(DocumentChunk.city == active_filters["city"])
-        if active_filters.get("country"):
-            clauses.append(DocumentChunk.country == active_filters["country"])
-        if active_filters.get("season"):
-            clauses.append(DocumentChunk.season == active_filters["season"])
-        if active_filters.get("topic"):
-            clauses.append(DocumentChunk.topic == active_filters["topic"])
+        if filters_by_field.get("city"):
+            clauses.append(DocumentChunk.city == filters_by_field["city"])
+        if filters_by_field.get("country"):
+            clauses.append(DocumentChunk.country == filters_by_field["country"])
+        if filters_by_field.get("season"):
+            clauses.append(DocumentChunk.season == filters_by_field["season"])
+        if filters_by_field.get("topic"):
+            clauses.append(DocumentChunk.topic == filters_by_field["topic"])
 
         with SessionLocal() as session:
             base_select = (
@@ -112,67 +101,66 @@ def search(query: str, limit: int = 5, mode: str = "hybrid", city: str | None = 
                 .where(DocumentChunk.text.isnot(None))
             )
 
-            vector_candidates: list[dict[str, Any]] = []
-            bm25_candidates: list[dict[str, Any]] = []
+            vector_rows: list[dict[str, Any]] = []
+            bm25_rows: list[dict[str, Any]] = []
             if mode in {"vector", "hybrid"}:
                 try:
-                    query_vector = LocalEmbedder().encode_query(query_text)
+                    query_vector = LocalEmbedder().encode_query(variant)
                 except RuntimeError as exc:
                     raise RuntimeError(
                         "Embedding model unavailable. The model download failed because the environment is offline or the network is unavailable. "
                         "Install the model cache or restore connectivity before retrying."
                     ) from exc
-                vector_rows = session.execute(
+                vector_hits = session.execute(
                     base_select.order_by(DocumentChunk.embedding.cosine_distance(query_vector)).limit(30)
                 ).all()
-                vector_candidates = [_candidate_row(row) for row in vector_rows]
+                vector_rows = [_candidate_row(row) for row in vector_hits]
 
             if mode in {"bm25", "hybrid"}:
-                rewritten = rewrite_user_query(query_text)
-                ts_query = None
-                if rewritten:
-                    ts_query = func.websearch_to_tsquery("english", " ".join(rewritten))
-                if ts_query is not None:
-                    bm25_rows = session.execute(
-                        select(DocumentChunk, Document, func.ts_rank_cd(DocumentChunk.search_vector, ts_query).label("rank"))
-                        .join(Document, Document.id == DocumentChunk.document_id)
-                        .where(and_(*clauses))
-                        .where(DocumentChunk.search_vector.isnot(None))
-                        .where(DocumentChunk.search_vector.op("@@")(ts_query))
-                        .order_by(func.ts_rank_cd(DocumentChunk.search_vector, ts_query).desc())
-                        .limit(30)
-                    ).all()
-                    bm25_candidates = [_candidate_row((row[0], row[1])) for row in bm25_rows]
+                ts_query = func.websearch_to_tsquery("english", variant)
+                bm25_hits = session.execute(
+                    select(DocumentChunk, Document, func.ts_rank_cd(DocumentChunk.search_vector, ts_query).label("rank"))
+                    .join(Document, Document.id == DocumentChunk.document_id)
+                    .where(and_(*clauses))
+                    .where(DocumentChunk.search_vector.isnot(None))
+                    .where(DocumentChunk.search_vector.op("@@")(ts_query))
+                    .order_by(func.ts_rank_cd(DocumentChunk.search_vector, ts_query).desc())
+                    .limit(30)
+                ).all()
+                bm25_rows = [_candidate_row((row[0], row[1])) for row in bm25_hits]
 
             if mode == "vector":
-                ranked_ids = [str(row["id"]) for row in vector_candidates]
-                candidates = vector_candidates
+                candidate_ids = [str(row["id"]) for row in vector_rows]
+                by_id = {str(row["id"]): row for row in vector_rows}
             elif mode == "bm25":
-                ranked_ids = [str(row["id"]) for row in bm25_candidates]
-                candidates = bm25_candidates
+                candidate_ids = [str(row["id"]) for row in bm25_rows]
+                by_id = {str(row["id"]): row for row in bm25_rows}
             else:
-                ranked_ids = [str(item_id) for item_id, _ in reciprocal_rank_fusion(
-                    [str(row["id"]) for row in vector_candidates],
-                    [str(row["id"]) for row in bm25_candidates],
+                fused = reciprocal_rank_fusion(
+                    [str(row["id"]) for row in vector_rows],
+                    [str(row["id"]) for row in bm25_rows],
                     k=60,
-                )]
-                by_id: dict[str, dict[str, Any]] = {}
-                for row in vector_candidates + bm25_candidates:
-                    by_id[str(row["id"])] = row
-                candidates = [by_id[item_id] for item_id in ranked_ids if item_id in by_id]
+                )
+                candidate_ids = [item_id for item_id, _ in fused]
+                by_id = {str(row["id"]): row for row in vector_rows + bm25_rows}
 
-            return candidates, [str(item_id) for item_id in ranked_ids if item_id in {str(row["id"]) for row in candidates}]
+            return candidate_ids, by_id
 
-    candidates, ranked_ids = _select_candidates(filters)
-    if not candidates and (filters.get("season") or filters.get("topic")):
-        relaxed_filters = {key: value for key, value in filters.items() if key not in {"season", "topic"}}
-        candidates, ranked_ids = _select_candidates(relaxed_filters)
-    if not candidates:
+    ranking_sets: list[list[str]] = []
+    by_id: dict[str, dict[str, Any]] = {}
+    for variant in query_variants:
+        for filter_set in [hard_filters.copy() | soft_filters, hard_filters.copy()]:
+            ranking, item_map = _fetch_ranking_for_variant(variant, filter_set)
+            ranking_sets.append(ranking)
+            by_id.update(item_map)
+
+    if not ranking_sets:
         return []
 
-    by_id = {str(row["id"]): row for row in candidates}
+    fused = reciprocal_rank_fusion(*ranking_sets, k=60)
+    ranked_ids = [item_id for item_id, _ in fused]
     if rerank:
-        reranked = CrossEncoderReranker().rerank(list(by_id.values()), query_text, limit=limit)
+        reranked = CrossEncoderReranker().rerank([by_id[item_id] for item_id in ranked_ids if item_id in by_id], query_text, limit=limit)
         return reranked[:limit]
     return [by_id[item_id] for item_id in ranked_ids if item_id in by_id][:limit]
 
