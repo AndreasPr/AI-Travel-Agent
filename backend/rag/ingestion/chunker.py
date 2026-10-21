@@ -14,6 +14,22 @@ TOPIC_KEYWORDS = {
     "get around": ["tram", "metro", "taxi", "ride", "walk", "transport"],
     "understand": ["history", "culture", "language", "museum", "guide", "learn"],
     "stay safe": ["safe", "risk", "warning", "police", "scam", "health", "safety"],
+    "buy": ["shop", "market", "buy", "book", "tickets", "buying"],
+    "connect": ["wifi", "internet", "phone", "connect", "sim", "network"],
+}
+
+SECTION_TOPIC_MAP = {
+    "see": "see",
+    "do": "do",
+    "eat": "eat",
+    "drink": "drink",
+    "sleep": "sleep",
+    "get in": "get in",
+    "get around": "get around",
+    "understand": "understand",
+    "stay safe": "stay safe",
+    "buy": "buy",
+    "connect": "connect",
 }
 
 
@@ -58,16 +74,24 @@ def _sectionize(text: str) -> list[tuple[str, str]]:
     return sections
 
 
+def _canonical_topic_from_heading(heading: str) -> str | None:
+    normalized = re.sub(r"[^a-z]+", " ", (heading or "").lower()).strip()
+    return SECTION_TOPIC_MAP.get(normalized)
+
+
 def _infer_topic(text: str, heading: str) -> str:
+    topic = _canonical_topic_from_heading(heading)
+    if topic:
+        return topic
     haystack = f"{heading} {text}".lower()
-    for topic, keywords in TOPIC_KEYWORDS.items():
+    for candidate, keywords in TOPIC_KEYWORDS.items():
         if any(keyword in haystack for keyword in keywords):
-            return topic
+            return candidate
     return "other"
 
 
 def _tokenize(text: str) -> list[str]:
-    return re.findall(r"\b[\w-]+\b", text.lower())
+    return re.findall(r"\S+", text)
 
 
 def _chunk_tokens(tokens: list[str], chunk_size: int = 260, overlap: int = 40) -> list[list[str]]:
@@ -82,6 +106,18 @@ def _chunk_tokens(tokens: list[str], chunk_size: int = 260, overlap: int = 40) -
             break
         start += max(1, chunk_size - overlap)
     return chunks
+
+
+def _slice_text_by_tokens(text: str, start_token_index: int, end_token_index: int, token_spans: list[tuple[int, int]]) -> str:
+    if not token_spans:
+        return text.strip()
+    if start_token_index < 0:
+        start_token_index = 0
+    if end_token_index > len(token_spans):
+        end_token_index = len(token_spans)
+    start_pos = token_spans[start_token_index][0]
+    end_pos = token_spans[end_token_index - 1][1]
+    return text[start_pos:end_pos].strip()
 
 
 def chunk_document(
@@ -101,11 +137,23 @@ def chunk_document(
         section_text = section_text.strip()
         if not section_text:
             continue
-        tokenized = _tokenize(section_text)
-        if not tokenized:
+        tokens = _tokenize(section_text)
+        token_spans = [(m.start(), m.end()) for m in re.finditer(r"\S+", section_text)]
+        if not tokens:
             continue
-        for chunk_index, token_group in enumerate(_chunk_tokens(tokenized, chunk_size=chunk_size, overlap=overlap)):
-            chunk_text = " ".join(token_group)
+        token_groups = _chunk_tokens(tokens, chunk_size=chunk_size, overlap=overlap)
+        for chunk_index, token_group in enumerate(token_groups):
+            start_token_index = 0
+            running = 0
+            for idx, group in enumerate(token_groups):
+                if idx == chunk_index:
+                    break
+                running += len(group)
+            start_token_index = running
+            end_token_index = start_token_index + len(token_group)
+            chunk_text = _slice_text_by_tokens(section_text, start_token_index, end_token_index, token_spans)
+            if not chunk_text:
+                chunk_text = " ".join(token_group)
             chunk_id = hashlib.sha256(
                 f"{title}:{city}:{country}:{heading}:{chunk_index}:{chunk_text}".encode("utf-8")
             ).hexdigest()[:16]
@@ -125,7 +173,7 @@ def chunk_document(
             }
             chunks.append(chunk)
     if not chunks:
-        chunk_text = " ".join(_tokenize(text))
+        chunk_text = text.strip()
         chunk_id = hashlib.sha256(f"{title}:{city}:{country}:{chunk_text}".encode("utf-8")).hexdigest()[:16]
         chunks.append(
             {
