@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from functools import lru_cache
 from typing import Any
 
 from sqlalchemy import and_, func, select
@@ -11,6 +12,16 @@ from backend.db.models import Document, DocumentChunk
 from backend.rag.embeddings import LocalEmbedder
 from backend.rag.retrieval.hybrid import RuleBasedQueryRewriter, reciprocal_rank_fusion, rewrite_user_query
 from backend.rag.retrieval.rerank import CrossEncoderReranker
+
+
+@lru_cache(maxsize=1)
+def get_local_embedder() -> LocalEmbedder:
+    return LocalEmbedder()
+
+
+@lru_cache(maxsize=1)
+def get_reranker() -> CrossEncoderReranker:
+    return CrossEncoderReranker()
 
 
 def _candidate_row(row: Any) -> dict[str, Any]:
@@ -32,7 +43,6 @@ def _candidate_row(row: Any) -> dict[str, Any]:
         "source_url": document.source_url,
         "license": document.license or "CC BY-SA 4.0",
         "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
-        "embedding": embedding,
         "metadata": {
             "chunk_id": chunk.chunk_id,
             "city": chunk.city,
@@ -57,6 +67,8 @@ def _extract_filters(query: str) -> tuple[dict[str, str | None], str]:
 
 
 def search(query: str, limit: int = 5, mode: str = "hybrid", city: str | None = None, country: str | None = None, season: str | None = None, topic: str | None = None, rerank: bool = False) -> list[dict[str, Any]]:
+    embedder = get_local_embedder()
+    reranker = get_reranker() if rerank else None
     extracted_filters, query_text = _extract_filters(query)
     hard_filters: dict[str, str | None] = {}
     if city:
@@ -82,6 +94,21 @@ def search(query: str, limit: int = 5, mode: str = "hybrid", city: str | None = 
     if not query_variants:
         query_variants = [query_text]
 
+    vector_cache: dict[str, list[float]] = {}
+
+    def _encode_variant(variant: str) -> list[float]:
+        if variant in vector_cache:
+            return vector_cache[variant]
+        try:
+            query_vector = embedder.encode_query(variant)
+        except RuntimeError as exc:
+            raise RuntimeError(
+                "Embedding model unavailable. The model download failed because the environment is offline or the network is unavailable. "
+                "Install the model cache or restore connectivity before retrying."
+            ) from exc
+        vector_cache[variant] = query_vector
+        return query_vector
+
     def _fetch_ranking_for_variant(variant: str, filters_by_field: dict[str, str | None]) -> tuple[list[str], dict[str, dict[str, Any]]]:
         clauses = []
         if filters_by_field.get("city"):
@@ -104,13 +131,7 @@ def search(query: str, limit: int = 5, mode: str = "hybrid", city: str | None = 
             vector_rows: list[dict[str, Any]] = []
             bm25_rows: list[dict[str, Any]] = []
             if mode in {"vector", "hybrid"}:
-                try:
-                    query_vector = LocalEmbedder().encode_query(variant)
-                except RuntimeError as exc:
-                    raise RuntimeError(
-                        "Embedding model unavailable. The model download failed because the environment is offline or the network is unavailable. "
-                        "Install the model cache or restore connectivity before retrying."
-                    ) from exc
+                query_vector = _encode_variant(variant)
                 vector_hits = session.execute(
                     base_select.order_by(DocumentChunk.embedding.cosine_distance(query_vector)).limit(30)
                 ).all()
@@ -159,8 +180,9 @@ def search(query: str, limit: int = 5, mode: str = "hybrid", city: str | None = 
 
     fused = reciprocal_rank_fusion(*ranking_sets, k=60)
     ranked_ids = [item_id for item_id, _ in fused]
-    if rerank:
-        reranked = CrossEncoderReranker().rerank([by_id[item_id] for item_id in ranked_ids if item_id in by_id], query_text, limit=limit)
+    if rerank and reranker is not None:
+        rerank_candidates = [by_id[item_id] for item_id in ranked_ids if item_id in by_id][:30]
+        reranked = reranker.rerank(rerank_candidates, query_text, limit=limit)
         return reranked[:limit]
     return [by_id[item_id] for item_id in ranked_ids if item_id in by_id][:limit]
 

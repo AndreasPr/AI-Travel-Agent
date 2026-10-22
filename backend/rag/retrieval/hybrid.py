@@ -66,7 +66,6 @@ class RuleBasedQueryRewriter:
         text = (user_request or "").strip()
         if not text:
             return []
-        lowered = text.lower()
         metadata = self.extract_metadata(text)
         cleaned = re.sub(r"\s+", " ", text)
         variants: list[str] = []

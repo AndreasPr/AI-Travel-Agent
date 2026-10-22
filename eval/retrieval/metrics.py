@@ -70,7 +70,7 @@ def main() -> None:
 
     metrics = {key: 0.0 for key in ["recall@1", "recall@3", "recall@5", "recall@10", "mrr", "ndcg@10"]}
     for record in labeled:
-        ranked = record.get("predicted_chunk_ids", [])
+        ranked = record.get("ranked_chunk_ids", [])
         values = evaluate_query(record.get("relevant_chunk_ids", []), ranked)
         for key, score in values.items():
             metrics[key] += score

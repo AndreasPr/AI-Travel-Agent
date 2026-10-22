@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from sqlalchemy import inspect, select, func
+from sqlalchemy import delete, inspect, select, func
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import ProgrammingError
 
@@ -93,8 +93,10 @@ def ingest_cities(cities_path: str | Path | None = None, max_pages: int | None =
                     )
                     session.add(document)
                     session.flush()
+                new_chunk_ids = []
                 for index, chunk in enumerate(chunks):
                     chunk_id = str(chunk["chunk_id"])
+                    new_chunk_ids.append(chunk_id)
                     chunk_embedding = embeddings[index] if index < len(embeddings) else [0.0] * 384
                     stmt = insert(DocumentChunk).values(
                         chunk_id=chunk_id,
@@ -137,6 +139,9 @@ def ingest_cities(cities_path: str | Path | None = None, max_pages: int | None =
                         "license": page.get("license") or "CC BY-SA 4.0",
                         "text": chunk["text"],
                     })
+                session.execute(
+                    delete(DocumentChunk).where(DocumentChunk.document_id == document.id).where(~DocumentChunk.chunk_id.in_(new_chunk_ids))
+                )
                 session.commit()
         except ProgrammingError as exc:
             raise RuntimeError(
