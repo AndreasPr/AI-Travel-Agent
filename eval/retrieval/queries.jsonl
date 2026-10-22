@@ -1,42 +1,42 @@
-{"query": "quiet museums in Lisbon in winter", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "best neighborhoods for food in Porto", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "rainy day activities in Barcelona", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "family hotels in Madrid", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "day trips from Rome by train", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "affordable hostels in Amsterdam", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "historic walking routes in Florence", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "safe nightlife in Berlin", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "coffee culture in Vienna", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "cheap public transport in Prague", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "best river walks in Budapest", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "food markets in Valencia", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "sunny beaches in Seville", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "art galleries in Milan", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "easy airport transfers in Paris", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "best wine bars in Lyon", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "scenic hikes near Krakow", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "cycling routes in Copenhagen", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "winter markets in Stockholm", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "design museums in Helsinki", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "cheap eats in Dublin", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "ancient ruins in Athens", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "local festivals in Brussels", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "tram tips in Lisbon", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "things to do with kids in Madrid", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "late-night food in Naples", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "music venues in Berlin", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "viewpoints in Porto", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "best bakeries in Vienna", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "historic sites in Rome", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "boat trips in Venice", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "quiet cafés in Paris", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "where to stay in Lisbon for winter", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "green spaces in Barcelona", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "night buses in Prague", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "best museums in Amsterdam", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "walking tours in Athens", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "train station tips in Milan", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "rainproof itinerary in Copenhagen", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "best local wine in Seville", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "outdoor activities in Lyon", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
-{"query": "boat travel in Porto", "relevant_chunk_ids": [], "predicted_chunk_ids": []}
+{"query": "quiet museums in Lisbon in winter", "relevant_chunk_ids": []}
+{"query": "best neighborhoods for food in Porto", "relevant_chunk_ids": []}
+{"query": "rainy day activities in Barcelona", "relevant_chunk_ids": []}
+{"query": "family hotels in Madrid", "relevant_chunk_ids": []}
+{"query": "day trips from Rome by train", "relevant_chunk_ids": []}
+{"query": "affordable hostels in Amsterdam", "relevant_chunk_ids": []}
+{"query": "historic walking routes in Florence", "relevant_chunk_ids": []}
+{"query": "safe nightlife in Berlin", "relevant_chunk_ids": []}
+{"query": "coffee culture in Vienna", "relevant_chunk_ids": []}
+{"query": "cheap public transport in Prague", "relevant_chunk_ids": []}
+{"query": "best river walks in Budapest", "relevant_chunk_ids": []}
+{"query": "food markets in Valencia", "relevant_chunk_ids": []}
+{"query": "sunny beaches in Seville", "relevant_chunk_ids": []}
+{"query": "art galleries in Milan", "relevant_chunk_ids": []}
+{"query": "easy airport transfers in Paris", "relevant_chunk_ids": []}
+{"query": "best wine bars in Lyon", "relevant_chunk_ids": []}
+{"query": "scenic hikes near Krakow", "relevant_chunk_ids": []}
+{"query": "cycling routes in Copenhagen", "relevant_chunk_ids": []}
+{"query": "winter markets in Stockholm", "relevant_chunk_ids": []}
+{"query": "design museums in Helsinki", "relevant_chunk_ids": []}
+{"query": "cheap eats in Dublin", "relevant_chunk_ids": []}
+{"query": "ancient ruins in Athens", "relevant_chunk_ids": []}
+{"query": "local festivals in Brussels", "relevant_chunk_ids": []}
+{"query": "tram tips in Lisbon", "relevant_chunk_ids": []}
+{"query": "things to do with kids in Madrid", "relevant_chunk_ids": []}
+{"query": "late-night food in Naples", "relevant_chunk_ids": []}
+{"query": "music venues in Berlin", "relevant_chunk_ids": []}
+{"query": "viewpoints in Porto", "relevant_chunk_ids": []}
+{"query": "best bakeries in Vienna", "relevant_chunk_ids": []}
+{"query": "historic sites in Rome", "relevant_chunk_ids": []}
+{"query": "boat trips in Venice", "relevant_chunk_ids": []}
+{"query": "quiet cafés in Paris", "relevant_chunk_ids": []}
+{"query": "where to stay in Lisbon for winter", "relevant_chunk_ids": []}
+{"query": "green spaces in Barcelona", "relevant_chunk_ids": []}
+{"query": "night buses in Prague", "relevant_chunk_ids": []}
+{"query": "best museums in Amsterdam", "relevant_chunk_ids": []}
+{"query": "walking tours in Athens", "relevant_chunk_ids": []}
+{"query": "train station tips in Milan", "relevant_chunk_ids": []}
+{"query": "rainproof itinerary in Copenhagen", "relevant_chunk_ids": []}
+{"query": "best local wine in Seville", "relevant_chunk_ids": []}
+{"query": "outdoor activities in Lyon", "relevant_chunk_ids": []}
+{"query": "boat travel in Porto", "relevant_chunk_ids": []}

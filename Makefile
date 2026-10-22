@@ -1,4 +1,4 @@
-.PHONY: up down logs seed migrate test lint fmt demo eval
+.PHONY: up down logs seed migrate test lint fmt demo eval rag-candidates rag-eval reset-rag
 
 up:
 	docker compose pull db
@@ -30,5 +30,20 @@ fmt:
 demo:
 	@echo "Demo placeholder"
 
+rag-candidates:
+	python eval/retrieval/make_candidates.py
+
+rag-eval:
+	python eval/retrieval/run_modes.py
+
+reset-rag:
+	python - <<'PY'
+from backend.db.connect import engine
+with engine.begin() as conn:
+    conn.execute('TRUNCATE TABLE document_chunks RESTART IDENTITY CASCADE')
+    conn.execute('TRUNCATE TABLE documents RESTART IDENTITY CASCADE')
+PY
+
+
 eval:
-	@echo "Eval placeholder"
+	$(MAKE) rag-eval

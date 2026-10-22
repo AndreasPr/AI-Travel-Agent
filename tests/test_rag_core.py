@@ -5,6 +5,7 @@ from backend.rag.citations import CitedClaim, CitationVerifier
 from backend.rag.ingest import assert_rag_tables_exist, ingest_cities
 from backend.rag.ingestion.chunker import chunk_document
 from backend.rag.retrieval.hybrid import reciprocal_rank_fusion, apply_metadata_filters
+from backend.rag.retrieval.rerank import CrossEncoderReranker
 from backend.rag.search import search
 from backend.scripts.seed_inventory import normalize_flight_row
 
@@ -58,6 +59,20 @@ def test_rrf_fusion_combines_rankings():
     assert fused[1][0] == "c"
 
 
+def test_rrf_fusion_handles_multiple_rankings():
+    fused = reciprocal_rank_fusion(["a", "b"], ["b", "c"], ["c", "a"], k=10)
+    order = [item for item, _ in fused]
+    assert order[:3] == ["a", "b", "c"]
+
+
+def test_ndcg_known_values():
+    from eval.retrieval.metrics import ndcg_at_k
+
+    assert ndcg_at_k(["x"], ["x"], 10) == 1.0
+    assert ndcg_at_k(["x"], ["y", "x"], 10) > 0.0
+    assert ndcg_at_k(["x"], ["y", "z"], 10) == 0.0
+
+
 def test_metadata_filters_keep_supported_candidates():
     rows = [
         {"id": 1, "city": "Lisbon", "country": "Portugal", "season": "winter", "topic": "see"},
@@ -97,6 +112,44 @@ def test_citation_verifier_flags_unsupported_claims():
     assert unsupported.is_supported is False
 
 
+def test_citation_verifier_negation_and_numbers_are_symmetric():
+    sources = [{
+        "chunk_id": "a",
+        "title": "Lisbon basics",
+        "url": "https://example.com/a",
+        "license": "CC BY-SA 4.0",
+        "text": "Lisbon has no museums.",
+    }, {
+        "chunk_id": "b",
+        "title": "Lisbon basics",
+        "url": "https://example.com/b",
+        "license": "CC BY-SA 4.0",
+        "text": "Lisbon is known for fado music.",
+    }, {
+        "chunk_id": "c",
+        "title": "Hotel cost",
+        "url": "https://example.com/c",
+        "license": "CC BY-SA 4.0",
+        "text": "The hotel costs 1,200 euros.",
+    }, {
+        "chunk_id": "d",
+        "title": "Metro notes",
+        "url": "https://example.com/d",
+        "license": "CC BY-SA 4.0",
+        "text": "There is no metro on Sundays.",
+    }]
+    verifier = CitationVerifier(sources)
+
+    assert verifier.verify(CitedClaim(claim="Lisbon has museums.", source_chunk_ids=["a"])).is_supported is False
+    assert verifier.verify(CitedClaim(claim="Lisbon has no museums.", source_chunk_ids=["a"])) .is_supported is True
+    assert verifier.verify(CitedClaim(claim="Lisbon has many museums. There is no metro on Sundays.", source_chunk_ids=["d"])).is_supported is False
+    assert verifier.verify(CitedClaim(claim="Lisbon is known for fado.", source_chunk_ids=["b"])).is_supported is True
+    assert verifier.verify(CitedClaim(claim="The hotel costs 1,500 euros.", source_chunk_ids=["c"])).is_supported is False
+    assert verifier.verify(CitedClaim(claim="The hotel costs 1,200 euros.", source_chunk_ids=["c"])).is_supported is True
+    assert verifier.verify(CitedClaim(claim="Lisbon is known for fado.", source_chunk_ids=[])).is_supported is False
+    assert verifier.verify(CitedClaim(claim="Lisbon is known for fado.", source_chunk_ids=["missing"])).is_supported is False
+
+
 def test_assert_rag_tables_exist_raises_helpful_error(monkeypatch):
     def fake_inspect(_bind):
         class FakeInspector:
@@ -125,6 +178,84 @@ def test_normalize_flight_row_coerces_types():
     assert normalized["flight_date"] == date(2022, 4, 18)
     assert normalized["starting_airport"] == "ATL"
     assert normalized["price"] == Decimal("570.0")
+
+
+def test_search_uses_cached_embedder_once(monkeypatch):
+    class FakeEmbedder:
+        def __init__(self):
+            self.calls = 0
+
+        def encode_query(self, text):
+            self.calls += 1
+            return [0.1, 0.2, 0.3]
+
+    fake = FakeEmbedder()
+    calls = {"count": 0}
+
+    def fake_get_embedder():
+        calls["count"] += 1
+        return fake
+
+    monkeypatch.setattr("backend.rag.search.get_local_embedder", fake_get_embedder)
+
+    class FakeChunk:
+        chunk_id = "chunk-1"
+        id = 1
+        document_id = 1
+        chunk_index = 0
+        text = "Quiet museums in Lisbon in winter."
+        city = "Lisbon"
+        country = "Portugal"
+        season = "winter"
+        topic = "see"
+        embedding = None
+        search_vector = None
+        source_url = "https://example.com"
+        license = "CC BY-SA 4.0"
+
+    class FakeDocument:
+        title = "Lisbon"
+        source_url = "https://example.com"
+        license = "CC BY-SA 4.0"
+
+    class FakeResult:
+        def all(self):
+            return [(FakeChunk(), FakeDocument())]
+
+    class FakeSession:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def execute(self, *_args, **_kwargs):
+            return FakeResult()
+
+    monkeypatch.setattr("backend.rag.search.SessionLocal", lambda: FakeSession())
+    monkeypatch.setattr("backend.rag.search.rewrite_user_query", lambda *args, **kwargs: ["quiet museums in Lisbon in winter"])
+
+    results = search("quiet museums in Lisbon in winter", limit=5)
+    assert results
+    assert calls["count"] == 1
+    assert fake.calls == 1
+
+
+def test_reranker_uses_model_scores(monkeypatch):
+    class FakeModel:
+        def predict(self, pairs, batch_size=32):
+            return [0.2, 0.9]
+
+    reranker = CrossEncoderReranker(model=FakeModel())
+    candidates = [{"text": "alpha"}, {"text": "beta"}]
+    ranked = reranker.rerank(candidates, "query")
+    assert [item["text"] for item in ranked] == ["beta", "alpha"]
+
+
+def test_chunk_document_preserves_currency_text_exactly():
+    text = "Pastéis de nata cost €1.50 and are popular."
+    chunks = chunk_document(title="Lisbon", city="Lisbon", country="Portugal", text=text, source_url="", license="CC BY-SA 4.0")
+    assert any(chunk["text"] == text for chunk in chunks)
 
 
 def test_search_raises_when_embedding_model_fails(monkeypatch):
