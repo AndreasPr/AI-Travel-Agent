@@ -1,42 +1,55 @@
-{"query": "quiet museums in Lisbon in winter", "relevant_chunk_ids": []}
+{"query": "quiet museums in Lisbon in winter", "relevant_chunk_ids": ["322e24464434a270"]}
 {"query": "best neighborhoods for food in Porto", "relevant_chunk_ids": ["152891226cdf59a7", "f3bd6bf06adf107f"]}
 {"query": "rainy day activities in Barcelona", "relevant_chunk_ids": []}
-{"query": "family hotels in Madrid", "relevant_chunk_ids": []}
-{"query": "day trips from Rome by train", "relevant_chunk_ids": []}
-{"query": "affordable hostels in Amsterdam", "relevant_chunk_ids": ["6cfd00f6cbee0345"]}
-{"query": "historic walking routes in Florence", "relevant_chunk_ids": []}
-{"query": "safe nightlife in Berlin", "relevant_chunk_ids": []}
-{"query": "coffee culture in Vienna", "relevant_chunk_ids": []}
-{"query": "cheap public transport in Prague", "relevant_chunk_ids": []}
+{"query": "family hotels in Madrid", "relevant_chunk_ids": ["e94a1fd75936544c"]}
+{"query": "day trips from Rome by train", "relevant_chunk_ids": ["cfc322ec869db2b0", "27b2ae4457b059b4", "66002943b3b8f16a"]}
+{"query": "affordable hostels in Amsterdam", "relevant_chunk_ids": ["6cfd00f6cbee0345", "c13d4fb06aea16cb"]}
+{"query": "historic walking routes in Florence", "relevant_chunk_ids": ["eb52cd1cc48239ca"]}
+{"query": "safe nightlife in Berlin", "relevant_chunk_ids": ["9e4fee20bc9ce4e3", "ffe9236ed04005b1"]}
+{"query": "coffee culture in Vienna", "relevant_chunk_ids": ["a717322abfd1f886"]}
+{"query": "cheap public transport in Prague", "relevant_chunk_ids": ["21246473b10286ac"]}
 {"query": "best river walks in Budapest", "relevant_chunk_ids": ["7b3edc176b866046"]}
-{"query": "food markets in Valencia", "relevant_chunk_ids": []}
-{"query": "sunny beaches in Seville", "relevant_chunk_ids": []}
+{"query": "food markets in Valencia", "relevant_chunk_ids": ["46d6a44c3048277b", "841ce87387079c85"]}
+{"query": "sunny beaches in Seville", "relevant_chunk_ids": ["7442101535014215"]}
 {"query": "art galleries in Milan", "relevant_chunk_ids": []}
 {"query": "easy airport transfers in Paris", "relevant_chunk_ids": []}
 {"query": "best wine bars in Lyon", "relevant_chunk_ids": ["88dc8646d2e8e257"]}
 {"query": "scenic hikes near Krakow", "relevant_chunk_ids": []}
-{"query": "cycling routes in Copenhagen", "relevant_chunk_ids": []}
-{"query": "winter markets in Stockholm", "relevant_chunk_ids": []}
+{"query": "cycling routes in Copenhagen", "relevant_chunk_ids": ["38d9a760a3144c2b", "81347917f3c5b65b", "d69c98e7becb0308"]}
+{"query": "winter markets in Stockholm", "relevant_chunk_ids": ["9a3fbc62b5b023a7"]}
 {"query": "design museums in Helsinki", "relevant_chunk_ids": []}
-{"query": "cheap eats in Dublin", "relevant_chunk_ids": []}
-{"query": "ancient ruins in Athens", "relevant_chunk_ids": ["a9d77836423cb740", "bd993f61724faf53"]}
-{"query": "local festivals in Brussels", "relevant_chunk_ids": []}
+{"query": "cheap eats in Dublin", "relevant_chunk_ids": ["45acfe174a757143", "8d6a0f1bcfb94104"]}
+{"query": "ancient ruins in Athens", "relevant_chunk_ids": ["a9d77836423cb740", "aa8daab637cc5bd7", "e76f06726bdc32a8", "bd993f61724faf53"]}
+{"query": "local festivals in Brussels", "relevant_chunk_ids": ["0577dc7d6ea848e4"]}
 {"query": "tram tips in Lisbon", "relevant_chunk_ids": []}
 {"query": "things to do with kids in Madrid", "relevant_chunk_ids": []}
 {"query": "late-night food in Naples", "relevant_chunk_ids": []}
 {"query": "music venues in Berlin", "relevant_chunk_ids": []}
-{"query": "viewpoints in Porto", "relevant_chunk_ids": []}
-{"query": "best bakeries in Vienna", "relevant_chunk_ids": ["88430a4c3f131b2e"]}
-{"query": "historic sites in Rome", "relevant_chunk_ids": []}
+{"query": "viewpoints in Porto", "relevant_chunk_ids": ["46f956d428b1ac24"]}
+{"query": "best bakeries in Vienna", "relevant_chunk_ids": ["88430a4c3f131b2e", "a717322abfd1f886", "348610f69d036479"]}
+{"query": "historic sites in Rome", "relevant_chunk_ids": ["8a6b642ec8572f11", "e7d1621e188ca9ad", "66002943b3b8f16a"]}
 {"query": "boat trips in Venice", "relevant_chunk_ids": []}
 {"query": "quiet cafés in Paris", "relevant_chunk_ids": []}
 {"query": "where to stay in Lisbon for winter", "relevant_chunk_ids": []}
 {"query": "green spaces in Barcelona", "relevant_chunk_ids": []}
-{"query": "night buses in Prague", "relevant_chunk_ids": []}
+{"query": "night buses in Prague", "relevant_chunk_ids": ["d8186f1cf5498d95"]}
 {"query": "best museums in Amsterdam", "relevant_chunk_ids": ["1647914e17ba28e6", "35b6eff8c2c4fcbf"]}
-{"query": "walking tours in Athens", "relevant_chunk_ids": []}
-{"query": "train station tips in Milan", "relevant_chunk_ids": []}
+{"query": "walking tours in Athens", "relevant_chunk_ids": ["87487288845bb046", "ed0703e1cb235ca3"]}
+{"query": "train station tips in Milan", "relevant_chunk_ids": ["3a7cf6a63c488592", "a393b6ef278a6f13"]}
 {"query": "rainproof itinerary in Copenhagen", "relevant_chunk_ids": []}
 {"query": "best local wine in Seville", "relevant_chunk_ids": ["59599b3079d35576", "89f1ed41ff188278"]}
-{"query": "outdoor activities in Lyon", "relevant_chunk_ids": []}
+{"query": "outdoor activities in Lyon", "relevant_chunk_ids": ["da282ccafde86c1e"]}
 {"query": "boat travel in Porto", "relevant_chunk_ids": []}
+{"query": "best river walks in Portugal", "relevant_chunk_ids": []}
+{"query": "quiet museums in winter in Italy", "relevant_chunk_ids": []}
+{"query": "mountains in Switzerland", "relevant_chunk_ids": []}
+{"query": "best local wine in Spain", "relevant_chunk_ids": []}
+{"query": "historic sites in France", "relevant_chunk_ids": ["31f059781d899a5e", "3f7f37bf202c4f8d", "df6d6db27347bf6e"]}
+{"query": "quiet cafés in Italy", "relevant_chunk_ids": ["0440211f65e3d66d", "79598fa843004ce8", "73a2425b86cb8033"]}
+{"query": "where to stay in Germany for winter", "relevant_chunk_ids": []}
+{"query": "green spaces in the Netherlands", "relevant_chunk_ids": []}
+{"query": "night buses in Belgium in summer", "relevant_chunk_ids": []}
+{"query": "best museums in Austria", "relevant_chunk_ids": []}
+{"query": "walking tours in Switzerland in spring", "relevant_chunk_ids": []}
+{"query": "train station tips in Portugal", "relevant_chunk_ids": []}
+{"query": "rainproof itinerary in Spain", "relevant_chunk_ids": []}
