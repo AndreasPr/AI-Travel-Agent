@@ -1,7 +1,7 @@
 from datetime import date
 from decimal import Decimal
 
-from backend.rag.citations import CitedClaim, CitationVerifier
+from backend.rag.citations import CitedClaim, CitationVerifier, FakeNLI
 from backend.rag.ingest import assert_rag_tables_exist, ingest_cities
 from backend.rag.ingestion.chunker import chunk_document
 from backend.rag.retrieval.hybrid import reciprocal_rank_fusion, apply_metadata_filters
@@ -148,6 +148,36 @@ def test_citation_verifier_negation_and_numbers_are_symmetric():
     assert verifier.verify(CitedClaim(claim="The hotel costs 1,200 euros.", source_chunk_ids=["c"])).is_supported is True
     assert verifier.verify(CitedClaim(claim="Lisbon is known for fado.", source_chunk_ids=[])).is_supported is False
     assert verifier.verify(CitedClaim(claim="Lisbon is known for fado.", source_chunk_ids=["missing"])).is_supported is False
+
+
+def test_citation_verifier_rejects_irrelevant_claims_and_fake_nli_contradiction():
+    source = {
+        "chunk_id": "a",
+        "title": "Lisbon basics",
+        "url": "https://example.com/a",
+        "license": "CC BY-SA 4.0",
+        "text": "Lisbon has many museums and trams.",
+    }
+    verifier = CitationVerifier([source], nli_checker=FakeNLI(result=True))
+    unsupported = [
+        "Lisbon has free wifi everywhere.",
+        "Lisbon has a famous beach resort.",
+        "Lisbon has great nightlife.",
+        "The museum opens at 9.",
+    ]
+    for claim in unsupported:
+        result = verifier.verify(CitedClaim(claim=claim, source_chunk_ids=["a"]))
+        assert result.is_supported is False
+
+    contrad = CitationVerifier([{
+        "chunk_id": "a",
+        "title": "Museum hours",
+        "url": "https://example.com/a",
+        "license": "CC BY-SA 4.0",
+        "text": "The museum is open on Mondays.",
+    }], nli_checker=FakeNLI(result=False))
+    result = contrad.verify(CitedClaim(claim="The museum is closed on Mondays.", source_chunk_ids=["a"]))
+    assert result.is_supported is False
 
 
 def test_assert_rag_tables_exist_raises_helpful_error(monkeypatch):

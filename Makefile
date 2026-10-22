@@ -36,6 +36,9 @@ rag-candidates:
 rag-eval:
 	PYTHONPATH=. python eval/retrieval/run_modes.py
 
+rag-labels:
+	PYTHONPATH=. python eval/retrieval/apply_labels.py
+
 reset-rag:
 	python -c "from backend.db.connect import engine; from sqlalchemy import text; conn = engine.connect(); conn.execute(text('TRUNCATE TABLE document_chunks RESTART IDENTITY CASCADE')); conn.execute(text('TRUNCATE TABLE documents RESTART IDENTITY CASCADE')); conn.close()"
 

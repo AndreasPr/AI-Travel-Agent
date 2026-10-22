@@ -66,18 +66,24 @@ def _extract_filters(query: str) -> tuple[dict[str, str | None], str]:
     }, query.strip()
 
 
-def search(query: str, limit: int = 5, mode: str = "hybrid", city: str | None = None, country: str | None = None, season: str | None = None, topic: str | None = None, rerank: bool = False) -> list[dict[str, Any]]:
-    embedder = get_local_embedder()
-    reranker = get_reranker() if rerank else None
-    extracted_filters, query_text = _extract_filters(query)
+def _resolve_filters(
+    query: str,
+    *,
+    city: str | None = None,
+    country: str | None = None,
+    season: str | None = None,
+    topic: str | None = None,
+    auto_filters: bool = True,
+) -> tuple[dict[str, str | None], dict[str, str | None], dict[str, str | None]]:
+    extracted_filters, query_text = _extract_filters(query) if auto_filters else ({"city": None, "country": None, "season": None, "topic": None}, query.strip())
     hard_filters: dict[str, str | None] = {}
     if city:
         hard_filters["city"] = city
-    elif extracted_filters.get("city"):
+    elif auto_filters and extracted_filters.get("city"):
         hard_filters["city"] = extracted_filters["city"]
     if country:
         hard_filters["country"] = country
-    elif extracted_filters.get("country"):
+    elif auto_filters and extracted_filters.get("country"):
         hard_filters["country"] = extracted_filters["country"]
     if season is not None:
         hard_filters["season"] = season
@@ -85,12 +91,33 @@ def search(query: str, limit: int = 5, mode: str = "hybrid", city: str | None = 
         hard_filters["topic"] = topic
 
     soft_filters: dict[str, str | None] = {}
-    if season is None and extracted_filters.get("season") is not None:
+    if auto_filters and season is None and extracted_filters.get("season") is not None:
         soft_filters["season"] = extracted_filters["season"]
-    if topic is None and extracted_filters.get("topic") is not None:
+    if auto_filters and topic is None and extracted_filters.get("topic") is not None:
         soft_filters["topic"] = extracted_filters["topic"]
+    return hard_filters, soft_filters, extracted_filters
+
+
+def search(
+    query: str,
+    limit: int = 5,
+    mode: str = "hybrid",
+    city: str | None = None,
+    country: str | None = None,
+    season: str | None = None,
+    topic: str | None = None,
+    rerank: bool = False,
+    auto_filters: bool = True,
+    expand_queries: bool = True,
+) -> list[dict[str, Any]]:
+    embedder = get_local_embedder()
+    reranker = get_reranker() if rerank else None
+    hard_filters, soft_filters, _ = _resolve_filters(query, city=city, country=country, season=season, topic=topic, auto_filters=auto_filters)
+    query_text = query.strip()
 
     query_variants = rewrite_user_query(query_text, rewriter=RuleBasedQueryRewriter()) or [query_text]
+    if not expand_queries:
+        query_variants = [query_text]
     if not query_variants:
         query_variants = [query_text]
 
@@ -170,7 +197,12 @@ def search(query: str, limit: int = 5, mode: str = "hybrid", city: str | None = 
     ranking_sets: list[list[str]] = []
     by_id: dict[str, dict[str, Any]] = {}
     for variant in query_variants:
-        for filter_set in [hard_filters.copy() | soft_filters, hard_filters.copy()]:
+        filter_sets: list[dict[str, str | None]]
+        if expand_queries:
+            filter_sets = [hard_filters.copy() | soft_filters, hard_filters.copy()]
+        else:
+            filter_sets = [hard_filters.copy()]
+        for filter_set in filter_sets:
             ranking, item_map = _fetch_ranking_for_variant(variant, filter_set)
             ranking_sets.append(ranking)
             by_id.update(item_map)
@@ -197,8 +229,12 @@ def main() -> None:
     parser.add_argument("--season", default=None)
     parser.add_argument("--topic", default=None)
     parser.add_argument("--rerank", action="store_true")
+    parser.add_argument("--auto-filters", dest="auto_filters", action="store_true", default=True)
+    parser.add_argument("--no-auto-filters", dest="auto_filters", action="store_false")
+    parser.add_argument("--expand-queries", dest="expand_queries", action="store_true", default=True)
+    parser.add_argument("--no-expand-queries", dest="expand_queries", action="store_false")
     args = parser.parse_args()
-    result = search(args.query, limit=args.limit, mode=args.mode, city=args.city, country=args.country, season=args.season, topic=args.topic, rerank=args.rerank)
+    result = search(args.query, limit=args.limit, mode=args.mode, city=args.city, country=args.country, season=args.season, topic=args.topic, rerank=args.rerank, auto_filters=args.auto_filters, expand_queries=args.expand_queries)
     print(json.dumps({"query": args.query, "results": result}, indent=2))
 
 

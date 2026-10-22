@@ -30,6 +30,20 @@ def get_reranker_model_name() -> str:
     return payload.get("reranker", {}).get("model", "cross-encoder/ms-marco-MiniLM-L-6-v2")
 
 
+def get_nli_model_name() -> str:
+    payload = read_yaml(CONFIG_DIR / "models.yaml")
+    return payload.get("nli", {}).get("model", "cross-encoder/nli-deberta-v3-small")
+
+
+def get_nli_threshold() -> float:
+    payload = read_yaml(CONFIG_DIR / "models.yaml")
+    threshold = payload.get("nli", {}).get("threshold", 0.7)
+    try:
+        return float(threshold)
+    except (TypeError, ValueError):
+        return 0.7
+
+
 def read_city_country_map(path: str | Path | None = None) -> dict[str, str]:
     target = Path(path) if path else CONFIG_DIR / "cities.yaml"
     data = read_yaml(target)

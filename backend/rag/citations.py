@@ -4,6 +4,8 @@ from dataclasses import dataclass, field
 import re
 from typing import Any, Iterable, Protocol
 
+from backend.rag.config import get_nli_model_name, get_nli_threshold
+
 NEGATION_WORDS = {
     "no",
     "not",
@@ -27,6 +29,15 @@ NEGATION_WORDS = {
     "weren't",
     "werent",
 }
+STOPWORDS = {
+    "a", "an", "and", "are", "at", "be", "been", "being", "for", "from", "great",
+    "has", "have", "in", "is", "it", "its", "of", "on", "the", "their",
+    "this", "to", "with", "without", "your", "there", "these", "those", "we", "you",
+    "our", "they", "them", "he", "she", "his", "her", "as", "by", "about", "into",
+    "over", "under", "after", "before", "between", "through", "during", "if", "or",
+    "than", "then", "so", "too", "very", "but", "can", "could", "should", "would",
+    "will", "do", "does", "did", "had", "was", "were", "also", "only", "most",
+}
 
 
 class NLIInterface(Protocol):
@@ -40,6 +51,48 @@ class FakeNLI:
 
     def check(self, claim: str, sentence: str) -> bool:
         return self.result
+
+
+class CrossEncoderNLI:
+    def __init__(self, model_name: str | None = None, threshold: float | None = None):
+        self.model_name = model_name or get_nli_model_name()
+        self.threshold = float(threshold if threshold is not None else get_nli_threshold())
+        self._model: Any | None = None
+
+    def _load(self) -> Any:
+        if self._model is None:
+            from sentence_transformers import CrossEncoder
+
+            self._model = CrossEncoder(self.model_name)
+        return self._model
+
+    def check(self, claim: str, sentence: str) -> bool:
+        if not claim or not sentence:
+            return False
+        model = self._load()
+        result = model.predict([(claim, sentence)], show_progress_bar=False)
+        scores = result[0] if isinstance(result, list) and result and isinstance(result[0], (list, tuple)) else result
+        if isinstance(scores, dict):
+            label_scores = scores
+        else:
+            label_scores = {
+                "contradiction": float(scores[0]) if len(scores) > 0 else 0.0,
+                "entailment": float(scores[1]) if len(scores) > 1 else 0.0,
+                "neutral": float(scores[2]) if len(scores) > 2 else 0.0,
+            }
+        if hasattr(model, "config") and hasattr(model.config, "id2label"):
+            mapped: dict[str, float] = {}
+            for index, label in getattr(model.config, "id2label", {}).items():
+                key = str(label).lower()
+                if key.startswith("label_"):
+                    key = key[6:]
+                mapped[key] = float(label_scores.get(key, 0.0)) if key in label_scores else float(label_scores.get(str(index), 0.0))
+            if mapped:
+                label_scores = mapped
+        best_label = max(label_scores, key=lambda item: float(label_scores[item]))
+        if best_label == "entailment":
+            return float(label_scores.get(best_label, 0.0)) >= self.threshold
+        return False
 
 
 @dataclass
@@ -63,22 +116,51 @@ class CitedClaim:
 
 
 class CitationVerifier:
-    def __init__(self, source_chunks: Iterable[dict[str, Any]], nli_checker: NLIInterface | None = None):
+    def __init__(self, source_chunks: Iterable[dict[str, Any]], nli_checker: NLIInterface | None = None, use_nli: bool = False):
         self.source_chunks = list(source_chunks)
         self.by_id = {str(chunk.get("chunk_id")): chunk for chunk in self.source_chunks if chunk.get("chunk_id")}
-        self.nli_checker = nli_checker
+        self.nli_checker = nli_checker or (CrossEncoderNLI() if use_nli else None)
+
+    def _stem(self, token: str) -> str:
+        word = token.lower().strip("'\"")
+        if len(word) <= 3:
+            return word
+        if word.endswith("ies") and len(word) > 4:
+            return word[:-3] + "y"
+        if word.endswith("es") and len(word) > 4:
+            return word[:-2]
+        if word.endswith("s") and not word.endswith("ss"):
+            return word[:-1]
+        return word
+
+    def _content_tokens(self, text: str, ignored_tokens: set[str] | None = None) -> list[str]:
+        ignored = ignored_tokens or set()
+        words = re.findall(r"(?:\d+(?:[.,]\d+)*|[A-Za-z0-9][A-Za-z0-9'-]*)", (text or ""))
+        tokens: list[str] = []
+        for raw in words:
+            token = self._stem(raw.replace(",", ""))
+            if not token or token in STOPWORDS or token in ignored:
+                continue
+            tokens.append(token)
+        return tokens
+
+    def _ignore_tokens(self, chunk: dict[str, Any] | None = None) -> set[str]:
+        ignored: set[str] = set()
+        for source_text in [chunk.get("title") if chunk else "", chunk.get("city") if chunk else "", chunk.get("country") if chunk else ""]:
+            if not source_text:
+                continue
+            for token in re.findall(r"[A-Za-z0-9][A-Za-z0-9'-]*", str(source_text)):
+                ignored.add(self._stem(token))
+        return ignored
 
     def _tokenize(self, text: str) -> set[str]:
-        return {token.lower() for token in re.findall(r"\b[\w-]+\b", (text or "").lower()) if len(token) > 2}
+        return set(self._content_tokens(text))
 
     def _split_sentences(self, text: str) -> list[str]:
         if not text:
             return []
         sentences = re.split(r"(?<=[.!?])\s+", text.strip())
         return [sentence.strip() for sentence in sentences if sentence.strip()]
-
-    def _contains_number(self, text: str) -> bool:
-        return bool(re.search(r"\d", text or ""))
 
     def _number_tokens(self, text: str) -> list[float]:
         matches = re.findall(r"(?:€|£|\$)?\d{1,3}(?:,\d{3})*(?:\.\d+)?|(?:€|£|\$)?\d+(?:\.\d+)?", text or "")
@@ -110,16 +192,17 @@ class CitationVerifier:
         sentences = self._split_sentences(str(chunk.get("text", "")))
         if not sentences:
             return "", 0.0
+        ignored = self._ignore_tokens(chunk)
         best_sentence = ""
         best_score = 0.0
         for sentence in sentences:
-            claim_tokens = self._tokenize(claim)
-            sentence_tokens = self._tokenize(sentence)
+            claim_tokens = self._content_tokens(claim)
+            sentence_tokens = self._content_tokens(sentence, ignored)
             if not claim_tokens:
                 score = 0.0
             else:
-                overlap = len(claim_tokens & sentence_tokens)
-                score = overlap / max(1, len(claim_tokens))
+                overlap = len(set(claim_tokens) & set(sentence_tokens))
+                score = overlap / max(1, len(set(claim_tokens)))
             if score > best_score:
                 best_score = score
                 best_sentence = sentence
@@ -161,12 +244,17 @@ class CitationVerifier:
                 sentence_match, score = self._best_sentence(sentence, chunk)
                 if not sentence_match:
                     continue
+                ignore_tokens = self._ignore_tokens(chunk)
+                cover_tokens = self._content_tokens(sentence, ignore_tokens)
+                ref_tokens = self._content_tokens(sentence_match, ignore_tokens)
+                matched = len(set(cover_tokens) & set(ref_tokens))
+                coverage = (matched / max(1, len(set(cover_tokens)))) if cover_tokens else 0.0
                 neg_ok = self._check_negation(sentence, sentence_match)
                 number_ok = self._numbers_in_sentence(sentence, sentence_match)
                 nli_ok = True
                 if self.nli_checker is not None:
                     nli_ok = self.nli_checker.check(sentence, sentence_match)
-                if score >= 0.35 and neg_ok and number_ok and nli_ok:
+                if coverage >= 0.6 and matched >= 2 and neg_ok and number_ok and nli_ok:
                     sentence_supported = True
                     if chunk not in supported_sources:
                         supported_sources.append(chunk)

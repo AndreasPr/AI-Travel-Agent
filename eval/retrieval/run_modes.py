@@ -56,7 +56,14 @@ def main() -> None:
         print("not run")
         return
 
-    mode_names = ["vector", "bm25", "hybrid", "hybrid+rerank", "hybrid+rerank+filters"]
+    mode_specs = [
+        ("vector", {"mode": "vector", "rerank": False, "auto_filters": False, "expand_queries": False}),
+        ("bm25", {"mode": "bm25", "rerank": False, "auto_filters": False, "expand_queries": False}),
+        ("hybrid", {"mode": "hybrid", "rerank": False, "auto_filters": False, "expand_queries": False}),
+        ("hybrid+rerank", {"mode": "hybrid", "rerank": True, "auto_filters": False, "expand_queries": False}),
+        ("hybrid+rerank+filters", {"mode": "hybrid", "rerank": True, "auto_filters": True, "expand_queries": True}),
+    ]
+    mode_names = [name for name, _ in mode_specs]
     averages: dict[str, dict[str, float]] = {mode: {"recall@1": 0.0, "recall@3": 0.0, "recall@5": 0.0, "recall@10": 0.0, "mrr": 0.0, "ndcg@10": 0.0} for mode in mode_names}
     results_by_mode: dict[str, list[dict[str, float | str]]] = {mode: [] for mode in mode_names}
 
@@ -64,31 +71,36 @@ def main() -> None:
         query = str(record.get("query", "")).strip()
         relevant = [str(item) for item in (record.get("relevant_chunk_ids") or [])]
         filters = _extracted_filters(query)
-        ranked_vector = [str(result.get("chunk_id", "")) for result in search(query, limit=10, mode="vector", rerank=False)]
-        ranked_bm25 = [str(result.get("chunk_id", "")) for result in search(query, limit=10, mode="bm25", rerank=False)]
-        ranked_hybrid = [str(result.get("chunk_id", "")) for result in search(query, limit=10, mode="hybrid", rerank=False)]
-        ranked_hybrid_rerank = [str(result.get("chunk_id", "")) for result in search(query, limit=10, mode="hybrid", rerank=True)]
-        ranked_hybrid_filters = [
-            str(result.get("chunk_id", ""))
-            for result in search(
-                query,
-                limit=10,
-                mode="hybrid",
-                rerank=True,
-                city=filters.get("city"),
-                country=filters.get("country"),
-                season=filters.get("season"),
-                topic=filters.get("topic"),
-            )
-        ]
-
-        for mode_name, ranked in [
-            ("vector", ranked_vector),
-            ("bm25", ranked_bm25),
-            ("hybrid", ranked_hybrid),
-            ("hybrid+rerank", ranked_hybrid_rerank),
-            ("hybrid+rerank+filters", ranked_hybrid_filters),
-        ]:
+        mode_results = {}
+        for mode_name, config in mode_specs:
+            if mode_name == "hybrid+rerank+filters":
+                ranked = [
+                    str(result.get("chunk_id", ""))
+                    for result in search(
+                        query,
+                        limit=10,
+                        mode=config["mode"],
+                        rerank=config["rerank"],
+                        city=filters.get("city"),
+                        country=filters.get("country"),
+                        auto_filters=config["auto_filters"],
+                        expand_queries=config["expand_queries"],
+                    )
+                ]
+            else:
+                ranked = [
+                    str(result.get("chunk_id", ""))
+                    for result in search(
+                        query,
+                        limit=10,
+                        mode=config["mode"],
+                        rerank=config["rerank"],
+                        auto_filters=config["auto_filters"],
+                        expand_queries=config["expand_queries"],
+                    )
+                ]
+            mode_results[mode_name] = ranked
+        for mode_name, ranked in mode_results.items():
             scores = evaluate_query(relevant, ranked)
             results_by_mode[mode_name].append({"query": query, **scores})
             for key in averages[mode_name]:
@@ -116,6 +128,15 @@ def main() -> None:
         markdown_lines.append(
             f"| {mode} | {metrics['recall@1']:.4f} | {metrics['recall@3']:.4f} | {metrics['recall@5']:.4f} | {metrics['recall@10']:.4f} | {metrics['mrr']:.4f} | {metrics['ndcg@10']:.4f} |"
         )
+    markdown_lines.extend([
+        "",
+        "Mode definitions:",
+        "- vector: search(..., mode='vector', rerank=False, auto_filters=False, expand_queries=False)",
+        "- bm25: search(..., mode='bm25', rerank=False, auto_filters=False, expand_queries=False)",
+        "- hybrid: search(..., mode='hybrid', rerank=False, auto_filters=False, expand_queries=False)",
+        "- hybrid+rerank: search(..., mode='hybrid', rerank=True, auto_filters=False, expand_queries=False)",
+        "- hybrid+rerank+filters: search(..., mode='hybrid', rerank=True, auto_filters=True, expand_queries=True, city=..., country=..., season=None, topic=None)",
+    ])
     (RESULTS_DIR / "retrieval.md").write_text("\n".join(markdown_lines) + "\n", encoding="utf-8")
     (RESULTS_DIR / "retrieval.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps(summary, indent=2))
