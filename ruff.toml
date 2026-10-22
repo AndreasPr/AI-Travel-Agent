@@ -1,0 +1,9 @@
+target-version = "py311"
+line-length = 140
+
+[lint]
+select = ["E", "F", "B", "I"]
+ignore = ["E402", "E501", "B006", "I001"]
+
+[lint.per-file-ignores]
+"notebooks/**/*.ipynb" = ["F821", "E402", "E501", "I001", "B006", "B905"]

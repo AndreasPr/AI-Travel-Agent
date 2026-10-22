@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from functools import lru_cache
 from typing import Any
 
@@ -22,6 +23,37 @@ def get_local_embedder() -> LocalEmbedder:
 @lru_cache(maxsize=1)
 def get_reranker() -> CrossEncoderReranker:
     return CrossEncoderReranker()
+
+
+BM25_STOPWORDS = {
+    "a", "an", "and", "are", "as", "at", "be", "but", "by", "de", "for", "from",
+    "if", "in", "is", "it", "its", "of", "on", "or", "so", "that", "the", "their",
+    "this", "to", "too", "very", "we", "with", "yet"
+}
+
+
+def build_or_tsquery(text: str | None) -> str | None:
+    if text is None:
+        return None
+    lowered = str(text).lower().strip()
+    if not lowered:
+        return None
+    tokens: list[str] = []
+    for raw in re.findall(r"[^\W_]+", lowered, flags=re.UNICODE):
+        token = re.sub(r"[^0-9a-zà-öø-ÿ]+", "", raw, flags=re.IGNORECASE | re.UNICODE)
+        if not token or token in BM25_STOPWORDS:
+            continue
+        tokens.append(token)
+    if not tokens:
+        return None
+    seen: set[str] = set()
+    unique: list[str] = []
+    for token in tokens:
+        if token in seen:
+            continue
+        seen.add(token)
+        unique.append(token)
+    return " | ".join(unique)
 
 
 def _candidate_row(row: Any) -> dict[str, Any]:
@@ -77,14 +109,17 @@ def _resolve_filters(
 ) -> tuple[dict[str, str | None], dict[str, str | None], dict[str, str | None]]:
     extracted_filters, query_text = _extract_filters(query) if auto_filters else ({"city": None, "country": None, "season": None, "topic": None}, query.strip())
     hard_filters: dict[str, str | None] = {}
+
     if city:
         hard_filters["city"] = city
     elif auto_filters and extracted_filters.get("city"):
         hard_filters["city"] = extracted_filters["city"]
+
     if country:
         hard_filters["country"] = country
-    elif auto_filters and extracted_filters.get("country"):
+    elif auto_filters and extracted_filters.get("country") and not hard_filters.get("city"):
         hard_filters["country"] = extracted_filters["country"]
+
     if season is not None:
         hard_filters["season"] = season
     if topic is not None:
@@ -151,9 +186,10 @@ def search(
             base_select = (
                 select(DocumentChunk, Document)
                 .join(Document, Document.id == DocumentChunk.document_id)
-                .where(and_(*clauses))
                 .where(DocumentChunk.text.isnot(None))
             )
+            if clauses:
+                base_select = base_select.where(and_(*clauses))
 
             vector_rows: list[dict[str, Any]] = []
             bm25_rows: list[dict[str, Any]] = []
@@ -165,17 +201,23 @@ def search(
                 vector_rows = [_candidate_row(row) for row in vector_hits]
 
             if mode in {"bm25", "hybrid"}:
-                ts_query = func.websearch_to_tsquery("english", variant)
-                bm25_hits = session.execute(
-                    select(DocumentChunk, Document, func.ts_rank_cd(DocumentChunk.search_vector, ts_query).label("rank"))
-                    .join(Document, Document.id == DocumentChunk.document_id)
-                    .where(and_(*clauses))
-                    .where(DocumentChunk.search_vector.isnot(None))
-                    .where(DocumentChunk.search_vector.op("@@")(ts_query))
-                    .order_by(func.ts_rank_cd(DocumentChunk.search_vector, ts_query).desc())
-                    .limit(30)
-                ).all()
-                bm25_rows = [_candidate_row((row[0], row[1])) for row in bm25_hits]
+                ts_query_sql = build_or_tsquery(variant)
+                if ts_query_sql is None:
+                    bm25_rows = []
+                else:
+                    ts_query = func.to_tsquery("english", ts_query_sql)
+                    bm25_query = (
+                        select(DocumentChunk, Document, func.ts_rank_cd(DocumentChunk.search_vector, ts_query).label("rank"))
+                        .join(Document, Document.id == DocumentChunk.document_id)
+                        .where(DocumentChunk.search_vector.isnot(None))
+                        .where(DocumentChunk.search_vector.op("@@")(ts_query))
+                    )
+                    if clauses:
+                        bm25_query = bm25_query.where(and_(*clauses))
+                    bm25_hits = session.execute(
+                        bm25_query.order_by(func.ts_rank_cd(DocumentChunk.search_vector, ts_query).desc()).limit(30)
+                    ).all()
+                    bm25_rows = [_candidate_row((row[0], row[1])) for row in bm25_hits]
 
             if mode == "vector":
                 candidate_ids = [str(row["id"]) for row in vector_rows]

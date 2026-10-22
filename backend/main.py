@@ -41,7 +41,7 @@ def healthz():
 
 
 @app.get("/readyz")
-def readyz(db_session: SessionLocal = Depends(get_db_session)):
+def readyz(db_session: SessionLocal = Depends(get_db_session)):  # noqa: B008
     try:
         db_session.execute(text("SELECT 1"))
         return {"status": "ready"}
@@ -75,7 +75,7 @@ def rag_search_endpoint(query: str, limit: int = 5):
 @app.post("/predict")
 def write_to_predit(
     prediction_req: db_schemas.PredictSchema,
-    ai_session: RequestsSession = Depends(get_mindsdb_session),
+    ai_session: RequestsSession = Depends(get_mindsdb_session),  # noqa: B008
 ):
     request_data = prediction_req.model_dump()
     predictions = predict.predict_query(
@@ -93,7 +93,7 @@ def write_to_predit(
 def read_airports(
     offset: int = 0,
     limit: int = 100,
-    db_session: SessionLocal = Depends(get_db_session),
+    db_session: SessionLocal = Depends(get_db_session),  # noqa: B008
 ):
     return db_utils.get_airports(db_session, offset=offset, limit=limit)
 
@@ -102,14 +102,14 @@ def read_airports(
 def read_flights(
     offset: int = 0,
     limit: int = 100,
-    db_session: SessionLocal = Depends(get_db_session),
+    db_session: SessionLocal = Depends(get_db_session),  # noqa: B008
 ):
     return db_utils.get_flight_prices(db_session, offset=offset, limit=limit)
 
 
 @app.get("/flights/{flight_price}", response_model=db_schemas.FlightPriceDetailSchema)
 def read_flight_price(
-    flight_price: int, db_session: SessionLocal = Depends(get_db_session)
+    flight_price: int, db_session: SessionLocal = Depends(get_db_session)  # noqa: B008
 ):
     df_flight_value = db_utils.get_flight_price(db_session, flight_price)
     if df_flight_value is None:

@@ -1,13 +1,14 @@
 from datetime import date
 from decimal import Decimal
 
-from backend.rag.citations import CitedClaim, CitationVerifier, FakeNLI
+from backend.rag.citations import CitationVerifier, CitedClaim, FakeNLI
 from backend.rag.ingest import assert_rag_tables_exist, ingest_cities
 from backend.rag.ingestion.chunker import chunk_document
-from backend.rag.retrieval.hybrid import reciprocal_rank_fusion, apply_metadata_filters
+from backend.rag.retrieval.hybrid import apply_metadata_filters, reciprocal_rank_fusion
 from backend.rag.retrieval.rerank import CrossEncoderReranker
-from backend.rag.search import search
+from backend.rag.search import build_or_tsquery, search
 from backend.scripts.seed_inventory import normalize_flight_row
+from eval.retrieval.make_candidates import merge_candidates
 
 
 def test_chunk_document_splits_and_tracks_metadata():
@@ -90,6 +91,14 @@ def test_extract_filters_maps_museum_queries_to_supported_topic_bucket():
     assert filters["topic"] == "see"
 
 
+def test_build_or_tsquery_matches_expected_or_semantics():
+    assert build_or_tsquery("affordable hostels in Amsterdam") == "affordable | hostels | amsterdam"
+    assert build_or_tsquery("bars & pubs (cheap)!") == "bars | pubs | cheap"
+    assert build_or_tsquery("") is None
+    assert build_or_tsquery("the and of") is None
+    assert build_or_tsquery("pastéis de nata") == "pastéis | nata"
+
+
 def test_citation_verifier_flags_unsupported_claims():
     source_a = {
         "chunk_id": "a",
@@ -108,8 +117,14 @@ def test_citation_verifier_flags_unsupported_claims():
     verifier = CitationVerifier([source_a, source_b])
     supported = verifier.verify(CitedClaim(claim="Lisbon has many museums.", source_chunk_ids=["a"]))
     assert supported.is_supported is True
-    unsupported = verifier.verify(CitedClaim(claim="Lisbon is in the Alps.", source_chunk_ids=["a"]))
-    assert unsupported.is_supported is False
+    assert verifier.verify(CitedClaim(claim="Lisbon has trams.", source_chunk_ids=["a"])).is_supported is True
+    for claim in [
+        "Lisbon has free wifi everywhere.",
+        "Lisbon has a famous beach resort.",
+        "Lisbon has great nightlife.",
+        "Lisbon is in the Alps.",
+    ]:
+        assert verifier.verify(CitedClaim(claim=claim, source_chunk_ids=["a"])).is_supported is False
 
 
 def test_citation_verifier_negation_and_numbers_are_symmetric():
@@ -180,6 +195,78 @@ def test_citation_verifier_rejects_irrelevant_claims_and_fake_nli_contradiction(
     assert result.is_supported is False
 
 
+def test_search_auto_filters_and_explicit_hard_filters_are_respected(monkeypatch):
+    captured = []
+
+    class FakeSession:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def execute(self, stmt):
+            captured.append(str(stmt.compile(compile_kwargs={"literal_binds": False})))
+            return type("Result", (), {"all": lambda self: []})()
+
+    monkeypatch.setattr("backend.rag.search.SessionLocal", lambda: FakeSession())
+    monkeypatch.setattr("backend.rag.search.get_local_embedder", lambda: type("Embedder", (), {"encode_query": lambda self, text: [0.1, 0.2]})())
+
+    search("affordable hostels in Amsterdam", mode="bm25", auto_filters=False)
+    sql = captured[-1].lower()
+    assert "document_chunks.city =" not in sql
+    assert "document_chunks.country =" not in sql
+    assert "document_chunks.season =" not in sql
+    assert "document_chunks.topic =" not in sql
+
+    search("affordable hostels in Amsterdam", mode="bm25", city="Amsterdam", auto_filters=True)
+    sql = captured[-1].lower()
+    assert "document_chunks.city =" in sql
+    assert "document_chunks.country =" not in sql
+
+    search("winter museums in Lisbon", mode="bm25", auto_filters=True)
+    sql = captured[-1].lower()
+    assert "document_chunks.city =" in sql
+    assert "document_chunks.season =" not in sql
+    assert "document_chunks.topic =" not in sql
+
+
+def test_run_modes_pass_exact_parameters(monkeypatch):
+    captured = []
+
+    def fake_search(*args, **kwargs):
+        captured.append(kwargs.copy())
+        return [{"chunk_id": "c1"}]
+
+    monkeypatch.setattr("eval.retrieval.run_modes.search", fake_search)
+    monkeypatch.setattr(
+        "eval.retrieval.run_modes.load_queries",
+        lambda _path: [{"query": "cheap hotels in Lisbon", "relevant_chunk_ids": ["c1"]}],
+    )
+
+    import eval.retrieval.run_modes as run_modes
+
+    run_modes.main()
+
+    assert len(captured) == 5
+    assert [call["mode"] for call in captured] == ["vector", "bm25", "hybrid", "hybrid", "hybrid"]
+    assert [call["rerank"] for call in captured] == [False, False, False, True, True]
+    assert [call["auto_filters"] for call in captured] == [False, False, False, False, True]
+    assert [call["expand_queries"] for call in captured] == [False, False, False, False, True]
+
+
+def test_merge_candidates_preserves_existing_relevant_and_adds_empty_rows():
+    rows = [
+        {"query": "q1", "chunk_id": "a1", "mode": "vector", "rank": "1", "city": "Lisbon", "topic": "stay", "snippet": "one", "relevant": ""},
+        {"query": "q1", "chunk_id": "a1", "mode": "bm25", "rank": "2", "city": "Lisbon", "topic": "stay", "snippet": "one", "relevant": "keep"},
+        {"query": "q1", "chunk_id": "a2", "mode": "vector", "rank": "3", "city": "Lisbon", "topic": "stay", "snippet": "two", "relevant": ""},
+    ]
+    merged = merge_candidates(rows, {("q1", "a1"): "keep"})
+    by_chunk = {row["chunk_id"]: row for row in merged}
+    assert by_chunk["a1"]["relevant"] == "keep"
+    assert by_chunk["a2"]["relevant"] == ""
+
+
 def test_assert_rag_tables_exist_raises_helpful_error(monkeypatch):
     def fake_inspect(_bind):
         class FakeInspector:
@@ -191,7 +278,7 @@ def test_assert_rag_tables_exist_raises_helpful_error(monkeypatch):
     monkeypatch.setattr("backend.rag.ingest.inspect", fake_inspect)
     try:
         assert_rag_tables_exist()
-        assert False, "Expected a RuntimeError for missing tables"
+        raise AssertionError("Expected a RuntimeError for missing tables")
     except RuntimeError as exc:
         assert "alembic upgrade head" in str(exc)
 
@@ -324,7 +411,7 @@ def test_search_raises_when_embedding_model_fails(monkeypatch):
 
     try:
         search("quiet museums in Lisbon in winter")
-        assert False, "Expected RuntimeError when embeddings are unavailable"
+        raise AssertionError("Expected RuntimeError when embeddings are unavailable")
     except RuntimeError as exc:
         assert "network" in str(exc).lower() or "model" in str(exc).lower()
 
@@ -341,6 +428,6 @@ def test_ingest_raises_when_embedding_model_fails(monkeypatch):
 
     try:
         ingest_cities("config/cities.yaml")
-        assert False, "Expected RuntimeError when embeddings are unavailable"
+        raise AssertionError("Expected RuntimeError when embeddings are unavailable")
     except RuntimeError as exc:
         assert "network" in str(exc).lower() or "model" in str(exc).lower()
