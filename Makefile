@@ -38,11 +38,11 @@ rag-eval:
 
 reset-rag:
 	python - <<'PY'
-from backend.db.connect import engine
-with engine.begin() as conn:
-    conn.execute('TRUNCATE TABLE document_chunks RESTART IDENTITY CASCADE')
-    conn.execute('TRUNCATE TABLE documents RESTART IDENTITY CASCADE')
-PY
+	from backend.db.connect import engine
+	with engine.begin() as conn:
+	    conn.execute('TRUNCATE TABLE document_chunks RESTART IDENTITY CASCADE')
+	    conn.execute('TRUNCATE TABLE documents RESTART IDENTITY CASCADE')
+	PY
 
 
 eval:
