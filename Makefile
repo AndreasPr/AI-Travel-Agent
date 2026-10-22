@@ -31,18 +31,13 @@ demo:
 	@echo "Demo placeholder"
 
 rag-candidates:
-	python eval/retrieval/make_candidates.py
+	PYTHONPATH=. python eval/retrieval/make_candidates.py
 
 rag-eval:
-	python eval/retrieval/run_modes.py
+	PYTHONPATH=. python eval/retrieval/run_modes.py
 
 reset-rag:
-	python - <<'PY'
-	from backend.db.connect import engine
-	with engine.begin() as conn:
-	    conn.execute('TRUNCATE TABLE document_chunks RESTART IDENTITY CASCADE')
-	    conn.execute('TRUNCATE TABLE documents RESTART IDENTITY CASCADE')
-	PY
+	python -c "from backend.db.connect import engine; from sqlalchemy import text; conn = engine.connect(); conn.execute(text('TRUNCATE TABLE document_chunks RESTART IDENTITY CASCADE')); conn.execute(text('TRUNCATE TABLE documents RESTART IDENTITY CASCADE')); conn.close()"
 
 
 eval:

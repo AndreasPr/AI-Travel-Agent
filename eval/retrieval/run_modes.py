@@ -1,13 +1,17 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from backend.rag.retrieval.hybrid import RuleBasedQueryRewriter
 from backend.rag.search import search
 from eval.retrieval.metrics import evaluate_query
 
-ROOT = Path(__file__).resolve().parents[2]
 QUERIES_PATH = ROOT / "eval" / "retrieval" / "queries.jsonl"
 RESULTS_DIR = ROOT / "eval" / "results"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
