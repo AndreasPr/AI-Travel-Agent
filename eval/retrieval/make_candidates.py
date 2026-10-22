@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from backend.rag.search import search
+from backend.rag.search import search  # noqa: E402
 
 QUERIES_PATH = ROOT / "eval" / "retrieval" / "queries.jsonl"
 OUT_PATH = ROOT / "eval" / "retrieval" / "candidates.csv"
@@ -58,6 +58,8 @@ def merge_candidates(rows: list[dict], existing: dict[tuple[str, str], str] | No
         for key, value in existing.items():
             if key not in pooled:
                 pooled[key] = {"query": key[0], "chunk_id": key[1], "found_by": [], "best_rank": 10**9, "city": "", "topic": "", "snippet": "", "relevant": value}
+            elif not str(pooled[key].get("relevant", "")).strip() and str(value).strip():
+                pooled[key]["relevant"] = value
     merged = list(pooled.values())
     for entry in merged:
         entry["found_by"] = ",".join(sorted(dict.fromkeys(entry["found_by"])))

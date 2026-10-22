@@ -1,4 +1,5 @@
-import csv, json
+import csv
+import json
 from pathlib import Path
 
 base = Path(__file__).parent

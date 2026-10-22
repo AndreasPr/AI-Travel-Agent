@@ -1,5 +1,6 @@
-import requests
 import json
+
+import requests
 
 # FLIGHT_PRICE_PREDICTOR_MODEL = config("FLIGHT_PRICE_PREDICTOR_MODEL", default = "flight_price_predictor")
 FLIGHT_PRICE_PREDICTOR_MODEL = "flight_price_predictor"
@@ -86,5 +87,5 @@ def predict_query(
     dataset = data.get("data")
     if dataset is None or data is None:
         return []
-    web_ready_data = [dict(zip(columns, row)) for row in dataset]
+    web_ready_data = [dict(zip(columns, row, strict=False)) for row in dataset]
     return web_ready_data

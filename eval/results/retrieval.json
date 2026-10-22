@@ -1,46 +1,46 @@
 {
   "status": "ok",
-  "labeled_queries": 8,
+  "labeled_queries": 1,
   "modes": {
     "vector": {
-      "recall@1": 0.75,
-      "recall@3": 0.875,
-      "recall@5": 0.875,
-      "recall@10": 0.9375,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
       "mrr": 1.0,
-      "ndcg@10": 0.9205528264371585
+      "ndcg@10": 1.0
     },
     "bm25": {
-      "recall@1": 0.3125,
-      "recall@3": 0.3125,
-      "recall@5": 0.375,
-      "recall@10": 0.375,
-      "mrr": 0.5,
-      "ndcg@10": 0.3879387126086208
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "mrr": 1.0,
+      "ndcg@10": 1.0
     },
     "hybrid": {
-      "recall@1": 0.75,
-      "recall@3": 0.875,
-      "recall@5": 0.9375,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
       "recall@10": 1.0,
       "mrr": 1.0,
-      "ndcg@10": 0.9535613417587324
+      "ndcg@10": 1.0
     },
     "hybrid+rerank": {
-      "recall@1": 0.75,
+      "recall@1": 1.0,
       "recall@3": 1.0,
       "recall@5": 1.0,
       "recall@10": 1.0,
       "mrr": 1.0,
-      "ndcg@10": 0.9799301972870469
+      "ndcg@10": 1.0
     },
     "hybrid+rerank+filters": {
-      "recall@1": 0.75,
+      "recall@1": 1.0,
       "recall@3": 1.0,
       "recall@5": 1.0,
       "recall@10": 1.0,
       "mrr": 1.0,
-      "ndcg@10": 0.9799301972870469
+      "ndcg@10": 1.0
     }
   }
 }

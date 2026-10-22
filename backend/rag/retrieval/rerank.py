@@ -53,7 +53,7 @@ class CrossEncoderReranker:
         if len(scores) == 1 and len(pairs) > 1:
             scores = [float(scores[0])] * len(pairs)
         scored: list[dict[str, Any]] = []
-        for candidate, raw_score in zip(candidates, scores):
+        for candidate, raw_score in zip(candidates, scores, strict=False):
             item = dict(candidate)
             item["rerank_score"] = float(raw_score)
             scored.append(item)

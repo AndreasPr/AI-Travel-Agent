@@ -249,12 +249,13 @@ class CitationVerifier:
                 ref_tokens = self._content_tokens(sentence_match, ignore_tokens)
                 matched = len(set(cover_tokens) & set(ref_tokens))
                 coverage = (matched / max(1, len(set(cover_tokens)))) if cover_tokens else 0.0
+                required_matches = min(2, len(set(cover_tokens)))
                 neg_ok = self._check_negation(sentence, sentence_match)
                 number_ok = self._numbers_in_sentence(sentence, sentence_match)
                 nli_ok = True
                 if self.nli_checker is not None:
                     nli_ok = self.nli_checker.check(sentence, sentence_match)
-                if coverage >= 0.6 and matched >= 2 and neg_ok and number_ok and nli_ok:
+                if coverage >= 0.6 and matched >= required_matches and neg_ok and number_ok and nli_ok:
                     sentence_supported = True
                     if chunk not in supported_sources:
                         supported_sources.append(chunk)

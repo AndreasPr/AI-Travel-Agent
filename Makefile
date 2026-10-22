@@ -1,5 +1,7 @@
 .PHONY: up down logs seed migrate test lint fmt demo eval rag-candidates rag-eval reset-rag
 
+export PYTHONPATH := .
+
 up:
 	docker compose pull db
 	docker compose up --build -d --wait
