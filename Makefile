@@ -58,3 +58,7 @@ rag-diagnose:
 .PHONY: test-llm
 test-llm:
 	pytest -q tests/test_llm.py tests/test_llm_integration.py
+
+.PHONY: test-tools
+test-tools:
+	pytest -q tests/test_agent_tools.py tests/test_agent_tools_integration.py
