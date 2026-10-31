@@ -1,0 +1,15 @@
+{
+  "provenance": "recorded",
+  "response": {
+    "text": "Hi! How can I help you today?",
+    "tool_calls": [],
+    "tokens_in": 4,
+    "tokens_out": 9,
+    "cached_tokens": 0,
+    "latency_ms": 998.9002498332411,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "finish_reason": "STOP",
+    "raw_id": "mv7latLRJYXqz7IP-prRoAk"
+  }
+}

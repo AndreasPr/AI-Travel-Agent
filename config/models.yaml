@@ -20,6 +20,14 @@ providers:
         limits: { rpm: 30, tpm: null, rpd: null }    # local; limit is your hardware
         supports: { tools: true, structured_output: false }   # use JSON-mode fallback
 
+  # Paid-provider protocols are replay-only; add model IDs only when recordings exist.
+  claude:
+    replay_only: true
+    models: {}
+  bedrock:
+    replay_only: true
+    models: {}
+
 # Roles used by the router. First entry is tried first; the rest are fallbacks.
 roles:
   extract:                       # intent, constraint extraction, query rewriting, summaries
@@ -60,3 +68,10 @@ shadow_pricing_usd_per_1m_tokens:
 
 retrieval:
   default_mode: hybrid
+
+llm:
+  max_output_tokens: 512
+  retry:
+    attempts: 3
+    base_delay: 1.0
+    max_delay: 30.0
