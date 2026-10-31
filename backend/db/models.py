@@ -189,3 +189,36 @@ class StoredToolResult(Base):
     tool_result_id = Column(String(36), primary_key=True)
     payload = Column(JSON, nullable=False)
     fetched_at = Column(DateTime(timezone=True), nullable=False)
+
+
+class AgentConversation(Base):
+    __tablename__ = 'agent_conversations'
+    id = Column(String(36), primary_key=True)
+    revision = Column(Integer, nullable=False)
+    preferences = Column(JSON, nullable=False)
+    state = Column(JSON, nullable=False)
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class AgentMessage(Base):
+    __tablename__ = 'agent_messages'
+    conversation_id = Column(String(36), ForeignKey('agent_conversations.id', ondelete='CASCADE'), primary_key=True)
+    position = Column(Integer, primary_key=True)
+    role = Column(String(16), nullable=False)
+    content = Column(Text, nullable=False)
+
+
+class AgentTrip(Base):
+    __tablename__ = 'agent_trips'
+    id = Column(String(36), ForeignKey('agent_conversations.id', ondelete='CASCADE'), primary_key=True)
+    itinerary = Column(JSON, nullable=True)
+
+
+class AgentItineraryVersion(Base):
+    __tablename__ = 'agent_itinerary_versions'
+    trip_id = Column(String(36), ForeignKey('agent_trips.id', ondelete='CASCADE'), primary_key=True)
+    number = Column(Integer, primary_key=True)
+    parent_number = Column(Integer, nullable=True)
+    itinerary = Column(JSON, nullable=False)
+    budget = Column(String(64), nullable=True)
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())

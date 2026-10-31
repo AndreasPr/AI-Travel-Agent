@@ -75,3 +75,14 @@ llm:
     attempts: 3
     base_delay: 1.0
     max_delay: 30.0
+
+agent:
+  step_limit: 8
+  max_parallel_calls: 8
+  model_timeout_seconds: 120
+  max_output_tokens: 4096
+  context:
+    token_budget: 20000
+    last_turns: 6
+    summary_input_chars: 12000
+    chars_per_token: {default: 3, gemini: 3, ollama: 3}
