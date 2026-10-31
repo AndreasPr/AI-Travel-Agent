@@ -212,26 +212,26 @@ def test_search_auto_filters_and_explicit_hard_filters_are_respected(monkeypatch
     monkeypatch.setattr("backend.rag.search.SessionLocal", lambda: FakeSession())
     monkeypatch.setattr("backend.rag.search.get_local_embedder", lambda: type("Embedder", (), {"encode_query": lambda self, text: [0.1, 0.2]})())
 
-    search("affordable hostels in Amsterdam", mode="bm25", auto_filters=False)
+    search("affordable hostels in Amsterdam", mode="fts", auto_filters=False)
     sql = captured[-1].lower()
     assert "document_chunks.city =" not in sql
     assert "document_chunks.country =" not in sql
     assert "document_chunks.season =" not in sql
     assert "document_chunks.topic =" not in sql
 
-    search("affordable hostels in Amsterdam", mode="bm25", city="Amsterdam", auto_filters=True)
+    search("affordable hostels in Amsterdam", mode="fts", city="Amsterdam", auto_filters=True)
     sql = captured[-1].lower()
     assert "document_chunks.city =" in sql
     assert "document_chunks.country =" not in sql
 
-    search("winter museums in Lisbon", mode="bm25", auto_filters=True)
+    search("winter museums in Lisbon", mode="fts", auto_filters=True)
     sql = captured[-1].lower()
     assert "document_chunks.city =" in sql
     assert "document_chunks.season =" not in sql
     assert "document_chunks.topic =" not in sql
 
 
-def test_run_modes_pass_exact_parameters(monkeypatch):
+def test_run_modes_pass_exact_parameters(monkeypatch, tmp_path):
     captured = []
 
     def fake_search(*args, **kwargs):
@@ -246,19 +246,26 @@ def test_run_modes_pass_exact_parameters(monkeypatch):
 
     import eval.retrieval.run_modes as run_modes
 
+    monkeypatch.setattr(run_modes, "RESULTS_DIR", tmp_path)
     run_modes.main()
+    import json
+    summary = json.loads((tmp_path / "retrieval.json").read_text())
+    assert summary["bootstrap"] == {"seed": 42, "resamples": 1000, "confidence": 0.95}
+    for scores in summary["modes"].values():
+        assert scores["confidence_intervals"] == {"mrr": [1.0, 1.0], "ndcg@10": [1.0, 1.0]}
+    assert "1.00 [1.00, 1.00]" in (tmp_path / "retrieval.md").read_text()
 
-    assert len(captured) == 5
-    assert [call["mode"] for call in captured] == ["vector", "bm25", "hybrid", "hybrid", "hybrid"]
-    assert [call["rerank"] for call in captured] == [False, False, False, True, True]
-    assert [call["auto_filters"] for call in captured] == [False, False, False, False, True]
-    assert [call["expand_queries"] for call in captured] == [False, False, False, False, True]
+    assert len(captured) == 8
+    assert [call["mode"] for call in captured] == ["vector", "vector", "fts", "bm25", "hybrid", "hybrid(bm25)", "hybrid", "hybrid"]
+    assert [call["rerank"] for call in captured] == [False, True, False, False, False, False, True, True]
+    assert [call["auto_filters"] for call in captured] == [False, False, False, False, False, False, False, True]
+    assert [call["expand_queries"] for call in captured] == [False, False, False, False, False, False, False, True]
 
 
 def test_merge_candidates_preserves_existing_relevant_and_adds_empty_rows():
     rows = [
         {"query": "q1", "chunk_id": "a1", "mode": "vector", "rank": "1", "city": "Lisbon", "topic": "stay", "snippet": "one", "relevant": ""},
-        {"query": "q1", "chunk_id": "a1", "mode": "bm25", "rank": "2", "city": "Lisbon", "topic": "stay", "snippet": "one", "relevant": "keep"},
+        {"query": "q1", "chunk_id": "a1", "mode": "fts", "rank": "2", "city": "Lisbon", "topic": "stay", "snippet": "one", "relevant": "keep"},
         {"query": "q1", "chunk_id": "a2", "mode": "vector", "rank": "3", "city": "Lisbon", "topic": "stay", "snippet": "two", "relevant": ""},
     ]
     merged = merge_candidates(rows, {("q1", "a1"): "keep"})

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import random
 import sys
 from pathlib import Path
 
@@ -11,6 +12,8 @@ if str(ROOT) not in sys.path:
 from backend.rag.retrieval.hybrid import RuleBasedQueryRewriter  # noqa: E402
 from backend.rag.search import search  # noqa: E402
 from eval.retrieval.metrics import evaluate_query  # noqa: E402
+from eval.retrieval.modes import MODE_SPECS, mode_parameters
+from eval.retrieval.report import render_report
 
 QUERIES_PATH = ROOT / "eval" / "retrieval" / "queries.jsonl"
 RESULTS_DIR = ROOT / "eval" / "results"
@@ -42,6 +45,24 @@ def make_result(query: str, mode_name: str, ranked: list[str], relevant: list[st
     return scores
 
 
+def bootstrap_ci(values: list[float], seed: int = 42, resamples: int = 1000) -> list[float] | None:
+    """Percentile interval for the query mean, using linear quantile interpolation."""
+    if not values:
+        return None
+    if resamples < 2:
+        raise ValueError("At least two resamples are required")
+    rng = random.Random(seed)
+    means = sorted(sum(rng.choices(values, k=len(values))) / len(values) for _ in range(resamples))
+
+    def quantile(probability: float) -> float:
+        index = (len(means) - 1) * probability
+        lower = int(index)
+        upper = min(lower + 1, len(means) - 1)
+        return means[lower] + (means[upper] - means[lower]) * (index - lower)
+
+    return [quantile(0.025), quantile(0.975)]
+
+
 def main() -> None:
     queries = load_queries(QUERIES_PATH)
     labeled = [record for record in queries if (record.get("relevant_chunk_ids") or [])]
@@ -56,13 +77,7 @@ def main() -> None:
         print("not run")
         return
 
-    mode_specs = [
-        ("vector", {"mode": "vector", "rerank": False, "auto_filters": False, "expand_queries": False}),
-        ("bm25", {"mode": "bm25", "rerank": False, "auto_filters": False, "expand_queries": False}),
-        ("hybrid", {"mode": "hybrid", "rerank": False, "auto_filters": False, "expand_queries": False}),
-        ("hybrid+rerank", {"mode": "hybrid", "rerank": True, "auto_filters": False, "expand_queries": False}),
-        ("hybrid+rerank+filters", {"mode": "hybrid", "rerank": True, "auto_filters": True, "expand_queries": True}),
-    ]
+    mode_specs = MODE_SPECS
     mode_names = [name for name, _ in mode_specs]
     averages: dict[str, dict[str, float]] = {mode: {"recall@1": 0.0, "recall@3": 0.0, "recall@5": 0.0, "recall@10": 0.0, "mrr": 0.0, "ndcg@10": 0.0} for mode in mode_names}
     results_by_mode: dict[str, list[dict[str, float | str]]] = {mode: [] for mode in mode_names}
@@ -70,36 +85,12 @@ def main() -> None:
     for record in labeled:
         query = str(record.get("query", "")).strip()
         relevant = [str(item) for item in (record.get("relevant_chunk_ids") or [])]
-        filters = _extracted_filters(query)
         mode_results = {}
         for mode_name, config in mode_specs:
-            if mode_name == "hybrid+rerank+filters":
-                ranked = [
-                    str(result.get("chunk_id", ""))
-                    for result in search(
-                        query,
-                        limit=10,
-                        mode=config["mode"],
-                        rerank=config["rerank"],
-                        city=filters.get("city"),
-                        country=filters.get("country"),
-                        auto_filters=config["auto_filters"],
-                        expand_queries=config["expand_queries"],
-                    )
-                ]
-            else:
-                ranked = [
-                    str(result.get("chunk_id", ""))
-                    for result in search(
-                        query,
-                        limit=10,
-                        mode=config["mode"],
-                        rerank=config["rerank"],
-                        auto_filters=config["auto_filters"],
-                        expand_queries=config["expand_queries"],
-                    )
-                ]
-            mode_results[mode_name] = ranked
+            mode_results[mode_name] = [
+                str(result.get("chunk_id", ""))
+                for result in search(query, limit=10, **mode_parameters(query, config))
+            ]
         for mode_name, ranked in mode_results.items():
             scores = evaluate_query(relevant, ranked)
             results_by_mode[mode_name].append({"query": query, **scores})
@@ -116,28 +107,15 @@ def main() -> None:
         "labeled_queries": len(labeled),
         "modes": averages,
     }
-    markdown_lines = [
-        "# Retrieval evaluation",
-        f"Labeled queries: {len(labeled)}",
-        "",
-        "| mode | recall@1 | recall@3 | recall@5 | recall@10 | mrr | ndcg@10 |",
-        "| --- | ---: | ---: | ---: | ---: | ---: | ---: |",
-    ]
-    for mode in mode_names:
-        metrics = averages[mode]
-        markdown_lines.append(
-            f"| {mode} | {metrics['recall@1']:.4f} | {metrics['recall@3']:.4f} | {metrics['recall@5']:.4f} | {metrics['recall@10']:.4f} | {metrics['mrr']:.4f} | {metrics['ndcg@10']:.4f} |"
-        )
-    markdown_lines.extend([
-        "",
-        "Mode definitions:",
-        "- vector: search(..., mode='vector', rerank=False, auto_filters=False, expand_queries=False)",
-        "- bm25: search(..., mode='bm25', rerank=False, auto_filters=False, expand_queries=False)",
-        "- hybrid: search(..., mode='hybrid', rerank=False, auto_filters=False, expand_queries=False)",
-        "- hybrid+rerank: search(..., mode='hybrid', rerank=True, auto_filters=False, expand_queries=False)",
-        "- hybrid+rerank+filters: search(..., mode='hybrid', rerank=True, auto_filters=True, expand_queries=True, city=..., country=..., season=None, topic=None)",
-    ])
-    (RESULTS_DIR / "retrieval.md").write_text("\n".join(markdown_lines) + "\n", encoding="utf-8")
+    for mode_name in mode_names:
+        averages[mode_name]["confidence_intervals"] = {
+            metric: bootstrap_ci([row[metric] for row in results_by_mode[mode_name]])
+            for metric in ("mrr", "ndcg@10")
+        }
+    summary["relevant_chunks_per_query"] = sum(len(set(row["relevant_chunk_ids"])) for row in labeled) / len(labeled)
+    summary["per_query"] = results_by_mode
+    summary["bootstrap"] = {"seed": 42, "resamples": 1000, "confidence": 0.95}
+    (RESULTS_DIR / "retrieval.md").write_text("# Retrieval evaluation\n\n" + render_report(summary), encoding="utf-8")
     (RESULTS_DIR / "retrieval.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print(json.dumps(summary, indent=2))
 

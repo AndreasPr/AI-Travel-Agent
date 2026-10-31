@@ -10,6 +10,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from backend.rag.search import search  # noqa: E402
+from eval.retrieval.modes import MODE_SPECS, mode_parameters
 
 QUERIES_PATH = ROOT / "eval" / "retrieval" / "queries.jsonl"
 OUT_PATH = ROOT / "eval" / "retrieval" / "candidates.csv"
@@ -58,7 +59,7 @@ def merge_candidates(rows: list[dict], existing: dict[tuple[str, str], str] | No
         for key, value in existing.items():
             if key not in pooled:
                 pooled[key] = {"query": key[0], "chunk_id": key[1], "found_by": [], "best_rank": 10**9, "city": "", "topic": "", "snippet": "", "relevant": value}
-            elif not str(pooled[key].get("relevant", "")).strip() and str(value).strip():
+            elif str(value).strip():
                 pooled[key]["relevant"] = value
     merged = list(pooled.values())
     for entry in merged:
@@ -79,18 +80,12 @@ def main() -> None:
                 if row.get("query") and row.get("chunk_id") and str(row.get("relevant", "")).strip():
                     existing[(str(row["query"]), str(row["chunk_id"]))] = str(row["relevant"])
 
-    modes = [
-        ("vector", {"mode": "vector", "limit": 10, "rerank": False, "auto_filters": False, "expand_queries": False}),
-        ("bm25", {"mode": "bm25", "limit": 10, "rerank": False, "auto_filters": False, "expand_queries": False}),
-        ("hybrid", {"mode": "hybrid", "limit": 10, "rerank": False, "auto_filters": False, "expand_queries": False}),
-        ("hybrid+rerank", {"mode": "hybrid", "limit": 10, "rerank": True, "auto_filters": False, "expand_queries": False}),
-        ("hybrid+rerank+filters", {"mode": "hybrid", "limit": 10, "rerank": True, "auto_filters": True, "expand_queries": True}),
-    ]
+    modes = MODE_SPECS
     rows: list[dict[str, object]] = []
     for query_record in queries:
         query = str(query_record.get("query", "")).strip()
         for mode_name, params in modes:
-            results = search(query, limit=params["limit"], mode=params["mode"], rerank=params["rerank"], auto_filters=params["auto_filters"], expand_queries=params["expand_queries"])
+            results = search(query, limit=10, **mode_parameters(query, params))
             for rank, result in enumerate(results[:10], start=1):
                 row = {
                     "query": query,

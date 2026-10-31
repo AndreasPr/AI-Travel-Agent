@@ -47,3 +47,10 @@ reset-rag:
 
 eval:
 	$(MAKE) rag-eval
+
+.PHONY: rag-readme rag-diagnose
+rag-readme:
+	PYTHONPATH=. python -m eval.retrieval.readme
+
+rag-diagnose:
+	PYTHONPATH=. python -m eval.retrieval.diff_modes

@@ -48,25 +48,61 @@ pytest
 
 ## Retrieval evaluation summary
 
-The current retrieval evaluation uses 29 labeled queries (n=29). Labels were created from a pooled candidate set built by taking the top results from all 5 retrieval modes: vector, bm25, hybrid, hybrid+rerank, and hybrid+rerank+filters. The pooled candidates were then reviewed and assigned labels before scoring.
+<!-- RETRIEVAL:START -->
 
-Across these 29 queries, the mode averages are:
+Evaluated on 29 labeled queries (about 1.8 relevant chunks per query)
 
-- vector: recall@1 = 0.532 (n=29), recall@3 = 0.701 (n=29), recall@5 = 0.730 (n=29), recall@10 = 0.859 (n=29), MRR = 0.877 (n=29), nDCG@10 = 0.780 (n=29)
-- bm25: recall@1 = 0.063 (n=29), recall@3 = 0.155 (n=29), recall@5 = 0.270 (n=29), recall@10 = 0.359 (n=29), MRR = 0.207 (n=29), nDCG@10 = 0.223 (n=29)
-- hybrid: recall@1 = 0.264 (n=29), recall@3 = 0.506 (n=29), recall@5 = 0.647 (n=29), recall@10 = 0.862 (n=29), MRR = 0.562 (n=29), nDCG@10 = 0.601 (n=29)
-- hybrid+rerank: recall@1 = 0.451 (n=29), recall@3 = 0.756 (n=29), recall@5 = 0.845 (n=29), recall@10 = 0.874 (n=29), MRR = 0.802 (n=29), nDCG@10 = 0.775 (n=29)
-- hybrid+rerank+filters: recall@1 = 0.468 (n=29), recall@3 = 0.687 (n=29), recall@5 = 0.764 (n=29), recall@10 = 0.764 (n=29), MRR = 0.796 (n=29), nDCG@10 = 0.715 (n=29)
+| mode | recall@1 | recall@3 | recall@5 | recall@10 | MRR (95% CI) | nDCG@10 (95% CI) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| vector | 0.53 | 0.70 | 0.73 | 0.86 | 0.88 [0.76, 0.97] | 0.78 [0.68, 0.87] |
+| vector+rerank | 0.45 | 0.73 | 0.83 | 0.84 | 0.80 [0.67, 0.91] | 0.76 [0.64, 0.86] |
+| fts | 0.06 | 0.14 | 0.28 | 0.34 | 0.21 [0.11, 0.34] | 0.22 [0.13, 0.32] |
+| bm25 | 0.21 | 0.40 | 0.43 | 0.47 | 0.42 [0.28, 0.58] | 0.40 [0.26, 0.54] |
+| hybrid | 0.25 | 0.43 | 0.65 | 0.86 | 0.53 [0.40, 0.68] | 0.59 [0.48, 0.70] |
+| hybrid(bm25) | 0.32 | 0.53 | 0.61 | 0.79 | 0.64 [0.49, 0.78] | 0.61 [0.49, 0.73] |
+| hybrid+rerank | 0.45 | 0.76 | 0.84 | 0.87 | 0.80 [0.68, 0.92] | 0.77 [0.66, 0.88] |
+| hybrid+rerank+filters | 0.47 | 0.69 | 0.76 | 0.76 | 0.80 [0.66, 0.91] | 0.72 [0.60, 0.83] |
 
-## Explain-back drill
+Mode definitions:
+- vector: vector similarity search.
+- vector+rerank: vector search followed by the configured cross-encoder.
+- fts: Postgres full-text search ranked with ts_rank_cd (formerly labeled bm25).
+- bm25: rank_bm25 BM25Okapi over chunk texts; hard filters apply after scoring.
+- hybrid: vector + fts via reciprocal rank fusion (RRF).
+- hybrid(bm25): vector + rank_bm25 via RRF.
+- hybrid+rerank: hybrid followed by the configured cross-encoder.
+- hybrid+rerank+filters: hybrid + cross-encoder with automatic filters and query expansion enabled; city/country are hard constraints, inferred season/topic are soft preferences.
+- All other modes disable automatic filters and query expansion. Reranking uses at most 30 candidates; evaluation scores the top 10.
 
-### Hybrid retrieval failure mode
+How to read this:
+- Labels were assigned by one person from a pool built from the top results of all modes available when labeling. Newly added modes require candidate regeneration and review; existing labels are preserved.
+- Differences under about 0.05 are within noise at this sample size; this is a rule of thumb, not a significance test.
+- Confidence intervals use a fixed seed and 1000 bootstrap resamples of labeled queries. Missing measurements are marked not run.
+- The bm25 row uses rank_bm25; historical Postgres full-text scores are shown under fts.
+- BM25 snapshots are cached per process. Restart search processes after ingestion to rebuild the index.
 
-The hybrid stack combines vector similarity and BM25 signals before fusion. A real failure mode is a query that should match relevant travel content but becomes too restrictive because the BM25 path used AND semantics. For example, the buggy query for "affordable hostels in Amsterdam" effectively required all terms to match at once, so it looked like affordable & hostels & amsterdam instead of affordable | hostels | amsterdam. The result was a thin candidate set, poor BM25 recall, and a downstream hybrid ranking that never reached the relevant chunks. That is exactly the kind of failure that the OR-based tsquery fix prevents.
+<!-- RETRIEVAL:END -->
 
-### Verifier failure mode
+Regenerate this section with `make rag-readme` after `make rag-eval`.
 
-The verifier checks whether a cited chunk actually supports a claim, not just whether the claim is semantically nearby. A real failure mode is a support check that accepts a claim with a weak or mismatched match. For example, if a query says "Lisbon has no museums" but the source text says "Lisbon has many museums", an over-permissive verifier could still label the claim as supported because it ignores negation symmetry. The fix is to compare positive and negative claims symmetrically, keep number matches exact, and require enough matched content words before accepting support. This is the same principle that prevents false positives after retrieval failures like the BM25 AND bug.
+With the populated local database and cached embedding/cross-encoder models:
+
+```bash
+make rag-candidates
+# Review new candidates.csv rows and assign relevance labels manually.
+make rag-labels
+make rag-eval
+make rag-readme
+make rag-diagnose
+```
+
+Run the ingestion idempotency test against the migrated local Postgres database:
+
+```bash
+DEBUG=false PYTHONPATH=. pytest -q -m integration tests/test_ingestion_integration.py::test_ingestion_idempotency_and_removed_chunk_deleted
+```
+
+This integration test uses synthetic pages and fake embeddings, checks repeated ingestion and deletion of a removed chunk, and rolls back its database changes. It does not fetch pages or download models.
 
 ## Repository hygiene
 

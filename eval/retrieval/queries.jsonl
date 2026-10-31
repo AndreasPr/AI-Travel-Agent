@@ -2,7 +2,7 @@
 {"query": "best neighborhoods for food in Porto", "relevant_chunk_ids": ["152891226cdf59a7", "f3bd6bf06adf107f"]}
 {"query": "rainy day activities in Barcelona", "relevant_chunk_ids": []}
 {"query": "family hotels in Madrid", "relevant_chunk_ids": ["e94a1fd75936544c"]}
-{"query": "day trips from Rome by train", "relevant_chunk_ids": ["cfc322ec869db2b0", "27b2ae4457b059b4", "66002943b3b8f16a"]}
+{"query": "day trips from Rome by train", "relevant_chunk_ids": ["27b2ae4457b059b4", "cfc322ec869db2b0", "66002943b3b8f16a"]}
 {"query": "affordable hostels in Amsterdam", "relevant_chunk_ids": ["6cfd00f6cbee0345", "c13d4fb06aea16cb"]}
 {"query": "historic walking routes in Florence", "relevant_chunk_ids": ["eb52cd1cc48239ca"]}
 {"query": "safe nightlife in Berlin", "relevant_chunk_ids": ["9e4fee20bc9ce4e3", "ffe9236ed04005b1"]}
@@ -19,7 +19,7 @@
 {"query": "winter markets in Stockholm", "relevant_chunk_ids": ["9a3fbc62b5b023a7"]}
 {"query": "design museums in Helsinki", "relevant_chunk_ids": []}
 {"query": "cheap eats in Dublin", "relevant_chunk_ids": ["45acfe174a757143", "8d6a0f1bcfb94104"]}
-{"query": "ancient ruins in Athens", "relevant_chunk_ids": ["a9d77836423cb740", "aa8daab637cc5bd7", "e76f06726bdc32a8", "bd993f61724faf53"]}
+{"query": "ancient ruins in Athens", "relevant_chunk_ids": ["a9d77836423cb740", "e76f06726bdc32a8", "aa8daab637cc5bd7", "bd993f61724faf53"]}
 {"query": "local festivals in Brussels", "relevant_chunk_ids": ["0577dc7d6ea848e4"]}
 {"query": "tram tips in Lisbon", "relevant_chunk_ids": []}
 {"query": "things to do with kids in Madrid", "relevant_chunk_ids": []}

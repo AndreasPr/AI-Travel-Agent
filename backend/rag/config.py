@@ -84,3 +84,7 @@ def get_wikivoyage_user_agent() -> str:
 
 def project_root() -> Path:
     return ROOT
+
+
+def get_default_retrieval_mode() -> str:
+    return str(read_yaml(CONFIG_DIR / "models.yaml")["retrieval"]["default_mode"])
