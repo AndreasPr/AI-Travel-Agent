@@ -8,6 +8,7 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Integer,
+    JSON,
     Numeric,
     String,
     Text,
@@ -172,3 +173,19 @@ class LLMUsageDaily(Base):
     provider = Column(String(64), primary_key=True)
     model = Column(String(255), primary_key=True)
     requests = Column(Integer, nullable=False, server_default="0")
+
+
+class ToolHTTPCache(Base):
+    __tablename__ = "tool_http_cache"
+    cache_key = Column(String(64), primary_key=True)
+    tool = Column(String(64), nullable=False)
+    payload = Column(JSON, nullable=False)
+    fetched_at = Column(DateTime(timezone=True), nullable=False)
+    expires_at = Column(DateTime(timezone=True), nullable=False, index=True)
+
+
+class StoredToolResult(Base):
+    __tablename__ = "tool_results"
+    tool_result_id = Column(String(36), primary_key=True)
+    payload = Column(JSON, nullable=False)
+    fetched_at = Column(DateTime(timezone=True), nullable=False)

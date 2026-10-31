@@ -118,3 +118,7 @@ This integration test uses synthetic pages and fake embeddings, checks repeated 
 ## Synthetic inventory
 
 The default seed now generates explicitly labeled `synthetic-v1` flights and hotels for `config/cities.yaml`, without network or model calls. Legacy CSVs are archived and are not loaded. See [inventory formulas and provenance](datasets/README.md) and [endpoint compatibility and local commands](docs/INVENTORY_TRANSITION.md). The existing homepage prediction form no longer works because `/predict` was removed; the frontend will be replaced separately.
+
+## Agent tools
+
+`backend/tools/` provides typed, bounded ToolResults for destination retrieval, weather, currency conversion, OSM geocoding, synthetic flight/hotel queries and deterministic itinerary validation. Run `make test-tools` for offline tests. See [contracts, provenance rules and local setup](docs/AGENT_TOOLS.md).

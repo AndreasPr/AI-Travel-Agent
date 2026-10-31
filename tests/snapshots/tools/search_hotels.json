@@ -1,0 +1,334 @@
+{
+  "description": "Search synthetic-v1 seasonal quotes, not live room availability; returns nightly and total stay amounts.",
+  "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+      "check_in": {
+        "format": "date",
+        "title": "Check In",
+        "type": "string"
+      },
+      "check_out": {
+        "format": "date",
+        "title": "Check Out",
+        "type": "string"
+      },
+      "city": {
+        "maxLength": 255,
+        "minLength": 1,
+        "title": "City",
+        "type": "string"
+      },
+      "max_price_per_night": {
+        "anyOf": [
+          {
+            "minimum": 0.0,
+            "type": "number"
+          },
+          {
+            "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Max Price Per Night"
+      },
+      "min_rating": {
+        "anyOf": [
+          {
+            "maximum": 5,
+            "minimum": 0,
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Min Rating"
+      },
+      "tier": {
+        "anyOf": [
+          {
+            "enum": [
+              "budget",
+              "mid",
+              "upscale"
+            ],
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Tier"
+      }
+    },
+    "required": [
+      "city",
+      "check_in",
+      "check_out"
+    ],
+    "title": "HotelsInput",
+    "type": "object"
+  },
+  "name": "search_hotels",
+  "output_schema": {
+    "$defs": {
+      "Failure": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "$ref": "#/$defs/ToolError"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "title": "Failure",
+        "type": "object"
+      },
+      "HotelQuote": {
+        "additionalProperties": false,
+        "properties": {
+          "city": {
+            "title": "City",
+            "type": "string"
+          },
+          "currency": {
+            "title": "Currency",
+            "type": "string"
+          },
+          "district": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "District"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "nights": {
+            "title": "Nights",
+            "type": "integer"
+          },
+          "price_per_night": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "title": "Price Per Night"
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating"
+          },
+          "source": {
+            "const": "synthetic-v1",
+            "title": "Source",
+            "type": "string"
+          },
+          "tier": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tier"
+          },
+          "total_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "title": "Total Price"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "city",
+          "district",
+          "tier",
+          "price_per_night",
+          "total_price",
+          "nights",
+          "rating",
+          "currency",
+          "source"
+        ],
+        "title": "HotelQuote",
+        "type": "object"
+      },
+      "HotelsOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "availability": {
+            "default": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+            "title": "Availability",
+            "type": "string"
+          },
+          "check_in": {
+            "format": "date",
+            "title": "Check In",
+            "type": "string"
+          },
+          "check_out": {
+            "format": "date",
+            "title": "Check Out",
+            "type": "string"
+          },
+          "hotels": {
+            "items": {
+              "$ref": "#/$defs/HotelQuote"
+            },
+            "title": "Hotels",
+            "type": "array"
+          },
+          "truncated": {
+            "default": false,
+            "title": "Truncated",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "hotels",
+          "check_in",
+          "check_out"
+        ],
+        "title": "HotelsOutput",
+        "type": "object"
+      },
+      "ToolError": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "enum": [
+              "invalid_input",
+              "timeout",
+              "upstream_error",
+              "output_too_large",
+              "configuration",
+              "internal_error"
+            ],
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "retryable": {
+            "default": false,
+            "title": "Retryable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ToolError",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "cache_hit": {
+        "title": "Cache Hit",
+        "type": "boolean"
+      },
+      "data": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/HotelsOutput"
+          },
+          {
+            "$ref": "#/$defs/Failure"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Data"
+      },
+      "fetched_at": {
+        "format": "date-time",
+        "title": "Fetched At",
+        "type": "string"
+      },
+      "source": {
+        "title": "Source",
+        "type": "string"
+      },
+      "status": {
+        "enum": [
+          "ok",
+          "no_data",
+          "error"
+        ],
+        "title": "Status",
+        "type": "string"
+      },
+      "tool": {
+        "title": "Tool",
+        "type": "string"
+      },
+      "tool_result_id": {
+        "title": "Tool Result Id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "tool_result_id",
+      "tool",
+      "status",
+      "data",
+      "source",
+      "fetched_at",
+      "cache_hit"
+    ],
+    "title": "ToolResult[HotelsOutput]",
+    "type": "object"
+  },
+  "policy": {
+    "attempts": 1,
+    "cache_ttl_seconds": 0,
+    "max_output_bytes": 65536,
+    "timeout_seconds": 15
+  }
+}

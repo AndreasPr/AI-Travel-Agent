@@ -1,0 +1,269 @@
+{
+  "description": "Forecast or explicitly labeled previous-year weather; never returns coordinates.",
+  "input_schema": {
+    "additionalProperties": false,
+    "properties": {
+      "city": {
+        "anyOf": [
+          {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "City"
+      },
+      "end_date": {
+        "format": "date",
+        "title": "End Date",
+        "type": "string"
+      },
+      "lat": {
+        "anyOf": [
+          {
+            "maximum": 90,
+            "minimum": -90,
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Lat"
+      },
+      "lon": {
+        "anyOf": [
+          {
+            "maximum": 180,
+            "minimum": -180,
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Lon"
+      },
+      "start_date": {
+        "format": "date",
+        "title": "Start Date",
+        "type": "string"
+      }
+    },
+    "required": [
+      "start_date",
+      "end_date"
+    ],
+    "title": "WeatherInput",
+    "type": "object"
+  },
+  "name": "get_weather",
+  "output_schema": {
+    "$defs": {
+      "Failure": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "$ref": "#/$defs/ToolError"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "title": "Failure",
+        "type": "object"
+      },
+      "ToolError": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "enum": [
+              "invalid_input",
+              "timeout",
+              "upstream_error",
+              "output_too_large",
+              "configuration",
+              "internal_error"
+            ],
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "retryable": {
+            "default": false,
+            "title": "Retryable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ToolError",
+        "type": "object"
+      },
+      "WeatherDay": {
+        "additionalProperties": false,
+        "properties": {
+          "basis_date": {
+            "format": "date",
+            "title": "Basis Date",
+            "type": "string"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "precipitation_mm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Precipitation Mm"
+          },
+          "temperature_max_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Temperature Max C"
+          },
+          "temperature_min_c": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Temperature Min C"
+          }
+        },
+        "required": [
+          "date",
+          "basis_date",
+          "label",
+          "temperature_max_c",
+          "temperature_min_c",
+          "precipitation_mm"
+        ],
+        "title": "WeatherDay",
+        "type": "object"
+      },
+      "WeatherOutput": {
+        "additionalProperties": false,
+        "properties": {
+          "attribution": {
+            "default": "Weather data by Open-Meteo (CC BY 4.0); city lookup by GeoNames.",
+            "title": "Attribution",
+            "type": "string"
+          },
+          "days": {
+            "items": {
+              "$ref": "#/$defs/WeatherDay"
+            },
+            "title": "Days",
+            "type": "array"
+          },
+          "note": {
+            "default": "Typical values describe one previous year, not a climate average or forecast.",
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "days"
+        ],
+        "title": "WeatherOutput",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "cache_hit": {
+        "title": "Cache Hit",
+        "type": "boolean"
+      },
+      "data": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/WeatherOutput"
+          },
+          {
+            "$ref": "#/$defs/Failure"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Data"
+      },
+      "fetched_at": {
+        "format": "date-time",
+        "title": "Fetched At",
+        "type": "string"
+      },
+      "source": {
+        "title": "Source",
+        "type": "string"
+      },
+      "status": {
+        "enum": [
+          "ok",
+          "no_data",
+          "error"
+        ],
+        "title": "Status",
+        "type": "string"
+      },
+      "tool": {
+        "title": "Tool",
+        "type": "string"
+      },
+      "tool_result_id": {
+        "title": "Tool Result Id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "tool_result_id",
+      "tool",
+      "status",
+      "data",
+      "source",
+      "fetched_at",
+      "cache_hit"
+    ],
+    "title": "ToolResult[WeatherOutput]",
+    "type": "object"
+  },
+  "policy": {
+    "attempts": 3,
+    "cache_ttl_seconds": 3600,
+    "max_output_bytes": 65536,
+    "timeout_seconds": 30
+  }
+}
