@@ -1,0 +1,55 @@
+# All amounts, ratings, districts, schedules and multipliers are synthetic.
+source: synthetic-v1
+seed: 20270301
+start_date: '2027-03-01'
+horizon_days: 120
+departure_interval_days: 3
+hotels_per_city: 10
+currency: USD
+# Synthetic assumptions, not measured fares, schedules or operating speeds.
+flights:
+  base_usd: 80
+  per_km_usd: 0.065
+  noise_fraction: 0.04
+  nonstop_premium_usd: 45
+  nonstop_probability: 0.65
+  cruise_kmh: 850
+  ground_minutes: 45
+  connection_minutes: 120
+  airlines: [Synthetic Demo Air, Synthetic Sample Airways]
+hotel_tiers:
+  budget: {base_usd: 55, label: 'synthetic, not real pricing'}
+  mid: {base_usd: 110, label: 'synthetic, not real pricing'}
+  upscale: {base_usd: 210, label: 'synthetic, not real pricing'}
+season_multipliers:
+  winter: {months: [12, 1, 2], multiplier: 0.90, label: 'synthetic, not real pricing'}
+  spring: {months: [3, 4, 5], multiplier: 1.00, label: 'synthetic, not real pricing'}
+  summer: {months: [6, 7, 8], multiplier: 1.15, label: 'synthetic, not real pricing'}
+  autumn: {months: [9, 10, 11], multiplier: 0.95, label: 'synthetic, not real pricing'}
+# Rough relative demo levels only; 1.0 is the synthetic baseline.
+cost_index:
+  Lisbon: {value: 0.90, label: 'synthetic, not real pricing'}
+  Porto: {value: 0.85, label: 'synthetic, not real pricing'}
+  Madrid: {value: 1.00, label: 'synthetic, not real pricing'}
+  Barcelona: {value: 1.10, label: 'synthetic, not real pricing'}
+  Valencia: {value: 0.90, label: 'synthetic, not real pricing'}
+  Seville: {value: 0.85, label: 'synthetic, not real pricing'}
+  Rome: {value: 1.10, label: 'synthetic, not real pricing'}
+  Florence: {value: 1.10, label: 'synthetic, not real pricing'}
+  Naples: {value: 0.85, label: 'synthetic, not real pricing'}
+  Milan: {value: 1.20, label: 'synthetic, not real pricing'}
+  Paris: {value: 1.40, label: 'synthetic, not real pricing'}
+  Lyon: {value: 1.05, label: 'synthetic, not real pricing'}
+  Berlin: {value: 1.05, label: 'synthetic, not real pricing'}
+  Munich: {value: 1.20, label: 'synthetic, not real pricing'}
+  Prague: {value: 0.80, label: 'synthetic, not real pricing'}
+  Vienna: {value: 1.15, label: 'synthetic, not real pricing'}
+  Budapest: {value: 0.75, label: 'synthetic, not real pricing'}
+  Krakow: {value: 0.70, label: 'synthetic, not real pricing'}
+  Amsterdam: {value: 1.35, label: 'synthetic, not real pricing'}
+  Copenhagen: {value: 1.50, label: 'synthetic, not real pricing'}
+  Stockholm: {value: 1.35, label: 'synthetic, not real pricing'}
+  Helsinki: {value: 1.25, label: 'synthetic, not real pricing'}
+  Dublin: {value: 1.25, label: 'synthetic, not real pricing'}
+  Athens: {value: 0.85, label: 'synthetic, not real pricing'}
+  Brussels: {value: 1.10, label: 'synthetic, not real pricing'}

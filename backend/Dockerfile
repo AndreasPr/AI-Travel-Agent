@@ -29,7 +29,7 @@ RUN groupadd --system app && useradd --system --gid app --create-home --home-dir
 
 COPY --from=builder /usr/local /usr/local
 COPY backend /app/backend
-COPY datasets /app/datasets
+COPY config /app/config
 COPY README.md /app/README.md
 
 RUN chown -R app:app /app

@@ -1,0 +1,28 @@
+# Real airport identifiers used only as geography for synthetic inventory.
+origin_hubs: [JFK, ORD, ATL, LAX, MIA, BOS, SFO, DFW]
+cities:
+  Lisbon: LIS
+  Porto: OPO
+  Madrid: MAD
+  Barcelona: BCN
+  Valencia: VLC
+  Seville: SVQ
+  Rome: FCO
+  Florence: FLR
+  Naples: NAP
+  Milan: MXP
+  Paris: CDG
+  Lyon: LYS
+  Berlin: BER
+  Munich: MUC
+  Prague: PRG
+  Vienna: VIE
+  Budapest: BUD
+  Krakow: KRK
+  Amsterdam: AMS
+  Copenhagen: CPH
+  Stockholm: ARN
+  Helsinki: HEL
+  Dublin: DUB
+  Athens: ATH
+  Brussels: BRU
