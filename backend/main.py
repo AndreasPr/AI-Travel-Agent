@@ -2,17 +2,13 @@ from typing import List
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from requests import Session as RequestsSession
 from sqlalchemy import text
 
-from backend.ai import predict
-from backend.ai.connect import get_mindsdb_session
 from backend.db import schemas as db_schemas, utils as db_utils
 from backend.db.connect import SessionLocal, get_db_session
 from backend.env import config
 from backend.rag.search import search as rag_search
 
-DEBUG = config("DEBUG", cast=bool, default=False)
 FRONTEND_ORIGINS = config(
     "FRONTEND_ORIGINS",
     cast=lambda x: [s.strip() for s in x.split(",") if s.strip()],
@@ -49,11 +45,6 @@ def readyz(db_session: SessionLocal = Depends(get_db_session)):  # noqa: B008
         raise HTTPException(status_code=503, detail=f"database unavailable: {exc}") from exc
 
 
-@app.get("/hello-world")
-def read_hello_world():
-    return {"hello": "world", "Debug": DEBUG}
-
-
 @app.get("/rag/search")
 def rag_search_endpoint(query: str, limit: int = 5):
     results = rag_search(query, limit=limit)
@@ -70,23 +61,6 @@ def rag_search_endpoint(query: str, limit: int = 5):
             }
         )
     return {"query": query, "results": payload}
-
-
-@app.post("/predict")
-def write_to_predit(
-    prediction_req: db_schemas.PredictSchema,
-    ai_session: RequestsSession = Depends(get_mindsdb_session),  # noqa: B008
-):
-    request_data = prediction_req.model_dump()
-    predictions = predict.predict_query(
-        **request_data,
-    )
-    if len(predictions) == 0:
-        return {}
-    recommendation = predict.recommended_flight(
-        user_data=request_data, forecast_data=predictions
-    )
-    return {"recommendation": recommendation, "predictions": predictions}
 
 
 @app.get("/airports", response_model=List[db_schemas.AirportSchema])

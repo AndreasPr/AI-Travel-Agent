@@ -10,6 +10,7 @@ from sqlalchemy import (
     Numeric,
     String,
     Text,
+    UniqueConstraint,
     func,
 )
 from sqlalchemy.dialects.postgresql import TSVECTOR
@@ -94,6 +95,13 @@ class Message(Base):
 
 class Flight(Base):
     __tablename__ = "flights"
+    __table_args__ = (UniqueConstraint("source", "flight_date", "starting_airport", "destination_airport", "airline", name="uq_flights_inventory_key"),)
+    origin_city = Column(String(255), nullable=True)
+    destination_city = Column(String(255), nullable=True)
+    duration_minutes = Column(Integer, nullable=True)
+    is_nonstop = Column(Boolean, nullable=True)
+    currency = Column(String(3), nullable=True)
+    source = Column(String(64), nullable=True)
     id = Column(Integer, primary_key=True, autoincrement=True)
     flight_date = Column(Date, nullable=False)
     starting_airport = Column(String(16), nullable=False)
@@ -105,6 +113,11 @@ class Flight(Base):
 
 class Hotel(Base):
     __tablename__ = "hotels"
+    __table_args__ = (UniqueConstraint("source", "name", "city", "country", name="uq_hotels_inventory_key"),)
+    district = Column(String(255), nullable=True)
+    tier = Column(String(32), nullable=True)
+    currency = Column(String(3), nullable=True)
+    source = Column(String(64), nullable=True)
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255), nullable=False)
     city = Column(String(255), nullable=False)

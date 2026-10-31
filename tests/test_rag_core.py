@@ -7,7 +7,7 @@ from backend.rag.ingestion.chunker import chunk_document
 from backend.rag.retrieval.hybrid import apply_metadata_filters, reciprocal_rank_fusion
 from backend.rag.retrieval.rerank import CrossEncoderReranker
 from backend.rag.search import build_or_tsquery, search
-from backend.scripts.seed_inventory import normalize_flight_row
+from backend.scripts.generate_inventory import generate_inventory
 from eval.retrieval.make_candidates import merge_candidates
 
 
@@ -290,18 +290,12 @@ def test_assert_rag_tables_exist_raises_helpful_error(monkeypatch):
         assert "alembic upgrade head" in str(exc)
 
 
-def test_normalize_flight_row_coerces_types():
-    row = {
-        "flightDate": "2022-04-18",
-        "startingAirport": "ATL",
-        "destinationAirport": "PHL",
-        "segmentsAirlineName": "Frontier Airlines||Frontier Airlines",
-        "totalFare": "570.0",
-    }
-    normalized = normalize_flight_row(row)
-    assert normalized["flight_date"] == date(2022, 4, 18)
-    assert normalized["starting_airport"] == "ATL"
-    assert normalized["price"] == Decimal("570.0")
+def test_generated_flight_row_has_typed_values():
+    row = generate_inventory()["flights"][0]
+    assert isinstance(row["flight_date"], date)
+    assert isinstance(row["price"], Decimal)
+    assert len(row["starting_airport"]) == 3
+    assert row["source"] == "synthetic-v1"
 
 
 def test_search_uses_cached_embedder_once(monkeypatch):

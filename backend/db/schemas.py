@@ -1,5 +1,6 @@
 from datetime import date
-from pydantic import BaseModel, Field
+from decimal import Decimal
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class AirportSchema(BaseModel):
@@ -9,19 +10,6 @@ class AirportSchema(BaseModel):
     class Config:
         populate_by_name = True
         from_attributes = True
-
-
-# pydantic schema for sqlalchemy model
-class PredictSchema(BaseModel):
-    startingAirport: str
-    destinationAirport: str
-    flightDate: date = "2022-04-21"
-    isBasicEconomy: bool = False
-    isRefundable: bool = False
-    isNonStop: bool = True
-
-    # class Config:
-    #     from_attributes = True
 
 
 # pydantic schema for sqlalchemy model
@@ -53,3 +41,36 @@ class FlightPriceDetailSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class FlightSchema(BaseModel):
+    """Inventory response; source identifies synthetic records explicitly."""
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    flight_date: date
+    starting_airport: str
+    destination_airport: str
+    origin_city: str | None
+    destination_city: str | None
+    airline: str
+    duration_minutes: int | None
+    is_nonstop: bool | None
+    price: Decimal
+    currency: str | None
+    source: str | None
+
+
+class HotelSchema(BaseModel):
+    """Inventory response; source identifies synthetic records explicitly."""
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    name: str
+    city: str
+    country: str
+    district: str | None
+    tier: str | None
+    price_per_night: Decimal
+    rating: float | None
+    season: str | None
+    currency: str | None
+    source: str | None

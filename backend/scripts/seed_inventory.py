@@ -1,142 +1,55 @@
+"""Load only generated synthetic inventory and offline airport reference data."""
 from __future__ import annotations
 
-import csv
-import os
-from datetime import date
-from decimal import Decimal
-from pathlib import Path
+import airportsdata
+from sqlalchemy import select, update
+from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 
-from sqlalchemy import create_engine, text
+from backend.db.models import Airport, Flight, Hotel
+from backend.scripts.generate_inventory import SOURCE, generate_inventory, read_config
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+psycopg://travel:travelpass@db:5432/travel")
-ROOT = Path(__file__).resolve().parents[2]
-DATASET_DIR = ROOT / "datasets"
-
-
-def ensure_schema(engine) -> None:
-    with engine.begin() as conn:
-        conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+FLIGHT_KEY = ["source", "flight_date", "starting_airport", "destination_airport", "airline"]
+HOTEL_KEY = ["source", "name", "city", "country"]
 
 
-def normalize_flight_row(row: dict[str, str]) -> dict[str, object]:
-    flight_date_raw = (row.get("flightDate") or row.get("flight_date") or "2024-01-01").strip()
-    try:
-        flight_date = date.fromisoformat(flight_date_raw)
-    except ValueError:
-        flight_date = date.fromisoformat("2024-01-01")
-
-    start = (row.get("startingAirport") or row.get("starting_airport") or "BOS").strip()
-    dest = (row.get("destinationAirport") or row.get("destination_airport") or "SFO").strip()
-    airline = (row.get("segmentsAirlineName") or row.get("airline") or "Synthetic Air").strip()
-    price_raw = (row.get("totalFare") or row.get("price") or "0").strip()
-    try:
-        price = Decimal(str(price_raw))
-    except Exception:
-        price = Decimal("0")
-
-    return {
-        "flight_date": flight_date,
-        "starting_airport": start,
-        "destination_airport": dest,
-        "airline": airline,
-        "price": price,
-    }
-
-
-def load_flights(engine) -> int:
-    flight_files = [
-        DATASET_DIR / "sql-dump.csv",
-        DATASET_DIR / "gretel" / "tabular-actgan-67db43cc641d963488489eda-data_preview.csv",
-        DATASET_DIR / "gretel" / "tabular-actgan-67db47547c54e7516f73d9be-data.csv",
-        DATASET_DIR / "itineraries-min-50k.csv",
-        DATASET_DIR / "itineraries-min-100k.csv",
-        DATASET_DIR / "itineraries-min-250k.csv",
-    ]
-
-    rows_loaded = 0
-    seen = set()
-
-    for csv_path in sorted({path for path in flight_files if path.exists()}):
-        with csv_path.open(newline="", encoding="utf-8") as handle:
-            reader = csv.DictReader(handle)
-            for row in reader:
-                normalized = normalize_flight_row(row)
-                key = tuple(normalized[k] for k in ("flight_date", "starting_airport", "destination_airport", "airline", "price"))
-                if key in seen:
-                    continue
-                seen.add(key)
-
-                with engine.begin() as conn:
-                    conn.execute(
-                        text(
-                            """
-                            INSERT INTO flights (flight_date, starting_airport, destination_airport, airline, price)
-                            SELECT CAST(:flight_date AS DATE), CAST(:starting_airport AS VARCHAR), CAST(:destination_airport AS VARCHAR), CAST(:airline AS VARCHAR), CAST(:price AS NUMERIC)
-                            WHERE NOT EXISTS (
-                                SELECT 1 FROM flights
-                                WHERE flight_date = CAST(:flight_date AS DATE)
-                                  AND starting_airport = CAST(:starting_airport AS VARCHAR)
-                                  AND destination_airport = CAST(:destination_airport AS VARCHAR)
-                                  AND airline = CAST(:airline AS VARCHAR)
-                                  AND price = CAST(:price AS NUMERIC)
-                            )
-                            """
-                        ),
-                        normalized,
-                    )
-                rows_loaded += 1
-    return rows_loaded
-
-
-def load_hotels(engine) -> int:
-    hotel_path = DATASET_DIR / "housing_ds.csv"
-    if not hotel_path.exists():
-        return 0
-
-    rows_loaded = 0
-    with hotel_path.open(newline="", encoding="utf-8") as handle:
-        reader = csv.DictReader(handle)
-        for row in reader:
-            name = f"Synthetic stay {row.get('type', 'hotel').strip() or 'hotel'}"
-            city = "Boston"
-            country = "USA"
-            price = 120.0
-            season = "spring"
-            rating = 4.5
-
-            with engine.begin() as conn:
-                conn.execute(
-                    text(
-                        """
-                        INSERT INTO hotels (name, city, country, price_per_night, rating, season)
-                        SELECT CAST(:name AS VARCHAR), CAST(:city AS VARCHAR), CAST(:country AS VARCHAR), CAST(:price_per_night AS NUMERIC), CAST(:rating AS FLOAT), CAST(:season AS VARCHAR)
-                        WHERE NOT EXISTS (
-                            SELECT 1 FROM hotels
-                            WHERE name = CAST(:name AS VARCHAR)
-                              AND city = CAST(:city AS VARCHAR)
-                              AND country = CAST(:country AS VARCHAR)
-                        )
-                        """
-                    ),
-                    {
-                        "name": name,
-                        "city": city,
-                        "country": country,
-                        "price_per_night": price,
-                        "rating": rating,
-                        "season": season,
-                    },
-                )
-            rows_loaded += 1
-    return rows_loaded
+def seed_inventory(connection, inventory: dict | None = None) -> dict[str, int]:
+    """Caller owns the transaction; natural keys exclude mutable prices."""
+    rows = generate_inventory() if inventory is None else inventory
+    insert = pg_insert if connection.dialect.name == "postgresql" else sqlite_insert
+    if connection.dialect.name not in {"postgresql", "sqlite"}:
+        raise ValueError("Inventory seeding supports PostgreSQL and SQLite")
+    if connection.dialect.name == "postgresql":
+        # Serialize concurrent seed runs, including airport reference upserts.
+        from sqlalchemy import text
+        connection.execute(text("SELECT pg_advisory_xact_lock(20270301)"))
+    for table, records, key in [(Flight.__table__, rows["flights"], FLIGHT_KEY), (Hotel.__table__, rows["hotels"], HOTEL_KEY)]:
+        if any(row.get("source") != SOURCE for row in records):
+            raise ValueError("Seed accepts only explicitly labeled synthetic-v1 rows")
+        for start in range(0, len(records), 100):
+            batch = records[start:start + 100]
+            stmt = insert(table).values(batch)
+            mutable = {name: stmt.excluded[name] for name in batch[0] if name not in key}
+            connection.execute(stmt.on_conflict_do_update(index_elements=key, set_=mutable))
+    mapping = read_config("airports.yaml")
+    airports = airportsdata.load("IATA")
+    codes = sorted(set(mapping["origin_hubs"]) | set(mapping["cities"].values()))
+    for code in codes:
+        row = airports[code]
+        values = {column.name: row[column.name] for column in Airport.__table__.columns if column.name in row}
+        exists = connection.scalar(select(Airport.id).where(Airport.iata == code).limit(1))
+        if exists is None:
+            connection.execute(Airport.__table__.insert().values(**values))
+        else:
+            connection.execute(update(Airport).where(Airport.iata == code).values(**values))
+    return {"flights": len(rows["flights"]), "hotels": len(rows["hotels"]), "airports": len(codes)}
 
 
 def main() -> None:
-    engine = create_engine(DATABASE_URL, pool_pre_ping=True, future=True)
-    ensure_schema(engine)
-    flight_count = load_flights(engine)
-    hotel_count = load_hotels(engine)
-    print(f"seeded flights={flight_count} hotels={hotel_count}")
+    from backend.db.connect import engine
+    with engine.begin() as connection:
+        counts = seed_inventory(connection)
+    print(f"seeded source={SOURCE} flights={counts['flights']} hotels={counts['hotels']} airport_references={counts['airports']}")
 
 
 if __name__ == "__main__":
