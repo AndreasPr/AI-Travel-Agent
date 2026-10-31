@@ -2,6 +2,7 @@ from sqlalchemy import (
     BigInteger,
     Boolean,
     Column,
+    CheckConstraint,
     Date,
     DateTime,
     Float,
@@ -162,3 +163,12 @@ class DocumentChunk(Base):
     embedding = Column(Vector(384), nullable=True)
     search_vector = Column(TSVECTOR, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+
+class LLMUsageDaily(Base):
+    __tablename__ = "llm_usage_daily"
+    __table_args__ = (CheckConstraint("requests >= 0", name="ck_llm_usage_daily_nonnegative"),)
+    date = Column(Date, primary_key=True)
+    provider = Column(String(64), primary_key=True)
+    model = Column(String(255), primary_key=True)
+    requests = Column(Integer, nullable=False, server_default="0")

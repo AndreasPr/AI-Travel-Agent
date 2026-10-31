@@ -1,0 +1,15 @@
+{
+  "provenance": "recorded",
+  "response": {
+    "text": "travel",
+    "tool_calls": [],
+    "tokens_in": 7,
+    "tokens_out": 1,
+    "cached_tokens": 0,
+    "latency_ms": 513.6860001366585,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "finish_reason": "STOP",
+    "raw_id": "m_7latakDsDAz7IPze7j-Q0"
+  }
+}

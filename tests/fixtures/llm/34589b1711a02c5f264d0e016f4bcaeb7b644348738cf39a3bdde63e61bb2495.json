@@ -1,0 +1,15 @@
+{
+  "provenance": "recorded",
+  "response": {
+    "text": "2",
+    "tool_calls": [],
+    "tokens_in": 8,
+    "tokens_out": 1,
+    "cached_tokens": 0,
+    "latency_ms": 486.5784998983145,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "finish_reason": "STOP",
+    "raw_id": "nP7lapS-EL6hz7IPssvauQk"
+  }
+}

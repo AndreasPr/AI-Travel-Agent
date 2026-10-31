@@ -54,3 +54,7 @@ rag-readme:
 
 rag-diagnose:
 	PYTHONPATH=. python -m eval.retrieval.diff_modes
+
+.PHONY: test-llm
+test-llm:
+	pytest -q tests/test_llm.py tests/test_llm_integration.py

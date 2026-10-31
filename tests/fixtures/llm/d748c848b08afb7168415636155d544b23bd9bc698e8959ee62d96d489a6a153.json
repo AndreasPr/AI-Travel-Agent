@@ -1,0 +1,15 @@
+{
+  "provenance": "recorded",
+  "response": {
+    "text": "Goodbye! Take care, and feel free to reach out whenever you need help again. Have a great day!",
+    "tool_calls": [],
+    "tokens_in": 4,
+    "tokens_out": 22,
+    "cached_tokens": 0,
+    "latency_ms": 572.5333751179278,
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "finish_reason": "STOP",
+    "raw_id": "nP7lapPcLvGfz7IP39nE6Q0"
+  }
+}

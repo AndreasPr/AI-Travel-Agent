@@ -1,0 +1,15 @@
+{
+  "provenance": "synthetic unit-test fixture; not a provider recording",
+  "response": {
+    "text": "Synthetic replay response",
+    "tool_calls": [],
+    "tokens_in": 3,
+    "tokens_out": 3,
+    "cached_tokens": 0,
+    "latency_ms": 0,
+    "provider": "synthetic",
+    "model": "synthetic-test-model",
+    "finish_reason": null,
+    "raw_id": null
+  }
+}
