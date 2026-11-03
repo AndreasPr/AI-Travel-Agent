@@ -38,6 +38,8 @@ class OllamaProvider:
         body = {"model": self.model, "messages": [dict(message) for message in messages], "stream": stream}
         if "max_output_tokens" in opts:
             opts["num_predict"] = opts.pop("max_output_tokens")
+        if self.spec.get("context_window") is not None:
+            opts["num_ctx"] = self.spec["context_window"]
         body["options"] = opts
         if json_mode:
             body["format"] = "json"

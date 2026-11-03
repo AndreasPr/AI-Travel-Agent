@@ -1,5 +1,6 @@
 """Bounded plan/act loop, deterministic final gate and single-day repairs."""
 import asyncio
+import json
 from decimal import Decimal
 from datetime import timedelta
 import re
@@ -7,13 +8,13 @@ import re
 from pydantic import ValidationError
 
 from backend.agent.context import ContextBuilder
-from backend.agent.errors import failure_issue
+from backend.agent.errors import failure_issue, validation_details
 from backend.agent.models import ChatResponse, DayPatch, Intent, Usage
 from backend.agent.policy import ALLOWLISTS, apply_patch, data_block, sensitive, sensitive_state
 from backend.agent.providers import provider_for
 from backend.agent.store import PostgresTripStore
 from backend.llm.config import load_config
-from backend.llm.types import LLMError
+from backend.llm.types import LLMError, InvalidOutput
 from backend.tools.models import Itinerary
 from backend.tools.registry import REGISTRY
 from backend.tools.runtime import ToolRuntime
@@ -49,8 +50,14 @@ class Agent:
             names = [entry['provider'] for entry in self.config['roles'][role]['chain']]
             if any(self.context.estimate(payload, name) > self.settings['context']['token_budget'] for name in names):
                 raise ValueError('Prompt exceeds configured token budget')
-            response = await asyncio.wait_for(asyncio.to_thread(provider.generate, messages, tools=tools, response_schema=response_schema,
-                                                                  max_output_tokens=self.settings['max_output_tokens']), self.settings['model_timeout_seconds'])
+            try:
+                response = await asyncio.wait_for(asyncio.to_thread(provider.generate, messages, tools=tools, response_schema=response_schema,
+                                                                      max_output_tokens=self.settings['max_output_tokens']), self.settings['model_timeout_seconds'])
+            except InvalidOutput as exc:
+                response = getattr(exc, 'rejected_tool_response', None)
+                if response_schema is not None or not tools or response is None or not response.tool_calls:
+                    raise
+                # The allowlist and ToolRuntime still validate every proposed call before execution.
             usage.tokens_in += response.tokens_in
             usage.tokens_out += response.tokens_out
             usage.cached_tokens += response.cached_tokens
@@ -147,7 +154,16 @@ class Agent:
 
             results = await asyncio.gather(*(act(call) for call in calls))
             for call, result in zip(calls, results, strict=True):
-                messages.append({'role': 'tool', 'name': call.name, 'tool_name': call.name, 'tool_call_id': call.id or call.name, 'content': data_block(result)})
+                observation = result
+                if call.name in allowed and result['status'] == 'error' and result.get('data', {}).get('error', {}).get('code') == 'invalid_input':
+                    input_model = REGISTRY[call.name].input_model
+                    try:
+                        input_model.model_validate(call.arguments)
+                    except ValidationError as exc:
+                        fields = set(input_model.model_fields) | {field.alias for field in input_model.model_fields.values() if field.alias}
+                        observation = {'result': result, 'argument_issues': validation_details(exc, fields),
+                                       'expected_arguments': input_model.model_json_schema(by_alias=True)}
+                messages.append({'role': 'tool', 'name': call.name, 'tool_name': call.name, 'tool_call_id': call.id or call.name, 'content': data_block(observation)})
                 if result['status'] == 'ok' and call.name == 'search_destinations':
                     state['citations'].extend(result['data']['chunks'])
         else:
@@ -173,7 +189,8 @@ class Agent:
                 if schema is DayPatch:
                     candidate, diff = apply_patch(state['itinerary'], DayPatch.model_validate_json(response.text), intent.day)
                 else:
-                    candidate = Itinerary.model_validate_json(response.text).model_dump(mode='json')
+                    candidate = json.loads(response.text)
+                    candidate = Itinerary.model_validate(candidate).model_dump(mode='json')
                 dates = {day['date'] for day in candidate['days']}
                 typed = Itinerary.model_validate(candidate)
                 expected_dates = {(typed.trip.start_date + timedelta(days=i)).isoformat() for i in range((typed.trip.end_date - typed.trip.start_date).days + 1)}
@@ -208,6 +225,7 @@ class Agent:
                 issues = [{**detail, 'name': 'schema_valid', 'reason': detail['name']}]
                 if isinstance(exc, ValidationError):
                     issues[0]['validation_error_types'] = sorted({error['type'] for error in exc.errors()})
+                    issues[0]['details'] = validation_details(exc)
             output.issues = issues
             if attempt < 2:
                 messages.append({'role': 'user', 'content': 'Repair the candidate using these issues. Return complete JSON. ' + data_block({'candidate': candidate, 'issues': issues})})
@@ -219,7 +237,9 @@ class Agent:
             if any(issue['name'] == 'unpriced_item' for issue in issues):
                 output.message += ' Some items are unpriced, so the full cost is also unknown.'
         else:
-            output.message = 'I could not produce a valid itinerary after two repairs. See issues; the previous itinerary was kept.'
+            output.message = 'I could not produce a valid itinerary after two repairs. See issues.'
+            if state['itinerary'] is not None:
+                output.message += ' The previous itinerary was kept.'
 
     @staticmethod
     def _accept(state, candidate, budget, diff, issues, output):

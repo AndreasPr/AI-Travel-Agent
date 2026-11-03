@@ -368,3 +368,102 @@ def test_intent_failure_reports_safe_diagnostic(error_message, expected):
     assert result.itinerary is None
     assert 'Synthetic secret' not in result.model_dump_json()
     assert 'Synthetic secret' not in json.dumps(agent.store.load(result.trip_id))
+
+
+def test_repair_preserves_invalid_candidate_and_specific_datetime_rule():
+    invalid = itinerary()
+    invalid['days'][0]['items'][0]['start'] += 'Z'
+    agent, _, script = setup([{}, invalid, itinerary()])
+    result = run(agent)
+    assert result.itinerary is not None
+    repair = script.calls[-1][0][-1]['content']
+    assert '2027-04-10T10:00:00Z' in repair
+    assert 'Use local wall-clock datetimes without offsets' in repair
+    assert '"path": ["days", 0, "items", 0]' in repair
+
+
+def test_validation_details_do_not_echo_rejected_values():
+    from pydantic import ValidationError
+    from backend.agent.errors import validation_details
+    from backend.tools.models import Itinerary
+    invalid = itinerary()
+    invalid['days'][0]['items'][0]['start'] = 'Synthetic private rejected value'
+    with pytest.raises(ValidationError) as caught:
+        Itinerary.model_validate(invalid)
+    details = validation_details(caught.value)
+    assert details[0]['path'] == ['days', 0, 'items', 0, 'start']
+    assert 'Synthetic private' not in json.dumps(details)
+
+
+@pytest.mark.parametrize('schema_name', ['Itinerary', 'DayPatch'])
+def test_generation_schema_requires_local_datetimes_without_offsets(schema_name):
+    from backend.agent.models import DayPatch
+    from backend.agent.providers import generation_schema
+    from backend.llm.validation import validate
+    from backend.llm.types import InvalidOutput
+    from backend.tools.models import Itinerary
+    schema = Itinerary if schema_name == 'Itinerary' else DayPatch
+    original = schema.model_json_schema()
+    projected = generation_schema(schema)
+    start = projected['$defs']['Item']['properties']['start']
+    assert 'format' not in start
+    assert schema.model_json_schema() == original
+    for value in ['2027-04-10T10:00:00', '2027-04-10T10:00:00.123456']:
+        validate(value, start)
+    for value in ['2027-04-10T10:00:00Z', '2027-04-10T10:00:00+01:00', '2027-04-10']:
+        with pytest.raises(InvalidOutput):
+            validate(value, start)
+
+
+def test_ollama_itinerary_request_uses_local_time_schema():
+    import httpx
+    import respx
+    from backend.agent.providers import StructuredProvider
+    from backend.llm.config import load_config, model_config
+    from backend.llm.ollama import OllamaProvider
+    from backend.tools.models import Itinerary
+    config = load_config()
+    entry = next(row for row in config['roles']['plan']['chain'] if row['provider'] == 'ollama')
+    spec = model_config('ollama', entry['model'], config)
+    with httpx.Client() as client, respx.mock(assert_all_called=True) as mock:
+        route = mock.post('http://localhost:11434/api/chat').mock(return_value=httpx.Response(200, json={
+            'done': True, 'message': {'content': json.dumps(itinerary())},
+        }))
+        provider = StructuredProvider(OllamaProvider(entry['model'], spec, base_url='http://localhost:11434', client=client), spec)
+        result = provider.generate([{'role': 'user', 'content': 'Synthetic trip request'}], response_schema=Itinerary)
+        assert Itinerary.model_validate_json(result.text).days
+        body = json.loads(route.calls[0].request.content)
+        assert body['options']['num_ctx'] == spec['context_window']
+        assert spec['context_window'] >= config['agent']['context']['token_budget'] + config['agent']['max_output_tokens']
+        start = body['format']['$defs']['Item']['properties']['start']
+        assert 'pattern' in start and 'format' not in start
+
+
+def test_adapter_rejected_tool_arguments_become_runtime_observation():
+    from backend.llm.validation import validate_response
+    from backend.tools.runtime import ToolRuntime
+
+    class ValidatingScript(Script):
+        def generate(self, messages, **kwargs):
+            result = super().generate(messages, **kwargs)
+            return validate_response(result, kwargs.get('tools'), kwargs.get('response_schema'))
+
+    agent, store, _ = setup([])
+    extract = Script([{'intent': 'new_trip', 'budget': 1500}])
+    plan = ValidatingScript([calls('search_hotels'), {}, itinerary()])
+    agent.providers = lambda role: extract if role == 'extract' else plan
+    store.save_result = lambda result: store.results.update({result.tool_result_id: result.model_dump(mode='json')})
+    def no_database():
+        raise AssertionError('Invalid arguments must not reach a database')
+    runtime = ToolRuntime(store=store, session_factory=no_database)
+    agent.runtime = runtime
+    try:
+        result = run(agent)
+    finally:
+        runtime.close()
+    assert result.itinerary is not None
+    assert result.tool_trace[0]['status'] == 'error'
+    assert result.tool_trace[0]['data']['error']['code'] == 'invalid_input'
+    assert 'invalid_input' in json.dumps(plan.calls[1][0])
+    assert 'argument_issues' in json.dumps(plan.calls[1][0])
+    assert 'check_in' in json.dumps(plan.calls[1][0])
