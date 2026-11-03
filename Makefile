@@ -62,3 +62,7 @@ test-llm:
 .PHONY: test-tools
 test-tools:
 	pytest -q tests/test_agent_tools.py tests/test_agent_tools_integration.py
+
+.PHONY: test-agent
+test-agent:
+	pytest -q tests/test_agent_loop.py tests/test_agent_persistence.py

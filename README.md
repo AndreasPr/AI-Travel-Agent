@@ -122,3 +122,7 @@ The default seed now generates explicitly labeled `synthetic-v1` flights and hot
 ## Agent tools
 
 `backend/tools/` provides typed, bounded ToolResults for destination retrieval, weather, currency conversion, OSM geocoding, synthetic flight/hotel queries and deterministic itinerary validation. Run `make test-tools` for offline tests. See [contracts, provenance rules and local setup](docs/AGENT_TOOLS.md).
+
+### Conversational agent
+
+`POST /api/chat` runs a bounded, grounded planning loop with single-day edits and Postgres itinerary versions. Preferences require explicit confirmation. See [architecture and local verification](docs/architecture.md) for the CLI, undo/version endpoints, context limits, and synthetic-inventory limitations. Run `make test-agent` for offline checks.

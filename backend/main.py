@@ -7,6 +7,7 @@ from sqlalchemy import text
 from backend.db import schemas as db_schemas, utils as db_utils
 from backend.db.connect import SessionLocal, get_db_session
 from backend.env import config
+from backend.agent.api import router as agent_router
 from backend.rag.search import search as rag_search
 
 FRONTEND_ORIGINS = config(
@@ -90,3 +91,6 @@ def read_flight_price(
         raise HTTPException(status_code=404, detail="Flight Price not Found")
 
     return df_flight_value
+
+
+app.include_router(agent_router)

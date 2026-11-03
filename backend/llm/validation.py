@@ -35,10 +35,16 @@ def tool_definitions(tools):
 
 def validate_response(response, tools=None, response_schema=None):
     definitions = {tool["name"]: tool for tool in tool_definitions(tools)}
-    for call in response.tool_calls:
-        if call.name not in definitions:
-            raise InvalidOutput("Provider returned an undeclared tool")
-        validate(call.arguments, definitions[call.name].get("parameters", {"type": "object"}))
+    try:
+        for call in response.tool_calls:
+            if call.name not in definitions:
+                raise InvalidOutput("Provider returned an undeclared tool")
+            validate(call.arguments, definitions[call.name].get("parameters", {"type": "object"}))
+    except InvalidOutput as exc:
+        # Preserve the normalized call for runtimes that return invalid arguments as observations.
+        # Standalone provider callers still receive the same validation exception.
+        exc.rejected_tool_response = response
+        raise
     if response_schema is not None and not response.tool_calls:
         parse_json(response.text, response_schema)
     return response
