@@ -237,3 +237,16 @@ def test_internal_uuid_exemption_preserves_sensitive_content_filter(store, monke
         with pytest.raises(ValueError, match='Sensitive'):
             store.save(unsafe, unsafe['revision'])
     assert store.load(synthetic_id)['history'] == []
+
+
+def test_preference_update_preserves_other_confirmed_preferences(store):
+    state = store.create()
+    state['preferences'] = {'interests': ['museums'], 'budget': '1500'}
+    store.save(state, 0)
+    agent, _, _ = setup([], {'intent': 'chitchat', 'preference_proposal': {'pace': 'relaxed'}}, store)
+    result = run(agent, 'Remember that I prefer a relaxed pace', state['id'])
+    assert result.preference_proposal.interests == ['museums']
+    assert store.load(state['id'])['preferences'].get('pace') is None
+    run(agent, 'confirm preferences', state['id'])
+    assert store.load(state['id'])['preferences']['interests'] == ['museums']
+    assert store.load(state['id'])['preferences']['pace'] == 'relaxed'

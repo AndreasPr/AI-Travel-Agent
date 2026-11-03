@@ -18,7 +18,7 @@ def generation_schema(schema):
     properties = result['$defs']['Item']['properties']
     for name in ('start', 'end'):
         properties[name].pop('format', None)
-        properties[name]['pattern'] = r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?$'
+        properties[name]['pattern'] = r'^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}([.][0-9]{1,6})?$'
         properties[name]['description'] = 'Local wall-clock datetime, without Z or UTC offset; end must follow start.'
     return result
 
@@ -31,6 +31,10 @@ class StructuredProvider:
     def generate(self, messages, tools=None, response_schema=None, **opts):
         native = self.spec.get('supports', {}).get('structured_output', False)
         requested_schema = generation_schema(response_schema)
+        if self.provider == 'ollama' and isinstance(requested_schema, dict):
+            contract = {'Itinerary': Itinerary, 'DayPatch': DayPatch}.get(requested_schema.get('title'))
+            if contract is not None:
+                opts['schema_prompt'] = generation_schema(contract)
         if response_schema is not None and not native:
             if self.provider == 'ollama':
                 opts['json_mode'] = True

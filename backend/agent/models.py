@@ -57,3 +57,12 @@ class ChatResponse(Contract):
     usage: Usage = Field(default_factory=Usage)
     issues: list[dict] = Field(default_factory=list)
     preference_proposal: Preferences | None = None
+
+
+class ActivityPlace(Contract):
+    name: str = Field(min_length=1, max_length=200)
+    chunk_id: str
+
+
+class ActivityPlaces(Contract):
+    places: list[ActivityPlace] = Field(min_length=1, max_length=12)

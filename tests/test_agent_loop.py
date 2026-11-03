@@ -215,7 +215,7 @@ def test_tool_turn_messages_match_provider_protocols():
         spec = model_config(entry['provider'], entry['model'], config)
         if entry['provider'] == 'ollama':
             provider = OllamaProvider(entry['model'], spec)
-            body, _ = provider._request(messages, None, None, False, {})
+            body, _ = provider._request(messages, None, None, False, {'tool_mode': 'auto'})
             assistant = next(row for row in body['messages'] if row.get('tool_calls'))
             assert assistant['tool_calls'][0]['function']['name'] == 'search_hotels'
             assert next(row for row in body['messages'] if row['role'] == 'tool')['tool_name'] == 'search_hotels'
@@ -407,6 +407,8 @@ def test_generation_schema_requires_local_datetimes_without_offsets(schema_name)
     projected = generation_schema(schema)
     start = projected['$defs']['Item']['properties']['start']
     assert 'format' not in start
+    assert r'\d' not in start['pattern']
+    assert '[0-9]' in start['pattern']
     assert schema.model_json_schema() == original
     for value in ['2027-04-10T10:00:00', '2027-04-10T10:00:00.123456']:
         validate(value, start)
@@ -467,3 +469,237 @@ def test_adapter_rejected_tool_arguments_become_runtime_observation():
     assert 'invalid_input' in json.dumps(plan.calls[1][0])
     assert 'argument_issues' in json.dumps(plan.calls[1][0])
     assert 'check_in' in json.dumps(plan.calls[1][0])
+
+
+def test_tool_call_envelope_enforces_nullable_arguments_and_definitions():
+    from backend.llm.ollama import tool_envelope
+    from backend.llm.validation import validate
+    from backend.llm.types import InvalidOutput
+    from backend.tools.models import HotelsInput
+    tools = [{'name': 'search_hotels', 'parameters': HotelsInput.model_json_schema()}]
+    schema = tool_envelope(tools)
+    args = {'city': 'Synthetic City', 'check_in': '2027-04-10', 'check_out': '2027-04-14', 'min_rating': None}
+    value = {'text': '', 'tool_calls': [{'name': 'search_hotels', 'arguments': args}]}
+    validate(value, schema)
+    args['min_rating'] = 'null'
+    with pytest.raises(InvalidOutput):
+        validate(value, schema)
+    tools = [{'name': 'synthetic_lookup', 'parameters': {'type': 'object', 'properties': {'value': {'$ref': '#/$defs/Value'}}, 'required': ['value'], '$defs': {'Value': {'type': 'integer'}}}}]
+    schema = tool_envelope(tools)
+    validate({'text': '', 'tool_calls': [{'name': 'synthetic_lookup', 'arguments': {'value': 1}}]}, schema)
+    with pytest.raises(InvalidOutput):
+        validate({'text': '', 'tool_calls': [{'name': 'synthetic_lookup', 'arguments': {'value': 'invalid'}}]}, schema)
+
+
+def test_requested_hotel_lookup_cannot_be_skipped():
+    agent, runtime, _ = setup([{}, calls('search_hotels'), itinerary('100')])
+    result = run(agent, 'Plan a trip with synthetic hotel quotes')
+    assert result.itinerary is not None
+    assert 'search_hotels' in runtime.calls
+
+
+def test_requested_hotel_quote_cannot_be_omitted_from_itinerary():
+    agent, _, script = setup([calls('search_hotels'), itinerary(), itinerary('100')])
+    result = run(agent, 'Plan a trip with synthetic hotel quotes')
+    assert result.itinerary is not None
+    assert any(item.cost is not None for day in result.itinerary.days for item in day.items)
+    assert 'requested_hotel_quote_missing' in json.dumps(script.calls[-1][0])
+
+
+def test_server_assigns_unique_stable_item_ids_without_changing_prices():
+    raw = itinerary('100')
+    for day in raw['days']:
+        day['items'][0]['id'] = 'synthetic-repeated-id'
+    agent, _, _ = setup([calls('search_hotels'), {}, raw])
+    result = run(agent)
+    ids = [item.id for day in result.itinerary.days for item in day.items]
+    assert len(set(ids)) == 3
+    assert ids[1] == '2027-04-11:item:1'
+    assert all(str(item.cost) == '100' and item.tool_result_ids == ['quote'] for day in result.itinerary.days for item in day.items)
+
+
+def test_explicit_trip_dates_cannot_be_replaced_by_model():
+    agent, _, _ = setup([{}, itinerary(), itinerary(), itinerary()])
+    result = run(agent, 'Plan 2027-04-20 through 2027-04-22')
+    assert result.itinerary is None
+    assert any(row['name'] == 'requested_dates_mismatch' for row in result.issues)
+
+
+def test_trip_interests_do_not_implicitly_propose_saved_preferences():
+    agent, _, _ = setup([], {'intent': 'chitchat', 'preference_proposal': {'interests': ['museums']}})
+    result = run(agent, 'Tell me about museums')
+    assert result.preference_proposal is None
+    assert agent.store.load(result.trip_id)['proposal'] is None
+
+
+def test_json_tool_mode_preserves_observations_without_native_message_fields():
+    from backend.llm.config import load_config, model_config
+    from backend.llm.ollama import OllamaProvider
+    config = load_config()
+    entry = next(row for row in config['roles']['plan']['chain'] if row['provider'] == 'ollama')
+    adapter = OllamaProvider(entry['model'], model_config('ollama', entry['model'], config))
+    messages = [{'role': 'assistant', 'content': '', 'tool_calls': [{'function': {'name': 'synthetic_lookup', 'arguments': {'city': 'Synthetic City'}}}]},
+                {'role': 'tool', 'name': 'synthetic_lookup', 'content': '<DATA>synthetic observation</DATA>'}]
+    body, _ = adapter._request(messages, None, None, False, {})
+    assert json.loads(body['messages'][0]['content'])['tool_calls'][0]['name'] == 'synthetic_lookup'
+    assert 'tool_calls' not in body['messages'][0]
+    assert body['messages'][1]['role'] == 'user'
+    assert '<DATA>synthetic observation</DATA>' in body['messages'][1]['content']
+    assert messages[1]['role'] == 'tool'
+
+
+def test_explicit_hotel_activity_trip_excludes_unrequested_flights_and_weather():
+    from backend.agent.requirements import scoped_tools
+    from backend.agent.policy import ALLOWLISTS
+    selected = scoped_tools(ALLOWLISTS['new_trip'], 'Plan Lisbon 2027-04-10 through 2027-04-14 with hotels and museums')
+    assert selected == {'search_hotels', 'search_destinations'}
+
+
+def test_hotel_quote_cannot_price_an_unrelated_activity():
+    from backend.agent.requirements import quoted_item_issues
+    candidate = itinerary('100')
+    result = {'tool': 'search_hotels', 'tool_result_id': 'quote', 'data': {'hotels': [
+        {'name': 'Synthetic sample hotel', 'price_per_night': '100', 'total_price': '300', 'currency': 'USD'}]}}
+    assert quoted_item_issues(candidate, [result]) == []
+    candidate['days'][1]['items'][0]['place'] = 'Synthetic museum'
+    issues = quoted_item_issues(candidate, [result])
+    assert len(issues) == 1 and issues[0]['name'] == 'hotel_quote_item_mismatch'
+
+
+def test_ollama_transport_keeps_static_prefix_before_dynamic_schemas():
+    from backend.llm.ollama import OllamaProvider
+    from backend.llm.config import load_config, model_config
+    config = load_config()
+    entry = next(row for row in config['roles']['plan']['chain'] if row['provider'] == 'ollama')
+    provider = OllamaProvider(entry['model'], model_config('ollama', entry['model'], config))
+    messages = [{'role': 'system', 'content': 'Synthetic static system and tool definitions'}, {'role': 'user', 'content': 'Synthetic turn'}]
+    first, _ = provider._request(messages, [{'name': 'synthetic_lookup', 'parameters': {'type': 'object'}}], None, False, {})
+    second, _ = provider._request(messages, None, {'type': 'object', 'properties': {'changed': {'type': 'string'}}}, False, {})
+    assert first['messages'][0] == second['messages'][0] == messages[0]
+    assert first['messages'][-1]['role'] == second['messages'][-1]['role'] == 'user'
+
+
+def test_ollama_request_timeout_comes_from_config():
+    import httpx
+    import respx
+    from backend.llm.ollama import OllamaProvider
+    from backend.llm.config import load_config, model_config
+    config = load_config()
+    entry = next(row for row in config['roles']['plan']['chain'] if row['provider'] == 'ollama')
+    spec = model_config('ollama', entry['model'], config)
+    with respx.mock as mock:
+        route = mock.post('http://localhost:11434/api/chat').mock(return_value=httpx.Response(
+            200, json={'done': True, 'message': {'content': 'hello'}}))
+        result = OllamaProvider(entry['model'], spec).generate([{'role': 'user', 'content': 'hello'}])
+        assert result.text == 'hello'
+        assert route.calls[0].request.extensions['timeout']['read'] == spec['request_timeout_seconds']
+        assert config['agent']['model_timeout_seconds'] > spec['request_timeout_seconds']
+
+
+def test_generation_schema_binds_hotel_price_to_quoted_place():
+    from backend.agent.requirements import bind_itinerary_schema
+    from backend.tools.models import Itinerary
+    from backend.llm.validation import validate
+    from backend.llm.types import InvalidOutput
+    evidence = {'status': 'ok', 'tool': 'search_hotels', 'tool_result_id': 'quote', 'data': {'hotels': [
+        {'name': 'Synthetic sample hotel', 'price_per_night': '100', 'total_price': '300', 'currency': 'USD'}]}}
+    schema = bind_itinerary_schema(Itinerary, '', [evidence], [])
+    candidate = itinerary('100')
+    validate(candidate, schema)
+    candidate['days'][0]['items'][0]['place'] = 'Synthetic museum'
+    with pytest.raises(InvalidOutput):
+        validate(candidate, schema)
+    candidate['days'][0]['items'][0]['cost'] = None
+    validate(candidate, schema)
+
+
+def test_requested_accommodation_is_required_by_generation_schema():
+    from backend.agent.requirements import bind_itinerary_schema
+    from backend.tools.models import Itinerary
+    from backend.llm.validation import validate
+    from backend.llm.types import InvalidOutput
+    evidence = {'status': 'ok', 'tool': 'search_hotels', 'tool_result_id': 'quote', 'data': {'hotels': [
+        {'name': 'Synthetic sample hotel', 'price_per_night': '100', 'total_price': '300', 'currency': 'USD'}]}}
+    schema = bind_itinerary_schema(Itinerary, 'Hotels 2027-04-10 through 2027-04-12', [evidence], [])
+    candidate = itinerary('300')
+    activity = dict(candidate['days'][0]['items'][0], id='activity', place='Synthetic museum', cost=None)
+    candidate['days'][0]['items'].append(activity)
+    for day in candidate['days'][1:]:
+        day['items'][0]['cost'] = None
+    validate(candidate, schema)
+    candidate['days'][0]['items'][0]['cost'] = None
+    with pytest.raises(InvalidOutput):
+        validate(candidate, schema)
+    candidate = itinerary('300')
+    activity = dict(candidate['days'][0]['items'][0], id='activity', place='Synthetic museum', cost=None)
+    candidate['days'][0]['items'].append(activity)
+    for day in candidate['days'][1:]:
+        day['items'][0]['cost'] = None
+    candidate['days'][0]['items'][0]['start'] = '0800-09-00T09:00:00'
+    with pytest.raises(InvalidOutput):
+        validate(candidate, schema)
+
+
+def test_activity_extraction_only_admits_names_present_in_cited_excerpt():
+    class DestinationRuntime(Runtime):
+        def execute(self, name, arguments):
+            if name == 'search_destinations':
+                return ToolResult(tool_result_id='destinations', tool=name, status='ok', source='synthetic-test',
+                    fetched_at=utcnow(), cache_hit=False, data={'chunks': [{'chunk_id': 'synthetic-chunk',
+                    'excerpt': 'Visit the Synthetic Museum.', 'title': 'Synthetic guide'}]})
+            return super().execute(name, arguments)
+    extract = Script([{'intent': 'new_trip', 'budget': 1500}, {'places': [
+        {'name': 'Synthetic Museum', 'chunk_id': 'synthetic-chunk'},
+        {'name': 'Invented Place', 'chunk_id': 'synthetic-chunk'},
+        {'name': 'Visit', 'chunk_id': 'missing-chunk'}]}])
+    candidate = itinerary()
+    for day in candidate['days']:
+        day['items'][0].update(place='Synthetic Museum', chunk_ids=['synthetic-chunk'])
+    plan = Script([calls('search_destinations'), candidate])
+    agent = Agent(store=MemoryTripStore(), runtime=DestinationRuntime(), providers=lambda role: extract if role == 'extract' else plan)
+    response = run(agent, 'Lisbon museums 2027-04-10 through 2027-04-12')
+    assert response.itinerary is not None
+    assert plan.calls[-1][1]['response_schema']['$defs']['Item']['properties']['place']['enum'] == ['Synthetic Museum']
+    assert len(extract.calls) == 2
+
+
+def test_identical_edit_is_repaired_before_acceptance():
+    store = MemoryTripStore()
+    state = edit_state(store)
+    unchanged = {'day': 2, 'operations': [{'op': 'replace_item', 'item_id': 'item-1', 'item': state['itinerary']['days'][1]['items'][0]}]}
+    changed = {'day': 2, 'operations': [{'op': 'remove_item', 'item_id': 'item-1'}]}
+    agent, _, plan = setup([{}, unchanged, changed], {'intent': 'edit_trip', 'day': 2}, store)
+    result = run(agent, 'Make day 2 cheaper', state['id'])
+    assert result.itinerary is not None
+    assert result.itinerary.days[1].items == []
+    assert 'edit_no_change' in json.dumps(plan.calls[-1][0])
+
+
+def test_preference_only_edit_classification_does_not_ask_for_trip_day():
+    agent, _, _ = setup([], {'intent': 'edit_trip', 'preference_proposal': {'pace': 'relaxed'}})
+    result = run(agent, 'Remember my preference for a relaxed pace')
+    assert result.preference_proposal.pace == 'relaxed'
+    assert 'day to edit' not in result.message
+    assert 'confirm preferences' in result.message
+    assert agent.store.load(result.trip_id)['preferences'] == {}
+
+
+def test_citation_only_edit_is_not_a_substantive_change():
+    from backend.agent.requirements import substantive_itinerary
+    before = itinerary()
+    after = deepcopy(before)
+    after['days'][1]['items'][0]['chunk_ids'] = ['synthetic-new-citation']
+    assert substantive_itinerary(before) == substantive_itinerary(after)
+    after['days'][1]['items'] = []
+    assert substantive_itinerary(before) != substantive_itinerary(after)
+
+
+def test_cheaper_unpriced_day_requests_removal_without_inventing_price():
+    from backend.agent.requirements import bind_itinerary_schema
+    from backend.agent.models import DayPatch
+    from backend.llm.validation import validate
+    from backend.llm.types import InvalidOutput
+    schema = bind_itinerary_schema(DayPatch, 'Make day 2 cheaper', [], [], itinerary(), 2)
+    validate({'day': 2, 'operations': [{'op': 'remove_item', 'item_id': 'item-1'}]}, schema)
+    with pytest.raises(InvalidOutput):
+        validate({'day': 2, 'operations': [{'op': 'replace_item', 'item_id': 'item-1', 'item': itinerary()['days'][1]['items'][0]}]}, schema)

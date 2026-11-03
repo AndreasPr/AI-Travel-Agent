@@ -1,6 +1,7 @@
 """Read-only retrieval, free HTTP services and explicitly synthetic inventory queries."""
 import calendar
 import os
+from threading import Lock
 from collections import defaultdict
 from datetime import timedelta
 from decimal import Decimal, ROUND_HALF_UP
@@ -12,11 +13,21 @@ from backend.tools.models import CurrencyOutput, DestinationOutput, FlightQuote,
 from backend.tools.runtime import ToolFault
 
 
+_RETRIEVAL_LOCK = Lock()
+
+
 def search_destinations(request, ctx):
     search = ctx.runtime.search
     if search is None:
         from backend.rag.search import search
-    rows = search(request.query, limit=request.k, rerank=True, city=request.city, country=request.country, season=request.season, topic=request.topic)
+    # Lazy local model loading/inference shares process state; serialize this resource only.
+    if not _RETRIEVAL_LOCK.acquire(timeout=ctx.remaining()):
+        raise TimeoutError()
+    try:
+        ctx.check()
+        rows = search(request.query, limit=request.k, rerank=True, city=request.city, country=request.country, season=request.season, topic=request.topic)
+    finally:
+        _RETRIEVAL_LOCK.release()
     chunks = [{"chunk_id": str(row["chunk_id"]), "title": row.get("title"), "url": row.get("source_url"),
                "license": row.get("license"), "attribution": row.get("attribution"), "excerpt": str(row.get("text", ""))[:600]}
               for row in rows[:request.k]]

@@ -320,3 +320,34 @@ def test_cli_uses_the_tool_contract(inventory_runtime, monkeypatch, capsys):
     payload = json.loads(capsys.readouterr().out)
     assert payload["status"] == "ok" and payload["source"] == "synthetic-v1"
     assert payload["data"]["hotels"][0]["price_per_night"] == "80.00"
+
+
+def test_parallel_retrieval_calls_share_local_models_safely(runtime):
+    from concurrent.futures import ThreadPoolExecutor
+    entered, release = threading.Event(), threading.Event()
+    guard = threading.Lock()
+    active, calls = 0, []
+
+    def search(query, **kwargs):
+        nonlocal active
+        with guard:
+            active += 1
+            assert active == 1, 'Shared model inference must not overlap'
+        calls.append(query)
+        entered.set()
+        try:
+            assert release.wait(2)
+            return [{'chunk_id': 'synthetic-' + query, 'text': 'Synthetic excerpt', 'title': 'Synthetic source'}]
+        finally:
+            with guard:
+                active -= 1
+
+    runtime.search = search
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        first = pool.submit(runtime.execute, 'search_destinations', {'query': 'first'})
+        assert entered.wait(2)
+        second = pool.submit(runtime.execute, 'search_destinations', {'query': 'second'})
+        time.sleep(0.05)
+        release.set()
+        assert first.result().status == second.result().status == 'ok'
+    assert calls == ['first', 'second']

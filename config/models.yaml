@@ -19,6 +19,9 @@ providers:
       llama3.2:3b:
         limits: { rpm: 30, tpm: null, rpd: null }    # local; limit is your hardware
         supports: { tools: true, structured_output: true }    # local Ollama accepts JSON Schema in format
+        generation_options: {temperature: 0}
+        request_timeout_seconds: 300
+        tool_mode: json       # schema-constrained calls for the local model
         context_window: 32768    # accommodates agent input budget plus output allowance
 
   # Paid-provider protocols are replay-only; add model IDs only when recordings exist.
@@ -80,8 +83,8 @@ llm:
 agent:
   step_limit: 8
   max_parallel_calls: 8
-  model_timeout_seconds: 120
-  max_output_tokens: 4096
+  model_timeout_seconds: 310
+  max_output_tokens: 6144
   context:
     token_budget: 20000
     last_turns: 6
