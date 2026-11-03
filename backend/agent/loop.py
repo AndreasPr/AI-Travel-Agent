@@ -1,6 +1,5 @@
 """Bounded plan/act loop, deterministic final gate and single-day repairs."""
 import asyncio
-import json
 from decimal import Decimal
 from datetime import timedelta
 import re
@@ -9,7 +8,7 @@ from pydantic import ValidationError
 
 from backend.agent.context import ContextBuilder
 from backend.agent.models import ChatResponse, DayPatch, Intent, Usage
-from backend.agent.policy import ALLOWLISTS, apply_patch, data_block, sensitive
+from backend.agent.policy import ALLOWLISTS, apply_patch, data_block, sensitive, sensitive_state
 from backend.agent.providers import provider_for
 from backend.agent.store import PostgresTripStore
 from backend.llm.config import load_config
@@ -110,7 +109,7 @@ class Agent:
             output.message += ' Inventory quotes are synthetic; they do not establish booking availability.'
         state['history'].extend([{'role': 'user', 'content': request.message}, {'role': 'assistant', 'content': output.message}])
         # Reject generated sensitive content too; do not persist it in versions or history.
-        if sensitive(json.dumps(state, default=str)):
+        if sensitive_state(state):
             output.itinerary, output.diff, output.budget_met = None, None, None
             output.message = 'The generated content contained sensitive information and was not saved.'
             return output

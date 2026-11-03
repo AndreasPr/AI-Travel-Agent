@@ -270,3 +270,52 @@ def test_tool_deadline_becomes_structured_observation(monkeypatch):
     result = run(agent)
     assert result.tool_trace[0]['status'] == 'error'
     assert 'tool_failed' in json.dumps(script.calls[1][0])
+
+
+@pytest.mark.parametrize('text,valid', [
+    ('{"intent":"new_trip","budget":1500}', True),
+    ('{"intent":"unsupported"}', False),
+    ('Synthetic non-JSON response', False),
+])
+def test_ollama_intent_fallback_requests_json_and_validates_schema(text, valid):
+    import httpx
+    import respx
+    from backend.agent.models import Intent
+    from backend.agent.providers import StructuredProvider
+    from backend.llm.config import load_config, model_config
+    from backend.llm.ollama import OllamaProvider
+    from backend.llm.types import InvalidOutput
+
+    config = load_config()
+    entry = next(row for row in config['roles']['extract']['chain'] if row['provider'] == 'ollama')
+    spec = {**model_config('ollama', entry['model'], config), 'supports': {'structured_output': False}}
+    with httpx.Client() as client, respx.mock(assert_all_called=True) as mock:
+        route = mock.post('http://localhost:11434/api/chat').mock(return_value=httpx.Response(200, json={
+            'done': True, 'message': {'content': text}, 'prompt_eval_count': 10, 'eval_count': 5,
+        }))
+        adapter = OllamaProvider(entry['model'], spec, base_url='http://localhost:11434', client=client)
+        provider = StructuredProvider(adapter, spec)
+        messages = [{'role': 'user', 'content': 'Synthetic intent extraction example'}]
+        if valid:
+            response = provider.generate(messages, response_schema=Intent)
+            assert Intent.model_validate_json(response.text).intent == 'new_trip'
+        else:
+            with pytest.raises(InvalidOutput):
+                provider.generate(messages, response_schema=Intent)
+        body = json.loads(route.calls[0].request.content)
+        assert body['format'] == 'json'
+        assert 'json_mode' not in body['options']
+        assert 'Return only JSON matching this schema:' in body['messages'][-1]['content']
+        assert messages == [{'role': 'user', 'content': 'Synthetic intent extraction example'}]
+
+
+def test_generated_numeric_uuids_do_not_reject_agent_turn(monkeypatch):
+    from uuid import UUID
+    synthetic_id = UUID('12345678-1234-4234-8234-123456789012')
+    monkeypatch.setattr('backend.agent.store.uuid4', lambda: synthetic_id)
+    monkeypatch.setattr('test_agent_loop.uuid4', lambda: synthetic_id)
+    agent, _, _ = setup([{}, itinerary()])
+    result = run(agent)
+    assert result.itinerary is not None
+    assert result.trip_id == str(synthetic_id)
+    assert agent.store.load(result.trip_id)['itinerary'] is not None

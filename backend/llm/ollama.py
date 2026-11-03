@@ -31,6 +31,7 @@ class OllamaProvider:
     def _request(self, messages, tools, response_schema, stream, opts):
         opts = dict(opts)
         mode = opts.pop("tool_mode", "auto")
+        json_mode = opts.pop("json_mode", False)
         if mode not in {"auto", "json"}:
             raise InvalidOutput("tool_mode must be auto or json")
         fallback = bool(tools) and (mode == "json" or not self.spec.get("supports", {}).get("tools"))
@@ -38,6 +39,8 @@ class OllamaProvider:
         if "max_output_tokens" in opts:
             opts["num_predict"] = opts.pop("max_output_tokens")
         body["options"] = opts
+        if json_mode:
+            body["format"] = "json"
         if fallback:
             envelope = {"type": "object", "properties": {
                 "text": {"type": "string"},

@@ -135,13 +135,12 @@ class PostgresTripStore:
 
 
 def validate_state(state):
-    import json
     from backend.agent.models import Preferences
-    from backend.agent.policy import sensitive
+    from backend.agent.policy import sensitive_state
     Preferences.model_validate(state['preferences'])
     if state['proposal'] is not None:
         Preferences.model_validate(state['proposal'])
-    if sensitive(json.dumps(state, default=str)):
+    if sensitive_state(state):
         raise ValueError('Sensitive content cannot be persisted')
 
 

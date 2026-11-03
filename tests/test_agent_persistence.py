@@ -215,3 +215,25 @@ def test_versions_and_undo_endpoints(store):
     assert restored.status_code == 200
     assert restored.json()['itinerary'] == state['itinerary']
     assert restored.json()['version'] == 3
+
+
+def test_internal_uuid_exemption_preserves_sensitive_content_filter(store, monkeypatch):
+    from uuid import UUID
+    from backend.agent.policy import sensitive_state
+    synthetic_id = '12345678-1234-4234-8234-123456789012'
+    monkeypatch.setattr('backend.agent.store.uuid4', lambda: UUID(synthetic_id))
+    state = edit_state(store)
+    state['evidence'] = [synthetic_id]
+    for day in state['itinerary']['days']:
+        day['items'][0]['tool_result_ids'] = [synthetic_id]
+        day['items'][0]['coord_tool_result_id'] = synthetic_id
+    store.save(state, state['revision'])
+    assert store.load(synthetic_id)['evidence'] == [synthetic_id]
+    assert not sensitive_state(state)
+    for content in ['Synthetic payment number 1234567890123456', 'Synthetic passport detail', synthetic_id]:
+        unsafe = deepcopy(state)
+        unsafe['history'].append({'role': 'user', 'content': content})
+        assert sensitive_state(unsafe)
+        with pytest.raises(ValueError, match='Sensitive'):
+            store.save(unsafe, unsafe['revision'])
+    assert store.load(synthetic_id)['history'] == []

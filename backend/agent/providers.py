@@ -14,6 +14,8 @@ class StructuredProvider:
     def generate(self, messages, tools=None, response_schema=None, **opts):
         native = self.spec.get('supports', {}).get('structured_output', False)
         if response_schema is not None and not native:
+            if self.provider == 'ollama':
+                opts['json_mode'] = True
             messages = messages + [{'role': 'user', 'content': 'Return only JSON matching this schema: ' + json.dumps(schema_dict(response_schema), sort_keys=True)}]
         result = self.inner.generate(messages, tools=tools, response_schema=response_schema if native else None, **opts)
         return validate_response(result, tools, response_schema)

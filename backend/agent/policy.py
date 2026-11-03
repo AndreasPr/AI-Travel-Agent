@@ -23,6 +23,38 @@ def sensitive(text):
     return bool(SENSITIVE.search(text))
 
 
+def sensitive_state(state):
+    """Scan content while excluding canonical internal UUID fields, not free text."""
+    from uuid import UUID
+
+    def internal_id(value):
+        try:
+            parsed = UUID(value)
+            return parsed.version == 4 and str(parsed) == value
+        except (ValueError, TypeError, AttributeError):
+            return False
+
+    checked = deepcopy(state)
+    if internal_id(checked.get('id')):
+        checked['id'] = '[internal UUID]'
+    trusted = {value for value in state.get('evidence', []) if internal_id(value)}
+    checked['evidence'] = ['[internal UUID]' if value in trusted else value for value in state.get('evidence', [])]
+
+    def scrub_references(itinerary):
+        if not isinstance(itinerary, dict):
+            return
+        for day in itinerary.get('days', []):
+            for item in day.get('items', []):
+                item['tool_result_ids'] = ['[internal UUID]' if value in trusted else value for value in item.get('tool_result_ids', [])]
+                if item.get('coord_tool_result_id') in trusted:
+                    item['coord_tool_result_id'] = '[internal UUID]'
+
+    scrub_references(checked.get('itinerary'))
+    for version in checked.get('versions', []):
+        scrub_references(version.get('itinerary'))
+    return sensitive(json.dumps(checked, default=str))
+
+
 def data_block(value):
     # Escape delimiter characters inside serialized data to prevent premature closure.
     encoded = json.dumps(value, sort_keys=True, ensure_ascii=True, default=str).replace('<', '\\u003c').replace('>', '\\u003e')
