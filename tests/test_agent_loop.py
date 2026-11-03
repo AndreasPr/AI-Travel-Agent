@@ -119,6 +119,8 @@ def test_repair_loop_gives_up_after_two():
     assert 'two repairs' in result.message
     assert len(plan.calls) == 4
     assert result.issues[0]['name'] == 'schema_valid'
+    assert result.issues[0]['reason'] == 'schema_validation'
+    assert result.issues[0]['validation_error_types'] == ['missing']
 
 
 def test_step_limit_stops_loop():
@@ -319,3 +321,50 @@ def test_generated_numeric_uuids_do_not_reject_agent_turn(monkeypatch):
     assert result.itinerary is not None
     assert result.trip_id == str(synthetic_id)
     assert agent.store.load(result.trip_id)['itinerary'] is not None
+
+
+def test_configured_ollama_intent_uses_schema_constrained_output():
+    import httpx
+    import respx
+    from backend.agent.models import Intent
+    from backend.agent.providers import StructuredProvider
+    from backend.llm.config import load_config, model_config
+    from backend.llm.ollama import OllamaProvider
+    from backend.llm.types import InvalidOutput
+
+    config = load_config()
+    entry = next(row for row in config['roles']['extract']['chain'] if row['provider'] == 'ollama')
+    spec = model_config('ollama', entry['model'], config)
+    assert spec['supports']['structured_output'] is True
+    with httpx.Client() as client, respx.mock(assert_all_called=True) as mock:
+        route = mock.post('http://localhost:11434/api/chat')
+        provider = StructuredProvider(OllamaProvider(entry['model'], spec, base_url='http://localhost:11434', client=client), spec)
+        for content in ['{"intent":"new_trip","budget":1500}', '{"intent":"new_trip","extra":"synthetic"}']:
+            route.mock(return_value=httpx.Response(200, json={'done': True, 'message': {'content': content}}))
+            if 'extra' in content:
+                with pytest.raises(InvalidOutput, match='JSON schema'):
+                    provider.generate([{'role': 'user', 'content': 'Synthetic trip request'}], response_schema=Intent)
+            else:
+                result = provider.generate([{'role': 'user', 'content': 'Synthetic trip request'}], response_schema=Intent)
+                assert Intent.model_validate_json(result.text).intent == 'new_trip'
+            body = json.loads(route.calls[-1].request.content)
+            assert body['format'] == Intent.model_json_schema()
+            assert body['format']['additionalProperties'] is False
+
+
+@pytest.mark.parametrize('error_message,expected', [
+    ('Provider returned invalid JSON', 'invalid_json'),
+    ('Output does not satisfy the JSON schema', 'schema_validation'),
+    ('Synthetic secret should never be echoed', 'invalid_output'),
+])
+def test_intent_failure_reports_safe_diagnostic(error_message, expected):
+    from backend.llm.types import InvalidOutput
+    agent, runtime, _ = setup([])
+    agent.providers = lambda role: Script([InvalidOutput(error_message)])
+    result = run(agent)
+    assert result.issues[0]['name'] == expected
+    assert result.issues[0]['stage'] == 'intent'
+    assert runtime.calls == []
+    assert result.itinerary is None
+    assert 'Synthetic secret' not in result.model_dump_json()
+    assert 'Synthetic secret' not in json.dumps(agent.store.load(result.trip_id))

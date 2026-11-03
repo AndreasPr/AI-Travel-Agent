@@ -7,6 +7,7 @@ import re
 from pydantic import ValidationError
 
 from backend.agent.context import ContextBuilder
+from backend.agent.errors import failure_issue
 from backend.agent.models import ChatResponse, DayPatch, Intent, Usage
 from backend.agent.policy import ALLOWLISTS, apply_patch, data_block, sensitive, sensitive_state
 from backend.agent.providers import provider_for
@@ -32,6 +33,7 @@ class Agent:
         state = self.store.load(request.trip_id) if request.trip_id else self.store.create()
         revision = state['revision']
         output = ChatResponse(trip_id=state['id'], message='')
+        stage = 'intent'
         usage = Usage()
         output.usage = usage
         if sensitive(request.message):
@@ -39,6 +41,8 @@ class Agent:
             return output
 
         async def generate(role, messages, tools=None, response_schema=None):
+            nonlocal stage
+            stage = {'Intent': 'intent', 'Summary': 'summary', 'Itinerary': 'itinerary', 'DayPatch': 'edit'}.get(getattr(response_schema, '__name__', ''), role)
             provider = self.providers(role)
             from backend.llm.validation import schema_dict
             payload = [messages, tools, schema_dict(response_schema)]
@@ -98,8 +102,10 @@ class Agent:
                         await self._plan(state, request, intent, budget, output, generate, execute)
                 if output.preference_proposal is not None:
                     output.message += ' Review the proposed preferences; reply "confirm preferences" to save them.'
-        except (LLMError, ValidationError, ValueError, TimeoutError):
-            output.message = 'I could not complete this turn: the provider response or context was invalid or unavailable. Please retry.'
+        except (LLMError, ValidationError, ValueError, TimeoutError) as exc:
+            issue = failure_issue(exc, stage)
+            output.issues.append(issue)
+            output.message = f"I could not complete the {stage} stage: {issue['message']}"
             output.itinerary = None
             output.diff = None
         if any(row['status'] == 'no_data' for row in output.tool_trace):
@@ -197,8 +203,11 @@ class Agent:
                     total = Decimal(str(result['data']['total_cost']))
                     if best is None or total < best[0]:
                         best = (total, candidate, diff, issues)
-            except (ValidationError, ValueError, LLMError):
-                issues = [dict(name='schema_valid', severity='error', message='Output does not match the required itinerary or day patch schema')]
+            except (ValidationError, ValueError, LLMError) as exc:
+                detail = failure_issue(exc, 'edit' if schema is DayPatch else 'itinerary')
+                issues = [{**detail, 'name': 'schema_valid', 'reason': detail['name']}]
+                if isinstance(exc, ValidationError):
+                    issues[0]['validation_error_types'] = sorted({error['type'] for error in exc.errors()})
             output.issues = issues
             if attempt < 2:
                 messages.append({'role': 'user', 'content': 'Repair the candidate using these issues. Return complete JSON. ' + data_block({'candidate': candidate, 'issues': issues})})
