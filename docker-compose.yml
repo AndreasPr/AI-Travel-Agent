@@ -43,12 +43,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
     env_file:
       - .env
     environment:
       NODE_ENV: production
       PORT: 3000
-      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://127.0.0.1:8100}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
     depends_on:
       api:
         condition: service_started

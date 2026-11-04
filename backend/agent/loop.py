@@ -110,6 +110,10 @@ class Agent:
                     {'role': 'user', 'content': data_block({'message': request.message, 'has_itinerary': state['itinerary'] is not None})},
                 ], response_schema=Intent)
                 intent = Intent.model_validate_json(intent_response.text)
+                if intent.intent == 'edit_trip':
+                    # A model-selected day is not authorization to change that day.
+                    days = re.findall(r'\bday\s+(\d+)\b', request.message, re.I)
+                    intent.day = int(days[0]) if len(set(days)) == 1 and int(days[0]) > 0 else None
                 if intent.preference_proposal is not None and not re.search(r'\b(remember|save|prefer\w*)\b', request.message, re.I):
                     intent.preference_proposal = None
                 if intent.preference_proposal is not None:
@@ -120,8 +124,13 @@ class Agent:
                     output.preference_proposal = proposal
                 if intent.intent == 'chitchat':
                     output.message = 'I can help plan or edit a trip. Tell me the destination, dates and budget.'
-                elif intent.intent == 'edit_trip' and (state['itinerary'] is None or intent.day is None):
-                    output.message = 'I prepared a preference update.' if output.preference_proposal is not None else 'Please select an existing itinerary and the day to edit.'
+                elif intent.intent == 'edit_trip' and (state['itinerary'] is None or intent.day is None or intent.day > len(state['itinerary']['days'])):
+                    if output.preference_proposal is not None:
+                        output.message = 'I prepared a preference update.'
+                    elif state['itinerary'] is None:
+                        output.message = 'Please select an existing itinerary and the day to edit.'
+                    else:
+                        output.message = f"Which day should I change? Choose day 1 through day {len(state['itinerary']['days'])}, for example: Add more museums to day 2. Your itinerary has not changed."
                 else:
                     budget = intent.budget if intent.budget is not None else state['budget']
                     if budget is None:

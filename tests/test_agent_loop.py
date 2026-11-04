@@ -703,3 +703,25 @@ def test_cheaper_unpriced_day_requests_removal_without_inventing_price():
     validate({'day': 2, 'operations': [{'op': 'remove_item', 'item_id': 'item-1'}]}, schema)
     with pytest.raises(InvalidOutput):
         validate({'day': 2, 'operations': [{'op': 'replace_item', 'item_id': 'item-1', 'item': itinerary()['days'][1]['items'][0]}]}, schema)
+
+
+@pytest.mark.parametrize('message, classified_day', [('Add more museums.', 1), ('Add more museums to day 99', 99)])
+def test_edit_requires_explicit_existing_day_without_creating_version(message, classified_day):
+    store = MemoryTripStore()
+    state = store.create()
+    state['itinerary'], state['budget'] = itinerary(), '1500'
+    store.save(state, state['revision'])
+    original = store.load(state['id'])
+    agent, _, plan = setup([], {'intent': 'edit_trip', 'day': classified_day}, store)
+    result = run(agent, message, state['id'])
+    assert 'Which day should I change?' in result.message
+    assert not result.issues and not plan.calls
+    saved = store.load(state['id'])
+    assert saved['itinerary'] == original['itinerary']
+    assert saved['versions'] == original['versions']
+    app = FastAPI()
+    app.include_router(router)
+    app.dependency_overrides[get_agent] = lambda: agent
+    response = TestClient(app).post(f"/api/trips/{state['id']}/undo")
+    assert response.status_code == 409
+    assert response.json()['detail'] == 'No earlier itinerary version'
