@@ -66,3 +66,7 @@ test-tools:
 .PHONY: test-agent
 test-agent:
 	pytest -q tests/test_agent_loop.py tests/test_agent_persistence.py
+
+.PHONY: test-streaming
+test-streaming:
+	pytest -q tests/test_agent_streaming.py

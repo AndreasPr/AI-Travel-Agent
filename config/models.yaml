@@ -84,6 +84,7 @@ agent:
   step_limit: 8
   max_parallel_calls: 8
   model_timeout_seconds: 310
+  request_timeout_seconds: 900   # total SSE turn deadline, including tools and repairs
   max_output_tokens: 6144
   context:
     token_budget: 20000

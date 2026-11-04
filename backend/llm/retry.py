@@ -1,5 +1,6 @@
 """Status mapping and bounded retries; no retries for ordinary client errors."""
 import random
+import asyncio
 import time
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
@@ -52,4 +53,16 @@ def retry_call(call, *, attempts=3, base_delay=1.0, max_delay=30.0, sleep=time.s
                 raise
             delay = min(max_delay, base_delay * 2 ** attempt) * (0.5 + jitter() / 2)
             sleep(max(delay, exc.retry_after or 0))
+    raise ValueError("Retry attempts must be positive")
+
+
+async def retry_call_async(call, *, attempts=3, base_delay=1.0, max_delay=30.0, sleep=asyncio.sleep, jitter=random.random):
+    for attempt in range(attempts):
+        try:
+            return await call()
+        except (RateLimited, ProviderUnavailable) as exc:
+            if attempt + 1 == attempts:
+                raise
+            delay = min(max_delay, base_delay * 2 ** attempt) * (0.5 + jitter() / 2)
+            await sleep(max(delay, exc.retry_after or 0))
     raise ValueError("Retry attempts must be positive")

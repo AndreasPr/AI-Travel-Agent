@@ -1,6 +1,8 @@
 """Bounded tool execution, HTTP retries and shared-host geocoding throttling."""
 from __future__ import annotations
 
+import asyncio
+import threading
 import fcntl
 import hashlib
 import json
@@ -94,7 +96,8 @@ class ToolDefinition:
 
 
 class Context:
-    def __init__(self, runtime, definition):
+    def __init__(self, runtime, definition, cancelled=None):
+        self.cancelled = cancelled or threading.Event()
         self.runtime, self.definition = runtime, definition
         self.deadline = time.monotonic() + definition.policy.timeout_seconds
         self.cache_uses = []
@@ -104,13 +107,13 @@ class Context:
         return max(0, self.deadline - time.monotonic())
 
     def check(self):
-        if self.remaining() <= 0:
+        if self.cancelled.is_set() or self.remaining() <= 0:
             raise TimeoutError()
 
     def pause(self, seconds):
         if seconds >= self.remaining():
             raise TimeoutError()
-        time.sleep(seconds)
+        self.cancelled.wait(seconds)
         self.check()
 
     def http(self, url, params, headers=None, rate_limited=False):
@@ -208,9 +211,31 @@ class ToolRuntime:
             future.cancel()
             return self._error(name, definition.source, "timeout", "Tool deadline exceeded", True)
 
-    def _invoke(self, definition, request):
-        context = Context(self, definition)
+    async def aexecute(self, name, arguments):
+        if name not in self.definitions:
+            return self._error(name, "registry", "invalid_input", "Unknown tool")
+        definition = self.definitions[name]
         try:
+            request = definition.input_model.model_validate(arguments)
+        except ValidationError:
+            return self._error(name, definition.source, "invalid_input", "Arguments do not match the tool input schema")
+        cancelled = threading.Event()
+        future = POOL.submit(self._invoke, definition, request, cancelled)
+        try:
+            return await asyncio.wait_for(asyncio.wrap_future(future), definition.policy.timeout_seconds)
+        except asyncio.CancelledError:
+            cancelled.set()
+            future.cancel()
+            raise
+        except TimeoutError:
+            cancelled.set()
+            future.cancel()
+            return self._error(name, definition.source, "timeout", "Tool deadline exceeded", True)
+
+    def _invoke(self, definition, request, cancelled=None):
+        context = Context(self, definition, cancelled)
+        try:
+            context.check()
             data = definition.handler(request, context)
             context.check()
             status = "no_data" if data is None else "ok"

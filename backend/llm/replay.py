@@ -38,6 +38,10 @@ class ReplayProvider:
         self.provider, self.model = provider, model
         self.fixtures_dir = Path(fixtures_dir)
 
+    async def agenerate(self, messages, tools=None, response_schema=None, **opts):
+        # Local fixture reads only; no transport or background worker survives cancellation.
+        return self.generate(messages, tools=tools, response_schema=response_schema, **opts)
+
     def generate(self, messages, tools=None, response_schema=None, stream=False, **opts):
         key = fixture_key(self.provider, self.model, messages, tools, response_schema)
         path = self.fixtures_dir / f"{key}.json"

@@ -17,19 +17,27 @@ class GeminiProvider:
 
     def __init__(self, model, spec, client=None):
         self.model, self.spec, self.client = model, spec, client
+        self._injected_client = client
+
+    def _new_client(self):
+        key = os.getenv("GEMINI_API_KEY")
+        if not key:
+            raise ProviderUnavailable("M3: export GEMINI_API_KEY for the free-tier project")
+        try:
+            from google import genai
+        except ImportError as exc:
+            raise ProviderUnavailable("Install the google-genai dependency before live Gemini use") from exc
+        return genai.Client(api_key=key, http_options={"retry_options": {"attempts": 1}})
 
     def _client(self):
         if self.client is None:
-            key = os.getenv("GEMINI_API_KEY")
-            if not key:
-                raise ProviderUnavailable("M3: export GEMINI_API_KEY for the free-tier project")
-            try:
-                from google import genai
-            except ImportError as exc:
-                raise ProviderUnavailable("Install the google-genai dependency before live Gemini use") from exc
-            # Disable SDK retries so every outbound attempt passes through our quota guard.
-            self.client = genai.Client(api_key=key, http_options={"retry_options": {"attempts": 1}})
+            self.client = self._new_client()
         return self.client
+
+    def preflight(self, messages, tools, response_schema, opts):
+        if self._injected_client is None and not os.getenv("GEMINI_API_KEY"):
+            raise ProviderUnavailable("M3: export GEMINI_API_KEY for the free-tier project")
+        self._request(messages, tools, response_schema, opts)
 
     def _request(self, messages, tools, response_schema, opts):
         config = {**opts, "automatic_function_calling": {"disable": True}}
@@ -90,6 +98,20 @@ class GeminiProvider:
                         cached_tokens=field(usage, "cached_content_token_count", 0) or 0,
                         latency_ms=(time.monotonic() - started) * 1000, raw_id=field(raw, "response_id"),
                         finish_reason=field(reason, "value", reason))
+
+    async def agenerate(self, messages, tools=None, response_schema=None, **opts):
+        request = self._request(messages, tools, response_schema, opts)
+        started = time.monotonic()
+        owner = self._injected_client or self._new_client()
+        try:
+            async with owner.aio as client:
+                raw = await client.models.generate_content(**request)
+        except Exception as exc:
+            raise map_exception(exc) from exc
+        finally:
+            if self._injected_client is None:
+                owner.close()
+        return validate_response(self._normalize(raw, started), tools, response_schema)
 
     def generate(self, messages, tools=None, response_schema=None, stream=False, **opts):
         request = self._request(messages, tools, response_schema, opts)

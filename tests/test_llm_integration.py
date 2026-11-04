@@ -72,3 +72,38 @@ def test_daily_quota_reservation_is_atomic(isolated_quota_table):
     with ThreadPoolExecutor(max_workers=6) as pool:
         assert sum(pool.map(reserve, range(12))) == 3
     assert counter.remaining("synthetic", "synthetic-concurrent", 3) == 0
+
+
+@pytest.mark.integration
+def test_async_daily_quota_reservation_is_atomic(isolated_quota_table):
+    import asyncio
+    _, table = isolated_quota_table
+    counter = PostgresDailyCounter(engine, table)
+    async def scenario():
+        async def reserve():
+            try:
+                await counter.areserve('synthetic', 'synthetic-async', 3)
+                return True
+            except QuotaExhausted:
+                return False
+        assert sum(await asyncio.gather(*(reserve() for _ in range(8)))) == 3
+    asyncio.run(scenario())
+    assert counter.remaining('synthetic', 'synthetic-async', 3) == 0
+
+
+@pytest.mark.integration
+def test_cancelled_async_quota_transaction_rolls_back(isolated_quota_table):
+    import asyncio
+    schema, table = isolated_quota_table
+    counter = PostgresDailyCounter(engine, table)
+    async def scenario():
+        with engine.begin() as connection:
+            connection.execute(text(f'LOCK TABLE "{schema}".llm_usage_daily IN ACCESS EXCLUSIVE MODE'))
+            task = asyncio.create_task(counter.areserve('synthetic', 'synthetic-cancel', 3))
+            await asyncio.sleep(0.1)
+            assert not task.done()
+            task.cancel()
+            with pytest.raises(asyncio.CancelledError):
+                await task
+        assert counter.remaining('synthetic', 'synthetic-cancel', 3) == 3
+    asyncio.run(scenario())
