@@ -119,6 +119,21 @@ class OllamaProvider:
             result.tool_calls = [ToolCall(**call) for call in data["tool_calls"]]
         return validate_response(result, tools, schema)
 
+    async def agenerate(self, messages, tools=None, response_schema=None, **opts):
+        body, envelope = self._request(messages, tools, response_schema, False, opts)
+        started = time.monotonic()
+        try:
+            async with httpx.AsyncClient(timeout=self.spec.get("request_timeout_seconds", 120)) as client:
+                response = await client.post(self.base_url + "/api/chat", json=body)
+                if response.status_code >= 400:
+                    raise status_error(response.status_code, response.headers)
+                raw = response.json()
+        except Exception as exc:
+            raise map_exception(exc) from exc
+        if not raw.get("done"):
+            raise InvalidOutput("Ollama returned an incomplete response")
+        return self._finish(self._normalize(raw, started), envelope, tools, response_schema)
+
     def generate(self, messages, tools=None, response_schema=None, stream=False, **opts):
         body, envelope = self._request(messages, tools, response_schema, stream, opts)
         if stream:

@@ -64,6 +64,13 @@ class TokenBucket:
             if self.capacity["tokens"] is not None:
                 self.available["tokens"] = min(self.capacity["tokens"], self.available["tokens"] + reserved - actual)
 
+    def refund(self, tokens):
+        """Release admission when no provider request was dispatched."""
+        with self.lock:
+            for kind, amount in (("requests", 1), ("tokens", tokens)):
+                if self.capacity[kind] is not None:
+                    self.available[kind] = min(self.capacity[kind], self.available[kind] + amount)
+
 
 class PostgresDailyCounter:
     def __init__(self, engine=None, table=usage_daily, day=quota_day):
@@ -99,6 +106,31 @@ class PostgresDailyCounter:
         except SQLAlchemyError as exc:
             raise ProviderUnavailable("Daily quota store unavailable; run database migrations") from exc
         return max(0, limit - count)
+
+    async def areserve(self, provider, model, limit):
+        """Async transaction: cancellation before admission rolls back the reservation."""
+        if limit is None:
+            return None
+        if limit <= 0:
+            raise QuotaExhausted("Daily model quota exhausted")
+        from psycopg import AsyncConnection, Error as PsycopgError
+
+        table = self.table
+        stmt = insert(table).values(date=self.day(), provider=provider, model=model, requests=1)
+        stmt = stmt.on_conflict_do_update(index_elements=[table.c.date, table.c.provider, table.c.model],
+                                         set_={"requests": table.c.requests + 1}, where=table.c.requests < limit).returning(table.c.requests)
+        compiled = stmt.compile(dialect=self.engine.dialect)
+        args, kwargs = self.engine.dialect.create_connect_args(self.engine.url)
+        kwargs.update(connect_timeout=5, options="-c statement_timeout=5000")
+        try:
+            async with await AsyncConnection.connect(*args, **kwargs) as connection:
+                cursor = await connection.execute(str(compiled), compiled.params)
+                row = await cursor.fetchone()
+            if row is None:
+                raise QuotaExhausted("Daily model quota exhausted")
+            return limit - row[0]
+        except PsycopgError as exc:
+            raise ProviderUnavailable("Daily quota store unavailable; run database migrations") from exc
 
 
 _buckets = {}

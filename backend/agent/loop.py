@@ -4,6 +4,8 @@ import json
 from decimal import Decimal
 from datetime import timedelta
 import re
+import time
+from uuid import uuid4
 
 from pydantic import ValidationError
 
@@ -31,12 +33,12 @@ class Agent:
         self.definitions = [{'name': name, 'description': entry.description, 'parameters': entry.input_model.model_json_schema(by_alias=True)} for name, entry in sorted(REGISTRY.items())]
         self.context = ContextBuilder(self.definitions, self.settings['context'])
 
-    async def chat(self, request):
+    async def chat(self, request, *, event_sink=None, request_id=None, usage=None):
         state = self.store.load(request.trip_id) if request.trip_id else self.store.create()
         revision = state['revision']
         output = ChatResponse(trip_id=state['id'], message='')
         stage = 'intent'
-        usage = Usage()
+        usage = usage if usage is not None else Usage()
         output.usage = usage
         if sensitive(request.message):
             output.message = 'Please omit health details, identification, payment information and secrets. Use general travel preferences instead.'
@@ -52,8 +54,14 @@ class Agent:
             if any(self.context.estimate(payload, name) > self.settings['context']['token_budget'] for name in names):
                 raise ValueError('Prompt exceeds configured token budget')
             try:
-                response = await asyncio.wait_for(asyncio.to_thread(provider.generate, messages, tools=tools, response_schema=response_schema,
-                                                                      max_output_tokens=self.settings['max_output_tokens']), self.settings['model_timeout_seconds'])
+                kwargs = dict(tools=tools, response_schema=response_schema, max_output_tokens=self.settings['max_output_tokens'])
+                if hasattr(provider, 'agenerate'):
+                    call = provider.agenerate(messages, **kwargs)
+                elif event_sink is None:
+                    call = asyncio.to_thread(provider.generate, messages, **kwargs)
+                else:
+                    raise InvalidOutput('Streaming requires a cancellable provider')
+                response = await asyncio.wait_for(call, self.settings['model_timeout_seconds'])
             except InvalidOutput as exc:
                 response = getattr(exc, 'rejected_tool_response', None)
                 if response_schema is not None or not tools or response is None or not response.tool_calls:
@@ -68,12 +76,21 @@ class Agent:
             return response
 
         async def execute(name, arguments):
+            from backend.agent.events import ToolStart, ToolEnd, argument_summary
+            call_id, started = uuid4(), time.monotonic()
+            if event_sink is not None:
+                await event_sink(ToolStart(request_id=request_id, call_id=call_id, tool=name,
+                                          argument_summary=argument_summary(name, arguments)))
             try:
                 timeout = REGISTRY[name].policy.timeout_seconds
-                result = await asyncio.wait_for(asyncio.to_thread(self.runtime.execute, name, arguments), timeout + 0.1)
+                call = self.runtime.aexecute(name, arguments) if hasattr(self.runtime, 'aexecute') else asyncio.to_thread(self.runtime.execute, name, arguments)
+                result = await asyncio.wait_for(call, timeout + 0.1)
                 payload = result.model_dump(mode='json')
             except Exception:
                 payload = {'tool': name, 'status': 'error', 'data': {'error': {'code': 'tool_failed', 'message': 'Tool failed or exceeded its deadline'}}}
+            if event_sink is not None:
+                await event_sink(ToolEnd(request_id=request_id, call_id=call_id, tool=name,
+                                        status=payload['status'], duration_ms=(time.monotonic() - started) * 1000))
             output.tool_trace.append(payload)
             if payload.get('tool_result_id') and payload['status'] == 'ok':
                 state['evidence'].append(payload['tool_result_id'])
@@ -195,6 +212,7 @@ class Agent:
             if required and required <= completed:
                 break
         else:
+            output.issues.append(dict(name='step_limit', severity='error', message='Planning step limit reached'))
             output.message = 'I reached the planning step limit before producing a validated itinerary.'
             return
         if intent.intent == 'question_about_trip':

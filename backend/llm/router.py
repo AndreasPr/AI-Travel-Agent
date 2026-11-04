@@ -7,7 +7,7 @@ from backend.llm.gemini import GeminiProvider
 from backend.llm.limits import PostgresDailyCounter, effective_limits, shared_bucket
 from backend.llm.ollama import OllamaProvider
 from backend.llm.replay import BedrockProvider, ClaudeProvider, ReplayProvider
-from backend.llm.retry import retry_call
+from backend.llm.retry import retry_call, retry_call_async
 from backend.llm.types import InvalidOutput, ProviderUnavailable, QuotaExhausted, RateLimited
 from backend.llm.validation import schema_dict
 
@@ -26,6 +26,29 @@ class ManagedProvider:
 
     def remaining_daily(self):
         return self.counter.remaining(self.provider, self.model, self.limits["rpd"])
+
+    async def agenerate(self, messages, tools=None, response_schema=None, **opts):
+        opts = {"max_output_tokens": self.settings["max_output_tokens"], **opts}
+        if not isinstance(opts["max_output_tokens"], int) or opts["max_output_tokens"] <= 0:
+            raise InvalidOutput("max_output_tokens must be a positive integer")
+        reserved = len(json.dumps([messages, tools, schema_dict(response_schema)], ensure_ascii=False).encode()) + opts["max_output_tokens"]
+        if hasattr(self.inner, 'preflight'):
+            self.inner.preflight(messages, tools, response_schema, opts)
+
+        async def attempt():
+            self.bucket.reserve(reserved)
+            try:
+                await self.counter.areserve(self.provider, self.model, self.limits["rpd"])
+            except BaseException:
+                self.bucket.refund(reserved)
+                raise
+            # Once dispatched, a cancelled/failed request may have consumed provider quota.
+            # Without final usage keep the conservative charge; minute tokens refill normally.
+            result = await self.inner.agenerate(messages, tools=tools, response_schema=response_schema, **opts)
+            self.bucket.reconcile(reserved, result.tokens_in + result.tokens_out)
+            return result
+
+        return await retry_call_async(attempt, **self.retry_options)
 
     def generate(self, messages, tools=None, response_schema=None, stream=False, **opts):
         opts = {"max_output_tokens": self.settings["max_output_tokens"], **opts}
@@ -95,6 +118,18 @@ class Router:
         self.chain, self.config = chain, config
         self.factory = factory or (lambda provider, model: build_provider(provider, model, config))
         self.chosen = None
+
+    async def agenerate(self, messages, tools=None, response_schema=None, **opts):
+        last = None
+        for entry in self.chain:
+            try:
+                provider = self.factory(entry["provider"], entry["model"])
+                response = await provider.agenerate(messages, tools=tools, response_schema=response_schema, **opts)
+                self.chosen = provider
+                return response
+            except FALLBACK_ERRORS as exc:
+                last = exc
+        raise last or ProviderUnavailable("No provider available for role")
 
     def generate(self, messages, tools=None, response_schema=None, stream=False, **opts):
         if stream:

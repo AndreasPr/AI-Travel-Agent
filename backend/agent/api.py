@@ -43,3 +43,9 @@ def undo(trip_id: str, agent=Depends(get_agent)):  # noqa: B008
         raise HTTPException(404, 'Trip not found') from exc
     except (ValueError, StoreConflict) as exc:
         raise HTTPException(409, str(exc)) from exc
+
+
+@router.post('/chat/stream')
+async def chat_stream(request: ChatRequest, agent=Depends(get_agent)):  # noqa: B008
+    from backend.agent.streaming import response_for
+    return response_for(agent, request)

@@ -28,7 +28,7 @@ class StructuredProvider:
         self.inner, self.spec = inner, spec
         self.provider, self.model = inner.provider, inner.model
 
-    def generate(self, messages, tools=None, response_schema=None, **opts):
+    def _prepare(self, messages, tools, response_schema, opts):
         native = self.spec.get('supports', {}).get('structured_output', False)
         requested_schema = generation_schema(response_schema)
         if self.provider == 'ollama' and isinstance(requested_schema, dict):
@@ -39,7 +39,16 @@ class StructuredProvider:
             if self.provider == 'ollama':
                 opts['json_mode'] = True
             messages = messages + [{'role': 'user', 'content': 'Return only JSON matching this schema: ' + json.dumps(schema_dict(requested_schema), sort_keys=True)}]
-        result = self.inner.generate(messages, tools=tools, response_schema=requested_schema if native else None, **opts)
+        return messages, requested_schema if native else None, opts
+
+    def generate(self, messages, tools=None, response_schema=None, **opts):
+        prepared, schema, opts = self._prepare(messages, tools, response_schema, opts)
+        result = self.inner.generate(prepared, tools=tools, response_schema=schema, **opts)
+        return validate_response(result, tools, response_schema)
+
+    async def agenerate(self, messages, tools=None, response_schema=None, **opts):
+        prepared, schema, opts = self._prepare(messages, tools, response_schema, opts)
+        result = await self.inner.agenerate(prepared, tools=tools, response_schema=schema, **opts)
         return validate_response(result, tools, response_schema)
 
 

@@ -5,6 +5,8 @@
 ```mermaid
 flowchart TD
     HTTP[FastAPI /api/chat] --> Agent[Agent plan/act loop]
+    SSE[FastAPI /api/chat/stream] --> Events[Typed events / heartbeat / cancellation]
+    Events --> Agent
     CLI[Agent CLI] --> Agent
     Agent --> Intent[extract role: intent and preference proposal]
     Agent --> Context[ContextBuilder: stable prefix and bounded history]
@@ -66,7 +68,7 @@ Usage reports provider/model per call, input/output tokens, cached tokens, and u
 
 The sensitive-content filter rejects recognizable health details, identity/payment fields and secrets, while preference fields accept a closed vocabulary of general travel needs. It is a heuristic, not a comprehensive natural-language privacy detector. Do not enter sensitive personal information. Invalid preference fields cannot be persisted. Generated sensitive text is also rejected before conversation/version writes.
 
-Thread-based model/tool deadlines stop waiting but cannot forcibly kill a running Python thread. The tools retain HTTP/database timeouts. This task does not add booking, live availability, authentication, full prompt-injection protection or distributed rate limiting.
+Production model calls use cancellable async transports. Tool workers receive cooperative cancellation and retain HTTP/database timeouts; a Python thread cannot be forcibly killed mid-operation. The streaming endpoint owns and joins its agent task on disconnect. See `docs/STREAMING.md` for event contracts and quota accounting. This task does not add booking, live availability, authentication, full prompt-injection protection or distributed rate limiting.
 
 ## M5 — Local agent verification
 
@@ -100,7 +102,7 @@ For itinerary and day-patch generation, the response schema narrows item `start`
 
 The local Ollama model's `context_window` is read from `config/models.yaml` and sent as `options.num_ctx`. It is sized above the configured agent input estimate plus output allowance; a larger context uses more local memory. This prevents relying on a smaller server default while constructing larger repair prompts. Invalid proposed tool calls still raise validation errors for standalone provider callers; the agent routes their normalized calls through its allowlist and ToolRuntime so invalid arguments become observations instead of ending the turn.
 
-For explicit dates and a supported city, generation schemas bind those values, trusted quote IDs and retrieved chunk IDs. Hotel-only price evidence constrains priced items to exact hotel names, currencies and quote amounts; unknown activity costs remain null. New-trip item IDs are assigned by the server, and edits retain replacement IDs. The deterministic validator remains the acceptance gate. Ollama uses a JSON tool-call envelope containing each tool argument schema. Its configured HTTP timeout is 300 seconds and the agent model deadline is 310 seconds; long local generations may take minutes. Thread cancellation still cannot terminate an in-flight request or its retry wrapper.
+For explicit dates and a supported city, generation schemas bind those values, trusted quote IDs and retrieved chunk IDs. Hotel-only price evidence constrains priced items to exact hotel names, currencies and quote amounts; unknown activity costs remain null. New-trip item IDs are assigned by the server, and edits retain replacement IDs. The deterministic validator remains the acceptance gate. Ollama uses a JSON tool-call envelope containing each tool argument schema. Its configured HTTP timeout is 300 seconds and the agent model deadline is 310 seconds; long local generations may take minutes. Async cancellation closes the model request and interrupts retry backoff.
 
 For explicit city/date trips with retrieved passages, a separate extract call proposes activity-place names. Only names found literally (case-insensitive) in the cited excerpt are admitted to the generation schema. This checks textual provenance, not opening hours or factual entailment. For a requested hotel stay with matching quotes, the generated first day contains one total-stay hotel quote and one unpriced activity; later days contain unpriced activities. This conservative generation scaffold supports one accommodation booking per trip; it does not optimize multi-hotel itineraries. Shared schema definitions avoid duplicating hotel alternatives in each day. The prompt carries the compact public contract while the decoder receives the evidence-bound schema. An edit that changes only identifiers or evidence metadata is rejected with `edit_no_change` and enters the existing repair loop. For a cheaper request on a day whose items are all unpriced, the generated patch removes one activity and explicitly does not establish cost savings.
 
