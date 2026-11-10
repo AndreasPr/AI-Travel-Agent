@@ -70,3 +70,14 @@ test-agent:
 .PHONY: test-streaming
 test-streaming:
 	pytest -q tests/test_agent_streaming.py
+
+.PHONY: test-security security-report security-live
+test-security:
+	pytest -q tests/security
+
+security-report:
+	python tests/security/report.py
+
+# Explicit operator action; configured local model and migrated Postgres required.
+security-live:
+	RECORD=0 LLM_REPLAY=0 python tests/security/report.py --live

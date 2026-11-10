@@ -1,0 +1,92 @@
+{
+  "provenance": "Synthetic scripted responses, not live recordings",
+  "citation": {
+    "chunk_id": "synthetic-chunk",
+    "title": "Synthetic destination source",
+    "url": "https://example.org/synthetic-source",
+    "license": "Synthetic fixture; not licensed travel content",
+    "attribution": "Synthetic fixture",
+    "excerpt": "Synthetic Museum"
+  },
+  "hotel_result": {
+    "hotels": [
+      {
+        "name": "Synthetic Hotel",
+        "price_per_night": "100",
+        "total_price": "100",
+        "currency": "USD",
+        "source": "synthetic-v1"
+      }
+    ]
+  },
+  "itinerary": {
+    "trip": {
+      "start_date": "2027-04-10",
+      "end_date": "2027-04-11",
+      "currency": "USD"
+    },
+    "days": [
+      {
+        "date": "2027-04-10",
+        "items": [
+          {
+            "id": "2027-04-10:item:1",
+            "start": "2027-04-10T09:00:00",
+            "end": "2027-04-10T10:00:00",
+            "place": "Synthetic Hotel",
+            "category": "hotel",
+            "cost": "100",
+            "currency": "USD",
+            "chunk_ids": [],
+            "tool_result_ids": [
+              "synthetic-search_hotels"
+            ],
+            "coords": null,
+            "coord_tool_result_id": null,
+            "allow_outside_visiting_window": false,
+            "travel_mode": "walking"
+          },
+          {
+            "id": "2027-04-10:item:2",
+            "start": "2027-04-10T11:00:00",
+            "end": "2027-04-10T12:00:00",
+            "place": "Synthetic Museum",
+            "category": "museum",
+            "cost": null,
+            "currency": "USD",
+            "chunk_ids": [
+              "synthetic-chunk"
+            ],
+            "tool_result_ids": [],
+            "coords": null,
+            "coord_tool_result_id": null,
+            "allow_outside_visiting_window": false,
+            "travel_mode": "walking"
+          }
+        ]
+      },
+      {
+        "date": "2027-04-11",
+        "items": [
+          {
+            "id": "2027-04-11:item:1",
+            "start": "2027-04-11T10:00:00",
+            "end": "2027-04-11T11:00:00",
+            "place": "Synthetic Museum",
+            "category": "museum",
+            "cost": null,
+            "currency": "USD",
+            "chunk_ids": [
+              "synthetic-chunk"
+            ],
+            "tool_result_ids": [],
+            "coords": null,
+            "coord_tool_result_id": null,
+            "allow_outside_visiting_window": false,
+            "travel_mode": "walking"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -2,6 +2,11 @@ from typing import List
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from backend.security.content import install_log_redaction
+from backend.security.middleware import BodyLimitMiddleware
+from backend.llm.config import load_config
 from sqlalchemy import text
 
 from backend.db import schemas as db_schemas, utils as db_utils
@@ -17,7 +22,16 @@ FRONTEND_ORIGINS = config(
 )
 
 
+install_log_redaction()
 app = FastAPI(title="AI Travel Agent API")
+app.add_middleware(BodyLimitMiddleware, max_bytes=load_config()['guardrails']['max_body_bytes'])
+
+
+@app.exception_handler(RequestValidationError)
+async def invalid_request(request, exc):
+    # Validation errors must not echo rejected PII or the original body.
+    return JSONResponse({'detail': 'Invalid request fields or message size'}, status_code=422)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=FRONTEND_ORIGINS or [

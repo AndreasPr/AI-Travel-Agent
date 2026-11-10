@@ -2,7 +2,7 @@
 from typing import Literal
 from decimal import Decimal
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from backend.tools.models import Contract, Item, Itinerary
 
@@ -36,6 +36,13 @@ class DayPatch(Contract):
 class ChatRequest(Contract):
     trip_id: str | None = Field(default=None, pattern=r'^[a-f0-9-]{36}$')
     message: str = Field(min_length=1, max_length=12000)
+
+
+    @field_validator('message')
+    @classmethod
+    def redact_message(cls, value):
+        from backend.security.content import redact, visible
+        return redact(visible(value))
 
 
 class Usage(Contract):

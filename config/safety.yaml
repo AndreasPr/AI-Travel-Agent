@@ -1,0 +1,7 @@
+# Narrow local refusal rules; not a comprehensive abuse classifier.
+refuse_patterns:
+  - '\b(?:steal|harvest|exfiltrate)\b.{0,80}\b(?:passwords?|credentials?|credit cards?|api keys?)\b'
+  - '\b(?:build|make)\b.{0,40}\b(?:bomb|explosive device)\b'
+  - '\b(?:reveal|print|show|extract)\b.{0,40}\b(?:system prompt|hidden instructions|api key)\b'
+  - '\b(?:disable|bypass|skip)\b.{0,30}\b(?:validation|validator|safety checks)\b'
+refusal: 'I can help with travel planning, but cannot help with that unsafe request.'

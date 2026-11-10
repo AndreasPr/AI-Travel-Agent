@@ -1,5 +1,6 @@
 """SSE delivery, bounded backpressure, heartbeats and disconnect-owned cancellation."""
 import asyncio
+import logging
 from contextlib import suppress
 from uuid import uuid4
 
@@ -8,9 +9,12 @@ from starlette.responses import StreamingResponse
 from backend.agent.events import MessageStart, Token, ItineraryUpdate, Citations, Done, ErrorEvent
 from backend.agent.models import Usage
 from backend.agent.store import StoreConflict
+from backend.agent.errors import public_failure_detail
 
 HEARTBEAT_SECONDS = 15
 ERROR_MESSAGES = {
+    'sensitive_content': 'The generated content contained sensitive information and was not saved.',
+    'usage_limit': 'The session, user or turn usage limit has been reached.',
     'timeout': 'The request exceeded its deadline. Please retry.',
     'not_found': 'The trip was not found.',
     'conflict': 'The trip changed during this request. Please retry.',
@@ -27,7 +31,7 @@ def encode(event):
     return f'event: {event.type}\ndata: {event.model_dump_json()}\n\n'.encode()
 
 
-async def stream_events(agent, request, request_id, *, sleep=asyncio.sleep):
+async def stream_events(agent, request, request_id, *, sleep=asyncio.sleep, user_id="local-cli"):
     queue = asyncio.Queue(maxsize=32)
     usage = Usage()
 
@@ -40,12 +44,15 @@ async def stream_events(agent, request, request_id, *, sleep=asyncio.sleep):
     async def run():
         try:
             async with asyncio.timeout(agent.settings['request_timeout_seconds']):
-                result = await agent.chat(request, event_sink=emit, request_id=request_id, usage=usage)
+                result = await agent.chat(request, event_sink=emit, request_id=request_id, usage=usage, user_id=user_id)
                 errors = [issue for issue in result.issues if issue['severity'] == 'error']
                 if errors and result.itinerary is None:
                     name = errors[0].get('name', '')
                     code = 'timeout' if name == 'provider_timeout' else name if name in ERROR_MESSAGES else 'invalid_output'
-                    await error(code)
+                    detail = public_failure_detail(errors)
+                    logging.getLogger(__name__).warning('Agent turn failed: %s', detail)
+                    await emit(ErrorEvent(request_id=request_id, code=code,
+                                          message=detail if code == 'invalid_output' else ERROR_MESSAGES[code], usage=usage))
                     return
                 # Only server-authored, post-validation text is public. Model JSON stays private.
                 for offset in range(0, len(result.message), 80):
@@ -124,8 +131,8 @@ class AgentStreamResponse(StreamingResponse):
             await self.body_iterator.aclose()
 
 
-def response_for(agent, request):
+def response_for(agent, request, *, user_id="local-cli"):
     request_id = uuid4()
-    return AgentStreamResponse(stream_events(agent, request, request_id), media_type='text/event-stream',
+    return AgentStreamResponse(stream_events(agent, request, request_id, user_id=user_id), media_type='text/event-stream',
                                headers={'Cache-Control': 'no-cache, no-transform', 'X-Accel-Buffering': 'no',
                                         'X-Request-ID': str(request_id)})
