@@ -53,7 +53,7 @@ class Citations(BaseEvent):
     citations: list[Chunk]
 
 
-ErrorCode = Literal['timeout', 'not_found', 'conflict', 'provider_unavailable', 'rate_limited',
+ErrorCode = Literal['sensitive_content', 'usage_limit', 'timeout', 'not_found', 'conflict', 'provider_unavailable', 'rate_limited',
                     'quota_exhausted', 'invalid_output', 'step_limit', 'internal_error']
 
 

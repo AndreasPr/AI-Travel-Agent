@@ -4,7 +4,7 @@ import math
 
 from pydantic import Field
 
-from backend.agent.policy import SYSTEM_PROMPT, data_block, sensitive
+from backend.agent.policy import SYSTEM_PROMPT, data_block, sensitive, request_block
 from backend.tools.models import Contract
 
 
@@ -40,7 +40,7 @@ class ContextBuilder:
                 {'role': 'system', 'content': self.static_prefix},
                 {'role': 'user', 'content': data_block({'preferences': state['preferences'], 'current_itinerary_summary': itinerary_summary(state['itinerary']), 'older_summary': ('x' * 2000 if reserve_summary else state['summary'])})},
                 *[{'role': row['role'], 'content': data_block(row['content'])} for row in tail],
-                {'role': 'user', 'content': message},
+                {'role': 'user', 'content': request_block(message)},
             ]
         if len(history) > keep or self.estimate(assemble(history), provider) > budget:
             count = max(0, len(history) - keep)

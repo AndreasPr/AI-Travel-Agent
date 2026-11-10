@@ -222,3 +222,11 @@ class AgentItineraryVersion(Base):
     itinerary = Column(JSON, nullable=False)
     budget = Column(String(64), nullable=True)
     created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
+
+class SecurityUsage(Base):
+    __tablename__ = 'security_usage'
+    key = Column(String(80), primary_key=True)
+    window = Column(BigInteger, primary_key=True)
+    requests = Column(BigInteger, nullable=False)
+    tokens = Column(BigInteger, nullable=False)

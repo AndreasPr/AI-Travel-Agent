@@ -87,7 +87,7 @@ def setup(entries, intent=None, store=None):
     return agent, runtime, plan
 
 
-def run(agent, message='Synthetic trip request', trip_id=None):
+def run(agent, message='Synthetic trip request under 1500 USD', trip_id=None):
     return asyncio.run(agent.chat(ChatRequest(message=message, trip_id=trip_id)))
 
 
@@ -133,7 +133,7 @@ def test_step_limit_stops_loop():
 def test_parallel_tool_calls_run_concurrently():
     agent, runtime, _ = setup([calls('search_hotels', 'search_flights'), {}, itinerary()])
     runtime.barrier = threading.Barrier(2)
-    result = run(agent)
+    result = run(agent, 'Synthetic flights from JFK under 1500 USD')
     assert all(row['status'] == 'ok' for row in result.tool_trace[:2])
 
 
@@ -149,7 +149,7 @@ def test_price_without_tool_result_fails():
 
 def test_impossible_budget_sets_budget_met_false():
     agent, _, _ = setup([calls('search_hotels'), {}, itinerary('100'), itinerary('100'), itinerary('100')], {'intent': 'new_trip', 'budget': 10})
-    result = run(agent)
+    result = run(agent, 'Synthetic trip request under 10 USD')
     assert result.itinerary is not None and result.budget_met is False
     assert 'exceeds your budget' in result.message
 
@@ -188,7 +188,7 @@ def test_edit_revalidates_budget():
     state = edit_state(store)
     patch = {'day': 2, 'operations': [{'op': 'remove_item', 'item_id': 'item-1'}]}
     agent, runtime, _ = setup([{}, patch, patch, patch], {'intent': 'edit_trip', 'day': 2, 'budget': 1}, store)
-    result = run(agent, 'Make day 2 cheaper', state['id'])
+    result = run(agent, 'Make day 2 cheaper, budget 1 USD', state['id'])
     assert result.budget_met is False
     assert runtime.calls.count('validate_itinerary') == 3
 
@@ -493,14 +493,14 @@ def test_tool_call_envelope_enforces_nullable_arguments_and_definitions():
 
 def test_requested_hotel_lookup_cannot_be_skipped():
     agent, runtime, _ = setup([{}, calls('search_hotels'), itinerary('100')])
-    result = run(agent, 'Plan a trip with synthetic hotel quotes')
+    result = run(agent, 'Plan a trip with synthetic hotel quotes under 1500 USD')
     assert result.itinerary is not None
     assert 'search_hotels' in runtime.calls
 
 
 def test_requested_hotel_quote_cannot_be_omitted_from_itinerary():
     agent, _, script = setup([calls('search_hotels'), itinerary(), itinerary('100')])
-    result = run(agent, 'Plan a trip with synthetic hotel quotes')
+    result = run(agent, 'Plan a trip with synthetic hotel quotes under 1500 USD')
     assert result.itinerary is not None
     assert any(item.cost is not None for day in result.itinerary.days for item in day.items)
     assert 'requested_hotel_quote_missing' in json.dumps(script.calls[-1][0])
@@ -520,7 +520,7 @@ def test_server_assigns_unique_stable_item_ids_without_changing_prices():
 
 def test_explicit_trip_dates_cannot_be_replaced_by_model():
     agent, _, _ = setup([{}, itinerary(), itinerary(), itinerary()])
-    result = run(agent, 'Plan 2027-04-20 through 2027-04-22')
+    result = run(agent, 'Plan 2027-04-20 through 2027-04-22 under 1500 USD')
     assert result.itinerary is None
     assert any(row['name'] == 'requested_dates_mismatch' for row in result.issues)
 
@@ -657,7 +657,7 @@ def test_activity_extraction_only_admits_names_present_in_cited_excerpt():
         day['items'][0].update(place='Synthetic Museum', chunk_ids=['synthetic-chunk'])
     plan = Script([calls('search_destinations'), candidate])
     agent = Agent(store=MemoryTripStore(), runtime=DestinationRuntime(), providers=lambda role: extract if role == 'extract' else plan)
-    response = run(agent, 'Lisbon museums 2027-04-10 through 2027-04-12')
+    response = run(agent, 'Lisbon museums 2027-04-10 through 2027-04-12 under 1500 USD')
     assert response.itinerary is not None
     assert plan.calls[-1][1]['response_schema']['$defs']['Item']['properties']['place']['enum'] == ['Synthetic Museum']
     assert len(extract.calls) == 2
@@ -725,3 +725,78 @@ def test_edit_requires_explicit_existing_day_without_creating_version(message, c
     response = TestClient(app).post(f"/api/trips/{state['id']}/undo")
     assert response.status_code == 409
     assert response.json()['detail'] == 'No earlier itinerary version'
+
+
+@pytest.mark.parametrize('keep_safe', [True, False])
+def test_sensitive_retrieval_is_withheld_before_planning_and_save(keep_safe):
+    agent, runtime, plan = setup([calls('search_destinations'), {}, itinerary()])
+    original_execute = runtime.execute
+    safe = dict(chunk_id='synthetic-source', title='Synthetic museum', url=None,
+                license='synthetic fixture', attribution='synthetic', excerpt='Visit the museum.')
+    rejected = {**safe, 'chunk_id': 'rejected', 'excerpt': 'Synthetic passport details'}
+    def execute(name, arguments):
+        if name == 'search_destinations':
+            return ToolResult(tool_result_id='retrieval', tool=name, status='ok',
+                              data={'chunks': [rejected] + ([safe] if keep_safe else [])},
+                              source='synthetic', fetched_at=utcnow(), cache_hit=False)
+        return original_execute(name, arguments)
+    runtime.execute = execute
+    result = run(agent)
+    assert result.itinerary is not None
+    assert 'Synthetic passport details' not in json.dumps(plan.calls)
+    assert agent.store.load(result.trip_id)['citations'] == ([safe] if keep_safe else [])
+    assert result.tool_trace[0]['status'] == ('ok' if keep_safe else 'no_data')
+    if not keep_safe:
+        assert 'cannot find' in result.message
+
+
+@pytest.mark.parametrize('first', [
+    {'places': [{'name': 'Synthetic Museum', 'chunk_id': 'invented-id'}]},
+    {'places': [{'name': 'Invented Museum', 'chunk_id': 'synthetic-chunk'}]},
+    {'places': []},
+])
+def test_attraction_extraction_repairs_ungrounded_output(first):
+    from backend.agent.attractions import extract_attractions
+    script = Script([first, {'places': [{'name': 'Synthetic Museum', 'chunk_id': 'synthetic-chunk'}]}])
+    async def generate(role, messages, **kwargs):
+        return script.generate(messages, **kwargs)
+    result = asyncio.run(extract_attractions([
+        {'chunk_id': 'synthetic-chunk', 'excerpt': 'Visit Synthetic Museum.'},
+    ], generate))
+    assert result == ['Synthetic Museum']
+    assert len(script.calls) == 2
+    schema = script.calls[0][1]['response_schema']
+    assert schema['$defs']['ActivityPlace']['properties']['chunk_id']['enum'] == ['synthetic-chunk']
+
+
+def test_attraction_extraction_stops_after_two_repairs_without_inventing_places():
+    from backend.agent.attractions import extract_attractions
+    from backend.llm.types import InvalidOutput
+    script = Script([{'places': [{'name': 'Invented Museum', 'chunk_id': 'synthetic-chunk'}]}] * 3)
+    async def generate(role, messages, **kwargs):
+        return script.generate(messages, **kwargs)
+    with pytest.raises(InvalidOutput, match='No grounded activity'):
+        asyncio.run(extract_attractions([
+            {'chunk_id': 'synthetic-chunk', 'excerpt': 'Synthetic city transport overview.'},
+        ], generate))
+    assert len(script.calls) == 3
+
+
+def test_cheaper_unpriced_day_skips_search_and_validates_patch():
+    store = MemoryTripStore()
+    state = edit_state(store)
+    state['itinerary']['days'][1]['items'][0].update(cost=None, category='museum', place='Synthetic museum', tool_result_ids=[])
+    state['trip_request'] = 'Lisbon museums and synthetic hotels 2027-04-10 through 2027-04-12 under 1500 USD'
+    store.save(state, state['revision'])
+    state = store.load(state['id'])
+    patch = {'day': 2, 'operations': [{'op': 'remove_item', 'item_id': 'item-1'}]}
+    agent, runtime, plan = setup([patch], intent={'intent': 'edit_trip', 'day': 2}, store=store)
+    result = run(agent, 'Make day 2 cheaper', state['id'])
+    assert result.itinerary is not None
+    assert runtime.calls == ['validate_itinerary']
+    assert len(plan.calls) == 1
+    assert plan.calls[0][1]['response_schema']['title'] == 'DayPatch'
+    updated = result.itinerary.model_dump(mode='json')
+    assert updated['days'][1]['items'] == []
+    for index in (0, 2):
+        assert json.dumps(updated['days'][index]) == json.dumps(state['itinerary']['days'][index])

@@ -123,6 +123,7 @@ def bind_itinerary_schema(schema, message, results, citations, original=None, ed
         unpriced['properties']['cost'] = {'type': 'null'}
         if activity_places:
             unpriced['properties']['place'] = {'type': 'string', 'enum': list(activity_places)}
+        if activity_places or (chunk_ids and requested_retrieval(message)):
             unpriced['properties']['chunk_ids']['minItems'] = 1
             unpriced['required'] = list(dict.fromkeys([*unpriced['required'], 'chunk_ids']))
         unpriced['required'] = list(dict.fromkeys([*unpriced['required'], 'cost']))

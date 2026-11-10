@@ -43,6 +43,8 @@ def store(tmp_path, request):
             connection.execute(text(f'SET LOCAL search_path TO "{schema}", public'))
             with Operations.context(MigrationContext.configure(connection)):
                 migration.upgrade()
+                from backend.security.limits import usage_table
+                usage_table.create(connection)
         yield PostgresTripStore(scoped)
         with engine.begin() as connection:
             connection.execute(text(f'SET LOCAL search_path TO "{schema}", public'))
@@ -58,7 +60,7 @@ def test_conversation_survives_new_session(store):
     result = run(agent)
     restored = PostgresTripStore(store.engine).load(result.trip_id)
     assert restored['itinerary'] == result.itinerary.model_dump(mode='json')
-    assert restored['history'][0]['content'] == 'Synthetic trip request'
+    assert restored['history'][0]['content'] == 'Synthetic trip request under 1500 USD'
     assert len(restored['versions']) == 1
 
 

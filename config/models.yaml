@@ -91,3 +91,15 @@ agent:
     last_turns: 6
     summary_input_chars: 12000
     chars_per_token: {default: 3, gemini: 3, ollama: 3}
+
+# Conservative admission estimates include every configured retry/fallback attempt.
+guardrails:
+  turn_tokens: 2000000
+  session_requests: 100
+  session_tokens: 12000000
+  user_daily_requests: 400
+  user_daily_tokens: 48000000
+  rate_window_seconds: 60
+  ip_requests_per_window: 30
+  user_requests_per_window: 20
+  max_body_bytes: 65536

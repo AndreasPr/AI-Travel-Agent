@@ -53,7 +53,7 @@ def parse_frames(frames):
 
 
 async def collect(agent, **kwargs):
-    return [frame async for frame in stream_events(agent, ChatRequest(message='Synthetic trip request'), uuid4(), **kwargs)]
+    return [frame async for frame in stream_events(agent, ChatRequest(message='Synthetic trip request under 1500 USD'), uuid4(), **kwargs)]
 
 
 def test_event_order_for_scripted_conversation(tmp_path):
@@ -110,7 +110,7 @@ def test_heartbeat_sent_during_slow_tool():
                     await release.wait()
                 return await super().aexecute(name, arguments)
 
-        stream = stream_events(agent_for(runtime=SlowRuntime()), ChatRequest(message='Synthetic request'), uuid4(), sleep=fake_sleep)
+        stream = stream_events(agent_for(runtime=SlowRuntime()), ChatRequest(message='Synthetic request under 1500 USD'), uuid4(), sleep=fake_sleep)
         assert b'message_start' in await anext(stream)
         assert b'tool_start' in await anext(stream)
         await entered.wait()
@@ -132,7 +132,7 @@ async def disconnect_request(agent, entered, *, send_failure=False):
         nonlocal first
         if first:
             first = False
-            return {'type': 'http.request', 'body': b'{"message":"Synthetic request"}', 'more_body': False}
+            return {'type': 'http.request', 'body': b'{"message":"Synthetic request under 1500 USD"}', 'more_body': False}
         if send_failure:
             await asyncio.Future()
         await entered.wait()
@@ -191,10 +191,10 @@ def test_error_event_is_typed_and_final():
 def test_non_streaming_endpoint_unchanged():
     def conversation():
         return agent_for(plan=AsyncScript([{}, itinerary()]))
-    original = TestClient(app_for(conversation())).post('/api/chat', json={'message': 'Synthetic request'})
+    original = TestClient(app_for(conversation())).post('/api/chat', json={'message': 'Synthetic request under 1500 USD'})
     assert original.status_code == 200
     expected = original.json()
-    response = TestClient(app_for(conversation())).post('/api/chat/stream', json={'message': 'Synthetic request'})
+    response = TestClient(app_for(conversation())).post('/api/chat/stream', json={'message': 'Synthetic request under 1500 USD'})
     assert response.status_code == 200
     assert response.headers['content-type'].startswith('text/event-stream')
     events = parse_frames([frame.encode() for frame in response.text.split('\n\n') if frame])
@@ -421,3 +421,35 @@ def test_unexpected_producer_cancellation_still_ends_connected_stream():
         frames = await asyncio.wait_for(collect(CancelledAgent()), 1)
         assert [event['type'] for event in parse_frames(frames)] == ['message_start', 'error']
     asyncio.run(scenario())
+
+
+def test_sensitive_rejection_has_specific_final_stream_error():
+    from backend.agent.models import ChatResponse
+    class RejectedAgent:
+        settings = {'request_timeout_seconds': 5}
+        async def chat(self, *args, **kwargs):
+            return ChatResponse(trip_id=str(uuid4()), message='Not saved', issues=[
+                {'name': 'sensitive_content', 'severity': 'error'},
+                {'name': 'schema_valid', 'severity': 'error'},
+            ])
+    events = parse_frames(asyncio.run(collect(RejectedAgent())))
+    assert events[-1]['type'] == 'error'
+    assert events[-1]['code'] == 'sensitive_content'
+    assert 'sensitive information' in events[-1]['message']
+    assert not any(event['type'] == 'itinerary_update' for event in events)
+
+
+def test_stream_explains_schema_failure_without_leaking_payload(caplog):
+    from backend.agent.models import ChatResponse
+    class RejectedAgent:
+        settings = {'request_timeout_seconds': 5}
+        async def chat(self, *args, **kwargs):
+            return ChatResponse(trip_id=str(uuid4()), message='private synthetic payload', issues=[
+                {'name': 'schema_valid', 'reason': 'schema_validation', 'severity': 'error',
+                 'message': 'private synthetic payload'},
+            ])
+    events = parse_frames(asyncio.run(collect(RejectedAgent())))
+    assert events[-1]['type'] == 'error'
+    assert events[-1]['message'] == 'The model output did not match the itinerary schema.'
+    assert 'private synthetic payload' not in json.dumps(events) + caplog.text
+    assert 'Agent turn failed:' in caplog.text
