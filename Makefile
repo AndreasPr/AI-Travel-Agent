@@ -81,3 +81,8 @@ security-report:
 # Explicit operator action; configured local model and migrated Postgres required.
 security-live:
 	RECORD=0 LLM_REPLAY=0 python tests/security/report.py --live
+
+.PHONY: eval-checks
+eval-checks:
+	@test -n "$(OUTPUTS)" || (echo 'Usage: make eval-checks OUTPUTS=/path/to/saved.jsonl'; exit 2)
+	python -m eval.run_checks "$(OUTPUTS)"
