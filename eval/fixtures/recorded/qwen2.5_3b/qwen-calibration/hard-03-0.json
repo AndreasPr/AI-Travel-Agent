@@ -1,0 +1,95 @@
+{
+  "id": "qwen-calibration:hard-03:0",
+  "synthetic": true,
+  "request": "Plan 4 days in Madrid for 3 people under 1000 USD, with museums and food, at a fast pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. Dates: 2027-04-10 through 2027-04-13. Include a park; use a fast pace and verify travel times between visits.",
+  "constraints": {
+    "destination": "Madrid",
+    "length": 4,
+    "budget": 1000,
+    "currency": "USD",
+    "interests": [
+      "museums",
+      "food"
+    ],
+    "pace": "fast",
+    "must_include": [
+      "a park"
+    ],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 3,
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-13"
+  },
+  "category": "hard",
+  "rubric": [
+    "schema_valid",
+    "budget_respected",
+    "no_overlap",
+    "dates_in_range",
+    "prices_traceable",
+    "citations_present",
+    "citations_supported",
+    "no_forbidden_urls",
+    "travel_times_plausible"
+  ],
+  "turns": [],
+  "case_id": "hard-03",
+  "run_id": "qwen-calibration",
+  "repeat": 0,
+  "source": "recorded",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "route": {
+    "extract": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    },
+    "plan": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    }
+  },
+  "output": {
+    "trip_id": "2543a237-35f1-4d06-8437-5e0a593ca076",
+    "message": "I could not complete the plan stage: The provider returned invalid JSON.",
+    "itinerary": null,
+    "diff": null,
+    "citations": [],
+    "tool_trace": [],
+    "budget_met": null,
+    "usage": {
+      "tokens_in": 711,
+      "tokens_out": 71,
+      "cached_tokens": 3,
+      "uncached_tokens": 708,
+      "calls": [
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 711,
+          "tokens_out": 71,
+          "cached_tokens": 3
+        }
+      ]
+    },
+    "issues": [
+      {
+        "name": "invalid_json",
+        "severity": "error",
+        "stage": "plan",
+        "message": "The provider returned invalid JSON."
+      }
+    ],
+    "preference_proposal": null
+  },
+  "tool_results": [],
+  "previous_itinerary": null,
+  "edit_day": null,
+  "latency_ms": 104461.13783400506,
+  "tokens_in": 711,
+  "tokens_out": 71,
+  "fingerprint": "c9552ecceff968481e4af91e8efef7f01c377d610099e408354e0757c016355f",
+  "experiment": "model-single"
+}

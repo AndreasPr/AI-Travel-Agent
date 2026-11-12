@@ -1,0 +1,1116 @@
+{
+  "id": "qwen-calibration:easy-07:0",
+  "synthetic": true,
+  "request": "Plan 4 days in Vienna for 1 people under 1800 USD, with museums and food, at a moderate pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. Dates: 2027-04-10 through 2027-04-13.",
+  "constraints": {
+    "destination": "Vienna",
+    "length": 4,
+    "budget": 1800,
+    "currency": "USD",
+    "interests": [
+      "museums",
+      "food"
+    ],
+    "pace": "moderate",
+    "must_include": [],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 1,
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-13"
+  },
+  "category": "easy",
+  "rubric": [
+    "schema_valid",
+    "budget_respected",
+    "no_overlap",
+    "dates_in_range",
+    "prices_traceable",
+    "citations_present",
+    "citations_supported",
+    "no_forbidden_urls"
+  ],
+  "turns": [],
+  "case_id": "easy-07",
+  "run_id": "qwen-calibration",
+  "repeat": 0,
+  "source": "recorded",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "route": {
+    "extract": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    },
+    "plan": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    }
+  },
+  "output": {
+    "trip_id": "59e983d2-681b-4e5e-8f30-5317d80550a6",
+    "message": "Here is the itinerary. Some items are unpriced, so the full budget cannot be verified. Inventory quotes are synthetic; they do not establish booking availability.",
+    "itinerary": {
+      "trip": {
+        "start_date": "2027-04-10",
+        "end_date": "2027-04-13",
+        "currency": "USD"
+      },
+      "days": [
+        {
+          "date": "2027-04-10",
+          "items": [
+            {
+              "id": "2027-04-10:item:1",
+              "start": "2027-04-10T08:00:00",
+              "end": "2027-04-10T11:00:00",
+              "place": "Synthetic Ivory Lantern Stay",
+              "category": "Accommodation",
+              "cost": "189.75",
+              "currency": "USD",
+              "chunk_ids": [],
+              "tool_result_ids": [
+                "12bc2d7b-2cef-4a56-9458-298aab7b7476"
+              ],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            },
+            {
+              "id": "2027-04-10:item:2",
+              "start": "2027-04-10T11:00:00",
+              "end": "2027-04-10T14:00:00",
+              "place": "Albertina",
+              "category": "Museum",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "b91a9edbf87b90ad"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        },
+        {
+          "date": "2027-04-11",
+          "items": [
+            {
+              "id": "2027-04-11:item:1",
+              "start": "2027-04-11T08:00:00",
+              "end": "2027-04-11T11:00:00",
+              "place": "Kunsthistorisches Museum (Museum of Fine Arts)",
+              "category": "Museum",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "4efa3e928aef4d1b"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            },
+            {
+              "id": "2027-04-11:item:2",
+              "start": "2027-04-11T11:00:00",
+              "end": "2027-04-11T14:00:00",
+              "place": "Christmas Markets",
+              "category": "Activity",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "7ef8af589cb25a19"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        },
+        {
+          "date": "2027-04-12",
+          "items": [
+            {
+              "id": "2027-04-12:item:1",
+              "start": "2027-04-12T08:00:00",
+              "end": "2027-04-12T11:00:00",
+              "place": "Naturhistorisches Museum (Museum of Natural History)",
+              "category": "Museum",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "956e9128d4a6f33a"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            },
+            {
+              "id": "2027-04-12:item:2",
+              "start": "2027-04-12T11:00:00",
+              "end": "2027-04-12T14:00:00",
+              "place": "Rathaus",
+              "category": "Historical Site",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "1220c467d65cf68e"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        },
+        {
+          "date": "2027-04-13",
+          "items": [
+            {
+              "id": "2027-04-13:item:1",
+              "start": "2027-04-13T08:00:00",
+              "end": "2027-04-13T11:00:00",
+              "place": "Stephansdom (St. Stephen's Cathedral)",
+              "category": "Historical Site",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "956e9128d4a6f33a"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            },
+            {
+              "id": "2027-04-13:item:2",
+              "start": "2027-04-13T11:00:00",
+              "end": "2027-04-13T14:00:00",
+              "place": "Wi-Fi",
+              "category": "Activity",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "956e9128d4a6f33a"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        }
+      ]
+    },
+    "diff": null,
+    "citations": [
+      {
+        "chunk_id": "b91a9edbf87b90ad",
+        "title": "Vienna",
+        "url": "https://en.wikivoyage.org/wiki/Vienna",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+        "excerpt": "Vienna has a rich history as the capital city of the monarchy, and thus, there is an abundance of historical buildings and museums. Most of these, including Stephansdom (St. Stephen's Cathedral) and the three most well-known museums, Kunsthistorisches Museum (Museum of Fine Arts), Naturhistorisches Museum (Museum of Natural History) and Albertina, are located in the Innere Stadt. The Ring Road (German: Ringstra\u00dfe) is a circular road surrounding the Innere Stadt district of Vienna and is one of its main sights. Its architecture is typical of the eclectic, historicist style called Ringstra\u00dfensti"
+      },
+      {
+        "chunk_id": "4efa3e928aef4d1b",
+        "title": "Vienna",
+        "url": "https://en.wikivoyage.org/wiki/Vienna",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+        "excerpt": "Vienna has a large number of mostly free wireless hotspots in bars, restaurants, and caf\u00e9s (see drink section). Wifi is known locally as WLAN or Wireless LAN. Those that are on the Freewave Wi-Fi network can be found here. MuseumsQuartier has free wireless internet. There are plenty of internet cafes except for in the first district. Touchscreen media terminals are available (including internet) in many phone booths, much of the content about Vienna is free.\nIf you plan to visit also places outside the city and you don't want to stay without internet it's recommended to buy a prepaid 3G-simcar"
+      },
+      {
+        "chunk_id": "7ef8af589cb25a19",
+        "title": "Vienna",
+        "url": "https://en.wikivoyage.org/wiki/Vienna",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+        "excerpt": "Open from November 15 or 20 to December 23 or 24, most Viennese Christmas Markets (\"Christkindlmarkt\", \"Adventmarkt\" or simply \"Weihnachtsmarkt\") are not so much for shopping as for eating and drinking. From midday until the late hours of the night, people gather at Christmas markets to drink mulled wine, punch, and chat to one another and the occasional stranger. Entry to all of these markets is free. While Vienna can be a delightful place to visit during the Christmas season, on December 25 and 26 the city is largely shut down.\n\nRathaus. More of a fairground than a Christmas market, this is "
+      },
+      {
+        "chunk_id": "1220c467d65cf68e",
+        "title": "Vienna",
+        "url": "https://en.wikivoyage.org/wiki/Vienna",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+        "excerpt": "Vienna is a major tourist hotspot and offers a complete range of accommodation options. Prices are relatively higher than in neighboring countries, or even in the rest of Austria. Many of the Viennese hotels, hostels and pensions, especially its centre, are housed in historic buildings dating from before the Second World War, most from the 19th-century Gr\u00fcnderzeit. This means that many of them offer relatively small rooms with sometimes compromised views, and rooms within the same property can vary widely, even at the same price.\nYou will probably find that Viennese hotels usually offer very t"
+      },
+      {
+        "chunk_id": "956e9128d4a6f33a",
+        "title": "Vienna",
+        "url": "https://en.wikivoyage.org/wiki/Vienna",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+        "excerpt": "Multiple direct day and night trains exist from the above mentioned countries:\n\nVienna - Graz - Klagenfurt - Villach - Udine - Pordenone - Treviso - Venice (Railjet day train, twice daily, 7 hr 10 min)\nVienna - Graz - Klagenfurt - Villach - Udine - Trieste (Railjet day train, once daily, 6 hr 38 min)\nVienna - Linz - Salzburg - Innsbruck - Bolzano/Bozen  (Railjet day train, once daily, 7 hr, runs until end of 2026)\nVienna - Graz - Maribor - Celje - Ljubljana (EuroCity day train, once daily, 6 hr)\nVienna - Graz - Maribor - Celje - Zagreb (EuroCity day train, once daily, 6 hr 27 min)\nVienna - Gra"
+      }
+    ],
+    "tool_trace": [
+      {
+        "tool_result_id": "12bc2d7b-2cef-4a56-9458-298aab7b7476",
+        "tool": "search_hotels",
+        "status": "ok",
+        "data": {
+          "hotels": [
+            {
+              "id": 243,
+              "name": "Synthetic Ivory Lantern Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 1",
+              "tier": "budget",
+              "price_per_night": "63.25",
+              "total_price": "189.75",
+              "nights": 3,
+              "rating": 3.9,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 246,
+              "name": "Synthetic Coral Pebble Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 4",
+              "tier": "budget",
+              "price_per_night": "63.25",
+              "total_price": "189.75",
+              "nights": 3,
+              "rating": 3.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 249,
+              "name": "Synthetic Ivory Orchard Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 3",
+              "tier": "budget",
+              "price_per_night": "63.25",
+              "total_price": "189.75",
+              "nights": 3,
+              "rating": 4.9,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 252,
+              "name": "Synthetic Coral Lantern Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 2",
+              "tier": "budget",
+              "price_per_night": "63.25",
+              "total_price": "189.75",
+              "nights": 3,
+              "rating": 4.0,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 244,
+              "name": "Synthetic Azure Pebble Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 2",
+              "tier": "mid",
+              "price_per_night": "126.50",
+              "total_price": "379.50",
+              "nights": 3,
+              "rating": 4.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 247,
+              "name": "Synthetic Ivory Pebble Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 1",
+              "tier": "mid",
+              "price_per_night": "126.50",
+              "total_price": "379.50",
+              "nights": 3,
+              "rating": 4.7,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 250,
+              "name": "Synthetic Amber Orchard Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 4",
+              "tier": "mid",
+              "price_per_night": "126.50",
+              "total_price": "379.50",
+              "nights": 3,
+              "rating": 3.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 245,
+              "name": "Synthetic Azure Orchard Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 3",
+              "tier": "upscale",
+              "price_per_night": "241.50",
+              "total_price": "724.50",
+              "nights": 3,
+              "rating": 4.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 248,
+              "name": "Synthetic Azure Lantern Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 2",
+              "tier": "upscale",
+              "price_per_night": "241.50",
+              "total_price": "724.50",
+              "nights": 3,
+              "rating": 4.5,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 251,
+              "name": "Synthetic Amber Pebble Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 1",
+              "tier": "upscale",
+              "price_per_night": "241.50",
+              "total_price": "724.50",
+              "nights": 3,
+              "rating": 4.6,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            }
+          ],
+          "check_in": "2027-04-10",
+          "check_out": "2027-04-13",
+          "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+          "truncated": false
+        },
+        "source": "synthetic-v1",
+        "fetched_at": "2026-11-11T16:15:35.600376Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "6ea89ff5-d292-4691-a397-f6c6db4b3fdf",
+        "tool": "search_destinations",
+        "status": "ok",
+        "data": {
+          "chunks": [
+            {
+              "chunk_id": "b91a9edbf87b90ad",
+              "title": "Vienna",
+              "url": "https://en.wikivoyage.org/wiki/Vienna",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Vienna has a rich history as the capital city of the monarchy, and thus, there is an abundance of historical buildings and museums. Most of these, including Stephansdom (St. Stephen's Cathedral) and the three most well-known museums, Kunsthistorisches Museum (Museum of Fine Arts), Naturhistorisches Museum (Museum of Natural History) and Albertina, are located in the Innere Stadt. The Ring Road (German: Ringstra\u00dfe) is a circular road surrounding the Innere Stadt district of Vienna and is one of its main sights. Its architecture is typical of the eclectic, historicist style called Ringstra\u00dfensti"
+            },
+            {
+              "chunk_id": "4efa3e928aef4d1b",
+              "title": "Vienna",
+              "url": "https://en.wikivoyage.org/wiki/Vienna",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Vienna has a large number of mostly free wireless hotspots in bars, restaurants, and caf\u00e9s (see drink section). Wifi is known locally as WLAN or Wireless LAN. Those that are on the Freewave Wi-Fi network can be found here. MuseumsQuartier has free wireless internet. There are plenty of internet cafes except for in the first district. Touchscreen media terminals are available (including internet) in many phone booths, much of the content about Vienna is free.\nIf you plan to visit also places outside the city and you don't want to stay without internet it's recommended to buy a prepaid 3G-simcar"
+            },
+            {
+              "chunk_id": "7ef8af589cb25a19",
+              "title": "Vienna",
+              "url": "https://en.wikivoyage.org/wiki/Vienna",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Open from November 15 or 20 to December 23 or 24, most Viennese Christmas Markets (\"Christkindlmarkt\", \"Adventmarkt\" or simply \"Weihnachtsmarkt\") are not so much for shopping as for eating and drinking. From midday until the late hours of the night, people gather at Christmas markets to drink mulled wine, punch, and chat to one another and the occasional stranger. Entry to all of these markets is free. While Vienna can be a delightful place to visit during the Christmas season, on December 25 and 26 the city is largely shut down.\n\nRathaus. More of a fairground than a Christmas market, this is "
+            },
+            {
+              "chunk_id": "1220c467d65cf68e",
+              "title": "Vienna",
+              "url": "https://en.wikivoyage.org/wiki/Vienna",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Vienna is a major tourist hotspot and offers a complete range of accommodation options. Prices are relatively higher than in neighboring countries, or even in the rest of Austria. Many of the Viennese hotels, hostels and pensions, especially its centre, are housed in historic buildings dating from before the Second World War, most from the 19th-century Gr\u00fcnderzeit. This means that many of them offer relatively small rooms with sometimes compromised views, and rooms within the same property can vary widely, even at the same price.\nYou will probably find that Viennese hotels usually offer very t"
+            },
+            {
+              "chunk_id": "956e9128d4a6f33a",
+              "title": "Vienna",
+              "url": "https://en.wikivoyage.org/wiki/Vienna",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Multiple direct day and night trains exist from the above mentioned countries:\n\nVienna - Graz - Klagenfurt - Villach - Udine - Pordenone - Treviso - Venice (Railjet day train, twice daily, 7 hr 10 min)\nVienna - Graz - Klagenfurt - Villach - Udine - Trieste (Railjet day train, once daily, 6 hr 38 min)\nVienna - Linz - Salzburg - Innsbruck - Bolzano/Bozen  (Railjet day train, once daily, 7 hr, runs until end of 2026)\nVienna - Graz - Maribor - Celje - Ljubljana (EuroCity day train, once daily, 6 hr)\nVienna - Graz - Maribor - Celje - Zagreb (EuroCity day train, once daily, 6 hr 27 min)\nVienna - Gra"
+            }
+          ]
+        },
+        "source": "local-rag",
+        "fetched_at": "2026-11-11T16:15:37.973123Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "55e6ab85-7c6b-465f-bf6c-b6b5031eaf2f",
+        "tool": "validate_itinerary",
+        "status": "ok",
+        "data": {
+          "valid": true,
+          "total_cost": "189.75",
+          "currency": "USD",
+          "issues": [
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-12:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-12:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-13:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-13:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:1",
+                "2027-04-11:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:2",
+                "2027-04-12:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-12:item:1",
+                "2027-04-12:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-12:item:2",
+                "2027-04-13:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-13:item:1",
+                "2027-04-13:item:2"
+              ]
+            }
+          ]
+        },
+        "source": "deterministic-validator",
+        "fetched_at": "2026-11-11T16:16:11.108147Z",
+        "cache_hit": false
+      }
+    ],
+    "budget_met": null,
+    "usage": {
+      "tokens_in": 9871,
+      "tokens_out": 1845,
+      "cached_tokens": 3324,
+      "uncached_tokens": 6547,
+      "calls": [
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 696,
+          "tokens_out": 68,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2267,
+          "tokens_out": 207,
+          "cached_tokens": 1611
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 1501,
+          "tokens_out": 440,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 5407,
+          "tokens_out": 1130,
+          "cached_tokens": 1707
+        }
+      ]
+    },
+    "issues": [
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-11:item:2"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-12:item:1"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-12:item:2"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-13:item:1"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-13:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:1",
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:2",
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-11:item:1",
+          "2027-04-11:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-11:item:2",
+          "2027-04-12:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-12:item:1",
+          "2027-04-12:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-12:item:2",
+          "2027-04-13:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-13:item:1",
+          "2027-04-13:item:2"
+        ]
+      }
+    ],
+    "preference_proposal": null
+  },
+  "tool_results": [
+    {
+      "tool_result_id": "12bc2d7b-2cef-4a56-9458-298aab7b7476",
+      "tool": "search_hotels",
+      "status": "ok",
+      "data": {
+        "hotels": [
+          {
+            "id": 243,
+            "name": "Synthetic Ivory Lantern Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 1",
+            "tier": "budget",
+            "price_per_night": "63.25",
+            "total_price": "189.75",
+            "nights": 3,
+            "rating": 3.9,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 246,
+            "name": "Synthetic Coral Pebble Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 4",
+            "tier": "budget",
+            "price_per_night": "63.25",
+            "total_price": "189.75",
+            "nights": 3,
+            "rating": 3.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 249,
+            "name": "Synthetic Ivory Orchard Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 3",
+            "tier": "budget",
+            "price_per_night": "63.25",
+            "total_price": "189.75",
+            "nights": 3,
+            "rating": 4.9,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 252,
+            "name": "Synthetic Coral Lantern Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 2",
+            "tier": "budget",
+            "price_per_night": "63.25",
+            "total_price": "189.75",
+            "nights": 3,
+            "rating": 4.0,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 244,
+            "name": "Synthetic Azure Pebble Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 2",
+            "tier": "mid",
+            "price_per_night": "126.50",
+            "total_price": "379.50",
+            "nights": 3,
+            "rating": 4.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 247,
+            "name": "Synthetic Ivory Pebble Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 1",
+            "tier": "mid",
+            "price_per_night": "126.50",
+            "total_price": "379.50",
+            "nights": 3,
+            "rating": 4.7,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 250,
+            "name": "Synthetic Amber Orchard Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 4",
+            "tier": "mid",
+            "price_per_night": "126.50",
+            "total_price": "379.50",
+            "nights": 3,
+            "rating": 3.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 245,
+            "name": "Synthetic Azure Orchard Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 3",
+            "tier": "upscale",
+            "price_per_night": "241.50",
+            "total_price": "724.50",
+            "nights": 3,
+            "rating": 4.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 248,
+            "name": "Synthetic Azure Lantern Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 2",
+            "tier": "upscale",
+            "price_per_night": "241.50",
+            "total_price": "724.50",
+            "nights": 3,
+            "rating": 4.5,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 251,
+            "name": "Synthetic Amber Pebble Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 1",
+            "tier": "upscale",
+            "price_per_night": "241.50",
+            "total_price": "724.50",
+            "nights": 3,
+            "rating": 4.6,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          }
+        ],
+        "check_in": "2027-04-10",
+        "check_out": "2027-04-13",
+        "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+        "truncated": false
+      },
+      "source": "synthetic-v1",
+      "fetched_at": "2026-11-11T16:15:35.600376Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "6ea89ff5-d292-4691-a397-f6c6db4b3fdf",
+      "tool": "search_destinations",
+      "status": "ok",
+      "data": {
+        "chunks": [
+          {
+            "chunk_id": "b91a9edbf87b90ad",
+            "title": "Vienna",
+            "url": "https://en.wikivoyage.org/wiki/Vienna",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Vienna has a rich history as the capital city of the monarchy, and thus, there is an abundance of historical buildings and museums. Most of these, including Stephansdom (St. Stephen's Cathedral) and the three most well-known museums, Kunsthistorisches Museum (Museum of Fine Arts), Naturhistorisches Museum (Museum of Natural History) and Albertina, are located in the Innere Stadt. The Ring Road (German: Ringstra\u00dfe) is a circular road surrounding the Innere Stadt district of Vienna and is one of its main sights. Its architecture is typical of the eclectic, historicist style called Ringstra\u00dfensti"
+          },
+          {
+            "chunk_id": "4efa3e928aef4d1b",
+            "title": "Vienna",
+            "url": "https://en.wikivoyage.org/wiki/Vienna",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Vienna has a large number of mostly free wireless hotspots in bars, restaurants, and caf\u00e9s (see drink section). Wifi is known locally as WLAN or Wireless LAN. Those that are on the Freewave Wi-Fi network can be found here. MuseumsQuartier has free wireless internet. There are plenty of internet cafes except for in the first district. Touchscreen media terminals are available (including internet) in many phone booths, much of the content about Vienna is free.\nIf you plan to visit also places outside the city and you don't want to stay without internet it's recommended to buy a prepaid 3G-simcar"
+          },
+          {
+            "chunk_id": "7ef8af589cb25a19",
+            "title": "Vienna",
+            "url": "https://en.wikivoyage.org/wiki/Vienna",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Open from November 15 or 20 to December 23 or 24, most Viennese Christmas Markets (\"Christkindlmarkt\", \"Adventmarkt\" or simply \"Weihnachtsmarkt\") are not so much for shopping as for eating and drinking. From midday until the late hours of the night, people gather at Christmas markets to drink mulled wine, punch, and chat to one another and the occasional stranger. Entry to all of these markets is free. While Vienna can be a delightful place to visit during the Christmas season, on December 25 and 26 the city is largely shut down.\n\nRathaus. More of a fairground than a Christmas market, this is "
+          },
+          {
+            "chunk_id": "1220c467d65cf68e",
+            "title": "Vienna",
+            "url": "https://en.wikivoyage.org/wiki/Vienna",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Vienna is a major tourist hotspot and offers a complete range of accommodation options. Prices are relatively higher than in neighboring countries, or even in the rest of Austria. Many of the Viennese hotels, hostels and pensions, especially its centre, are housed in historic buildings dating from before the Second World War, most from the 19th-century Gr\u00fcnderzeit. This means that many of them offer relatively small rooms with sometimes compromised views, and rooms within the same property can vary widely, even at the same price.\nYou will probably find that Viennese hotels usually offer very t"
+          },
+          {
+            "chunk_id": "956e9128d4a6f33a",
+            "title": "Vienna",
+            "url": "https://en.wikivoyage.org/wiki/Vienna",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Multiple direct day and night trains exist from the above mentioned countries:\n\nVienna - Graz - Klagenfurt - Villach - Udine - Pordenone - Treviso - Venice (Railjet day train, twice daily, 7 hr 10 min)\nVienna - Graz - Klagenfurt - Villach - Udine - Trieste (Railjet day train, once daily, 6 hr 38 min)\nVienna - Linz - Salzburg - Innsbruck - Bolzano/Bozen  (Railjet day train, once daily, 7 hr, runs until end of 2026)\nVienna - Graz - Maribor - Celje - Ljubljana (EuroCity day train, once daily, 6 hr)\nVienna - Graz - Maribor - Celje - Zagreb (EuroCity day train, once daily, 6 hr 27 min)\nVienna - Gra"
+          }
+        ]
+      },
+      "source": "local-rag",
+      "fetched_at": "2026-11-11T16:15:37.973123Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "55e6ab85-7c6b-465f-bf6c-b6b5031eaf2f",
+      "tool": "validate_itinerary",
+      "status": "ok",
+      "data": {
+        "valid": true,
+        "total_cost": "189.75",
+        "currency": "USD",
+        "issues": [
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-12:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-12:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-13:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-13:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:1",
+              "2027-04-11:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:2",
+              "2027-04-12:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-12:item:1",
+              "2027-04-12:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-12:item:2",
+              "2027-04-13:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-13:item:1",
+              "2027-04-13:item:2"
+            ]
+          }
+        ]
+      },
+      "source": "deterministic-validator",
+      "fetched_at": "2026-11-11T16:16:11.108147Z",
+      "cache_hit": false
+    }
+  ],
+  "previous_itinerary": null,
+  "edit_day": null,
+  "latency_ms": 41658.10866700485,
+  "tokens_in": 9871,
+  "tokens_out": 1845,
+  "fingerprint": "c4a222484650d88ec637ea0758b036bf73092b356e01803100276556b7a6a127",
+  "experiment": "model-single",
+  "judge": {
+    "relevance": {
+      "score": 2,
+      "reason": "The itinerary ignores the requested food focus and includes nonsensical inclusions such as 'Wi-Fi' as a scheduled destination."
+    },
+    "coherence": {
+      "score": 2,
+      "reason": "Scheduling Christmas markets in April and listing 'Wi-Fi' as a 3-hour afternoon activity creates severe internal inconsistencies."
+    },
+    "tone": {
+      "score": 5,
+      "reason": "The tone is professional, respectful, and appropriately upfront about pricing assumptions."
+    }
+  },
+  "judge_protocol": {
+    "seed": 42,
+    "pairwise": false,
+    "rubric_version": 1
+  }
+}

@@ -1,0 +1,821 @@
+{
+  "id": "qwen-calibration-fixed-01:hard-01:0",
+  "synthetic": true,
+  "request": "Plan 2 days in Lisbon for 1 people under 600 USD, with museums and food, at a fast pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. Dates: 2027-04-10 through 2027-04-11. Include a park; use a fast pace and verify travel times between visits.",
+  "constraints": {
+    "destination": "Lisbon",
+    "length": 2,
+    "budget": 600,
+    "currency": "USD",
+    "interests": [
+      "museums",
+      "food"
+    ],
+    "pace": "fast",
+    "must_include": [
+      "a park"
+    ],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 1,
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-11"
+  },
+  "category": "hard",
+  "rubric": [
+    "schema_valid",
+    "budget_respected",
+    "no_overlap",
+    "dates_in_range",
+    "prices_traceable",
+    "citations_present",
+    "citations_supported",
+    "no_forbidden_urls",
+    "travel_times_plausible"
+  ],
+  "turns": [],
+  "case_id": "hard-01",
+  "run_id": "qwen-calibration-fixed-01",
+  "repeat": 0,
+  "source": "recorded",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "route": {
+    "extract": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    },
+    "plan": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    }
+  },
+  "output": {
+    "trip_id": "443bd635-f756-4cba-b042-36d47affb8d2",
+    "message": "Here is the itinerary. Some items are unpriced, so the full budget cannot be verified. Inventory quotes are synthetic; they do not establish booking availability.",
+    "itinerary": {
+      "trip": {
+        "start_date": "2027-04-10",
+        "end_date": "2027-04-11",
+        "currency": "USD"
+      },
+      "days": [
+        {
+          "date": "2027-04-10",
+          "items": [
+            {
+              "id": "2027-04-10:item:1",
+              "start": "2027-04-10T08:00:00",
+              "end": "2027-04-10T10:00:00",
+              "place": "Synthetic Coral Pebble Stay",
+              "category": "hotel",
+              "cost": "49.50",
+              "currency": "USD",
+              "chunk_ids": [],
+              "tool_result_ids": [
+                "7e7b986b-1fd9-4432-a53e-3dba7199c84f"
+              ],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            },
+            {
+              "id": "2027-04-10:item:2",
+              "start": "2027-04-10T10:00:00",
+              "end": "2027-04-10T12:00:00",
+              "place": "Calouste Gulbenkian Museum",
+              "category": "museum",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "8bbaf8e37d474a4e"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        },
+        {
+          "date": "2027-04-11",
+          "items": [
+            {
+              "id": "2027-04-11:item:1",
+              "start": "2027-04-11T08:00:00",
+              "end": "2027-04-11T10:00:00",
+              "place": "Jer\u00f3nimos Monastery",
+              "category": "museum",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "322e24464434a270"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            },
+            {
+              "id": "2027-04-11:item:2",
+              "start": "2027-04-11T10:00:00",
+              "end": "2027-04-11T12:00:00",
+              "place": "Lisbon Botanical Gardens",
+              "category": "park",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "b8eb3d68d1dd4bfc"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        }
+      ]
+    },
+    "diff": null,
+    "citations": [
+      {
+        "chunk_id": "322e24464434a270",
+        "title": "Lisbon",
+        "url": "https://en.wikivoyage.org/wiki/Lisbon",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+        "excerpt": "Lisbon's western district is packed with famous monuments, especially along the riverbank. These include the Torre de Bel\u00e9m, the Monument to the Discoveries, and Jer\u00f3nimos Monastery. Museums include the Navy Museum, the Museu Colec\u00e7\u00e3o Berardo, and the National Coach Museum."
+      },
+      {
+        "chunk_id": "8bbaf8e37d474a4e",
+        "title": "Lisbon",
+        "url": "https://en.wikivoyage.org/wiki/Lisbon",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+        "excerpt": "This large expanse of Lisbon has a few sights of interest, including Parque Eduardo VII, the Calouste Gulbenkian Museum, and the zoo."
+      },
+      {
+        "chunk_id": "b8eb3d68d1dd4bfc",
+        "title": "Lisbon",
+        "url": "https://en.wikivoyage.org/wiki/Lisbon",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+        "excerpt": "The Bairro Alto, or \"Upper District\" (dare we say \"High Neighbourhood\"), has become Lisbon's youthful, trendy quarter. The district includes the Chiado neighbourhood, known for its numerous historic landmarks and theatres. Among the district's many sights are the S\u00e3o Bento Palace (where the Portuguese parliament meets), the Museu Nacional de Arte Antiga (a museum of antique art), and the Lisbon Botanical Gardens."
+      }
+    ],
+    "tool_trace": [
+      {
+        "tool_result_id": "7e7b986b-1fd9-4432-a53e-3dba7199c84f",
+        "tool": "search_hotels",
+        "status": "ok",
+        "data": {
+          "hotels": [
+            {
+              "id": 113,
+              "name": "Synthetic Coral Pebble Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 1",
+              "tier": "budget",
+              "price_per_night": "49.50",
+              "total_price": "49.50",
+              "nights": 1,
+              "rating": 4.9,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 116,
+              "name": "Synthetic Ivory Orchard Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 4",
+              "tier": "budget",
+              "price_per_night": "49.50",
+              "total_price": "49.50",
+              "nights": 1,
+              "rating": 4.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 119,
+              "name": "Synthetic Azure Pebble Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 3",
+              "tier": "budget",
+              "price_per_night": "49.50",
+              "total_price": "49.50",
+              "nights": 1,
+              "rating": 3.1,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 122,
+              "name": "Synthetic Amber Orchard Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 2",
+              "tier": "budget",
+              "price_per_night": "49.50",
+              "total_price": "49.50",
+              "nights": 1,
+              "rating": 4.4,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 114,
+              "name": "Synthetic Amber Pebble Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 2",
+              "tier": "mid",
+              "price_per_night": "99.00",
+              "total_price": "99.00",
+              "nights": 1,
+              "rating": 4.4,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 117,
+              "name": "Synthetic Azure Orchard Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 1",
+              "tier": "mid",
+              "price_per_night": "99.00",
+              "total_price": "99.00",
+              "nights": 1,
+              "rating": 3.1,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 120,
+              "name": "Synthetic Coral Lantern Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 4",
+              "tier": "mid",
+              "price_per_night": "99.00",
+              "total_price": "99.00",
+              "nights": 1,
+              "rating": 3.8,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 115,
+              "name": "Synthetic Azure Lantern Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 3",
+              "tier": "upscale",
+              "price_per_night": "189.00",
+              "total_price": "189.00",
+              "nights": 1,
+              "rating": 4.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 118,
+              "name": "Synthetic Ivory Pebble Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 2",
+              "tier": "upscale",
+              "price_per_night": "189.00",
+              "total_price": "189.00",
+              "nights": 1,
+              "rating": 4.4,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 121,
+              "name": "Synthetic Ivory Lantern Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 1",
+              "tier": "upscale",
+              "price_per_night": "189.00",
+              "total_price": "189.00",
+              "nights": 1,
+              "rating": 3.5,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            }
+          ],
+          "check_in": "2027-04-10",
+          "check_out": "2027-04-11",
+          "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+          "truncated": false
+        },
+        "source": "synthetic-v1",
+        "fetched_at": "2026-11-11T20:56:06.589237Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "cf6c2b3d-9fe5-4d5b-ad1d-9593ea57e2eb",
+        "tool": "search_destinations",
+        "status": "ok",
+        "data": {
+          "chunks": [
+            {
+              "chunk_id": "322e24464434a270",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Lisbon's western district is packed with famous monuments, especially along the riverbank. These include the Torre de Bel\u00e9m, the Monument to the Discoveries, and Jer\u00f3nimos Monastery. Museums include the Navy Museum, the Museu Colec\u00e7\u00e3o Berardo, and the National Coach Museum."
+            },
+            {
+              "chunk_id": "8bbaf8e37d474a4e",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "This large expanse of Lisbon has a few sights of interest, including Parque Eduardo VII, the Calouste Gulbenkian Museum, and the zoo."
+            },
+            {
+              "chunk_id": "b8eb3d68d1dd4bfc",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "The Bairro Alto, or \"Upper District\" (dare we say \"High Neighbourhood\"), has become Lisbon's youthful, trendy quarter. The district includes the Chiado neighbourhood, known for its numerous historic landmarks and theatres. Among the district's many sights are the S\u00e3o Bento Palace (where the Portuguese parliament meets), the Museu Nacional de Arte Antiga (a museum of antique art), and the Lisbon Botanical Gardens."
+            },
+            {
+              "chunk_id": "c00f1210e5481690",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Lisbon (Portuguese: Lisboa) is the capital of Portugal situated on seven hills at the wide mouth of the river Tagus (Tejo) where it meets the Atlantic Ocean. With 545,000 residents in the city and 3.0 million in the Lisbon Region (2024) and a thriving mix of Portugal's rich history and vivid contemporary culture, Lisbon enchants travellers with its white bleached limestone buildings, intimate alleyways, and an easy going charm that makes it a popular year round destination.\nGreater Lisbon comprises many other splendid tourist destinations such as the  UNESCO World Heritage Site of Sintra, the "
+            },
+            {
+              "chunk_id": "1af66742e799837d",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "All of Lisbon has 4G from all Portuguese carriers. As of Jan 2023, 5G coverage is quite broad in most popular areas. Deep inside some older buildings, or underground you might find coverage to be spotty.\nPrivate international call centres and public telephone booths are common throughout Lisbon. Be warned, however, public phones can be less generous than slot machines: many times they'll swallow your change and give you no credit. You're better off purchasing a Portugal Telecom pre-paid card you can insert into the phone, or even a discount calling card which connects you via a toll-free numbe"
+            }
+          ]
+        },
+        "source": "local-rag",
+        "fetched_at": "2026-11-11T20:56:08.659399Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "39222fe5-0cb2-4269-aea2-fb3d7bb587e0",
+        "tool": "validate_itinerary",
+        "status": "ok",
+        "data": {
+          "valid": true,
+          "total_cost": "49.50",
+          "currency": "USD",
+          "issues": [
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:1",
+                "2027-04-11:item:2"
+              ]
+            }
+          ]
+        },
+        "source": "deterministic-validator",
+        "fetched_at": "2026-11-11T20:56:34.158899Z",
+        "cache_hit": false
+      }
+    ],
+    "budget_met": null,
+    "usage": {
+      "tokens_in": 9301,
+      "tokens_out": 1379,
+      "cached_tokens": 1729,
+      "uncached_tokens": 7572,
+      "calls": [
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 710,
+          "tokens_out": 60,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2148,
+          "tokens_out": 234,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 1247,
+          "tokens_out": 479,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 5196,
+          "tokens_out": 606,
+          "cached_tokens": 1720
+        }
+      ]
+    },
+    "issues": [
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-11:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:1",
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:2",
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-11:item:1",
+          "2027-04-11:item:2"
+        ]
+      }
+    ],
+    "preference_proposal": null
+  },
+  "tool_results": [
+    {
+      "tool_result_id": "7e7b986b-1fd9-4432-a53e-3dba7199c84f",
+      "tool": "search_hotels",
+      "status": "ok",
+      "data": {
+        "hotels": [
+          {
+            "id": 113,
+            "name": "Synthetic Coral Pebble Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 1",
+            "tier": "budget",
+            "price_per_night": "49.50",
+            "total_price": "49.50",
+            "nights": 1,
+            "rating": 4.9,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 116,
+            "name": "Synthetic Ivory Orchard Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 4",
+            "tier": "budget",
+            "price_per_night": "49.50",
+            "total_price": "49.50",
+            "nights": 1,
+            "rating": 4.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 119,
+            "name": "Synthetic Azure Pebble Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 3",
+            "tier": "budget",
+            "price_per_night": "49.50",
+            "total_price": "49.50",
+            "nights": 1,
+            "rating": 3.1,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 122,
+            "name": "Synthetic Amber Orchard Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 2",
+            "tier": "budget",
+            "price_per_night": "49.50",
+            "total_price": "49.50",
+            "nights": 1,
+            "rating": 4.4,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 114,
+            "name": "Synthetic Amber Pebble Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 2",
+            "tier": "mid",
+            "price_per_night": "99.00",
+            "total_price": "99.00",
+            "nights": 1,
+            "rating": 4.4,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 117,
+            "name": "Synthetic Azure Orchard Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 1",
+            "tier": "mid",
+            "price_per_night": "99.00",
+            "total_price": "99.00",
+            "nights": 1,
+            "rating": 3.1,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 120,
+            "name": "Synthetic Coral Lantern Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 4",
+            "tier": "mid",
+            "price_per_night": "99.00",
+            "total_price": "99.00",
+            "nights": 1,
+            "rating": 3.8,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 115,
+            "name": "Synthetic Azure Lantern Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 3",
+            "tier": "upscale",
+            "price_per_night": "189.00",
+            "total_price": "189.00",
+            "nights": 1,
+            "rating": 4.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 118,
+            "name": "Synthetic Ivory Pebble Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 2",
+            "tier": "upscale",
+            "price_per_night": "189.00",
+            "total_price": "189.00",
+            "nights": 1,
+            "rating": 4.4,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 121,
+            "name": "Synthetic Ivory Lantern Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 1",
+            "tier": "upscale",
+            "price_per_night": "189.00",
+            "total_price": "189.00",
+            "nights": 1,
+            "rating": 3.5,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          }
+        ],
+        "check_in": "2027-04-10",
+        "check_out": "2027-04-11",
+        "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+        "truncated": false
+      },
+      "source": "synthetic-v1",
+      "fetched_at": "2026-11-11T20:56:06.589237Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "cf6c2b3d-9fe5-4d5b-ad1d-9593ea57e2eb",
+      "tool": "search_destinations",
+      "status": "ok",
+      "data": {
+        "chunks": [
+          {
+            "chunk_id": "322e24464434a270",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Lisbon's western district is packed with famous monuments, especially along the riverbank. These include the Torre de Bel\u00e9m, the Monument to the Discoveries, and Jer\u00f3nimos Monastery. Museums include the Navy Museum, the Museu Colec\u00e7\u00e3o Berardo, and the National Coach Museum."
+          },
+          {
+            "chunk_id": "8bbaf8e37d474a4e",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "This large expanse of Lisbon has a few sights of interest, including Parque Eduardo VII, the Calouste Gulbenkian Museum, and the zoo."
+          },
+          {
+            "chunk_id": "b8eb3d68d1dd4bfc",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "The Bairro Alto, or \"Upper District\" (dare we say \"High Neighbourhood\"), has become Lisbon's youthful, trendy quarter. The district includes the Chiado neighbourhood, known for its numerous historic landmarks and theatres. Among the district's many sights are the S\u00e3o Bento Palace (where the Portuguese parliament meets), the Museu Nacional de Arte Antiga (a museum of antique art), and the Lisbon Botanical Gardens."
+          },
+          {
+            "chunk_id": "c00f1210e5481690",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Lisbon (Portuguese: Lisboa) is the capital of Portugal situated on seven hills at the wide mouth of the river Tagus (Tejo) where it meets the Atlantic Ocean. With 545,000 residents in the city and 3.0 million in the Lisbon Region (2024) and a thriving mix of Portugal's rich history and vivid contemporary culture, Lisbon enchants travellers with its white bleached limestone buildings, intimate alleyways, and an easy going charm that makes it a popular year round destination.\nGreater Lisbon comprises many other splendid tourist destinations such as the  UNESCO World Heritage Site of Sintra, the "
+          },
+          {
+            "chunk_id": "1af66742e799837d",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "All of Lisbon has 4G from all Portuguese carriers. As of Jan 2023, 5G coverage is quite broad in most popular areas. Deep inside some older buildings, or underground you might find coverage to be spotty.\nPrivate international call centres and public telephone booths are common throughout Lisbon. Be warned, however, public phones can be less generous than slot machines: many times they'll swallow your change and give you no credit. You're better off purchasing a Portugal Telecom pre-paid card you can insert into the phone, or even a discount calling card which connects you via a toll-free numbe"
+          }
+        ]
+      },
+      "source": "local-rag",
+      "fetched_at": "2026-11-11T20:56:08.659399Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "39222fe5-0cb2-4269-aea2-fb3d7bb587e0",
+      "tool": "validate_itinerary",
+      "status": "ok",
+      "data": {
+        "valid": true,
+        "total_cost": "49.50",
+        "currency": "USD",
+        "issues": [
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:1",
+              "2027-04-11:item:2"
+            ]
+          }
+        ]
+      },
+      "source": "deterministic-validator",
+      "fetched_at": "2026-11-11T20:56:34.158899Z",
+      "cache_hit": false
+    }
+  ],
+  "previous_itinerary": null,
+  "edit_day": null,
+  "latency_ms": 36725.099582923576,
+  "tokens_in": 9301,
+  "tokens_out": 1379,
+  "fingerprint": "1dc89e92266e05f2eced223338d30141c9e8926c2b145330930a2a131c304ec7",
+  "experiment": "model-single",
+  "judge": {
+    "relevance": {
+      "score": 3,
+      "reason": "Includes museums and the requested park, but omits dedicated dining venues and provides too few daily activities to reflect a fast pace."
+    },
+    "coherence": {
+      "score": 4,
+      "reason": "The activities are chronologically ordered without overlaps, though scheduling consecutive visits back-to-back leaves minimal buffer for transit."
+    },
+    "tone": {
+      "score": 5,
+      "reason": "Direct, respectful, and transparent about inventory and cost uncertainties."
+    }
+  },
+  "judge_protocol": {
+    "seed": 50,
+    "pairwise": false,
+    "rubric_version": 1
+  }
+}

@@ -45,8 +45,6 @@ reset-rag:
 	python -c "from backend.db.connect import engine; from sqlalchemy import text; conn = engine.connect(); conn.execute(text('TRUNCATE TABLE document_chunks RESTART IDENTITY CASCADE')); conn.execute(text('TRUNCATE TABLE documents RESTART IDENTITY CASCADE')); conn.close()"
 
 
-eval:
-	$(MAKE) rag-eval
 
 .PHONY: rag-readme rag-diagnose
 rag-readme:
@@ -86,3 +84,21 @@ security-live:
 eval-checks:
 	@test -n "$(OUTPUTS)" || (echo 'Usage: make eval-checks OUTPUTS=/path/to/saved.jsonl'; exit 2)
 	python -m eval.run_checks "$(OUTPUTS)"
+
+.PHONY: eval eval-record eval-report eval-gate
+EVAL_LIMIT ?= 49
+EVAL_REPEATS ?= 1
+EVAL_MODEL_INDEX ?= 0
+EVAL_RUN_ID ?= manual
+EVAL_ROUTE ?=
+eval:
+	python -m eval.run --recorded --limit $(EVAL_LIMIT) --repeats $(EVAL_REPEATS)
+
+eval-record:
+	python -m eval.run --live --run-id $(EVAL_RUN_ID) --limit $(EVAL_LIMIT) --repeats $(EVAL_REPEATS) --model-index $(EVAL_MODEL_INDEX) $(if $(EVAL_ROUTE),--route $(EVAL_ROUTE),)
+
+eval-report:
+	python -m eval.report --readme
+
+eval-gate: eval
+	python -m eval.gate

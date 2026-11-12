@@ -1,0 +1,1204 @@
+{
+  "id": "qwen-calibration-fixed-01:easy-03:0",
+  "synthetic": true,
+  "request": "Plan 4 days in Madrid for 3 people under 1000 USD, with museums and food, at a moderate pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. Dates: 2027-04-10 through 2027-04-13.",
+  "constraints": {
+    "destination": "Madrid",
+    "length": 4,
+    "budget": 1000,
+    "currency": "USD",
+    "interests": [
+      "museums",
+      "food"
+    ],
+    "pace": "moderate",
+    "must_include": [],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 3,
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-13"
+  },
+  "category": "easy",
+  "rubric": [
+    "schema_valid",
+    "budget_respected",
+    "no_overlap",
+    "dates_in_range",
+    "prices_traceable",
+    "citations_present",
+    "citations_supported",
+    "no_forbidden_urls"
+  ],
+  "turns": [],
+  "case_id": "easy-03",
+  "run_id": "qwen-calibration-fixed-01",
+  "repeat": 0,
+  "source": "recorded",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "route": {
+    "extract": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    },
+    "plan": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    }
+  },
+  "output": {
+    "trip_id": "8359aba6-cce2-4cea-a5ce-082b489fd94f",
+    "message": "Here is the itinerary. Some items are unpriced, so the full budget cannot be verified. Inventory quotes are synthetic; they do not establish booking availability.",
+    "itinerary": {
+      "trip": {
+        "start_date": "2027-04-10",
+        "end_date": "2027-04-13",
+        "currency": "USD"
+      },
+      "days": [
+        {
+          "date": "2027-04-10",
+          "items": [
+            {
+              "id": "2027-04-10:item:1",
+              "start": "2027-04-10T08:00:00",
+              "end": "2027-04-10T10:00:00",
+              "place": "Synthetic Amber Pebble Stay",
+              "category": "hotel",
+              "cost": "165.00",
+              "currency": "USD",
+              "chunk_ids": [],
+              "tool_result_ids": [
+                "57ca497f-8c07-408a-b54f-7a5b7c7dd124"
+              ],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            },
+            {
+              "id": "2027-04-10:item:2",
+              "start": "2027-04-10T10:00:00",
+              "end": "2027-04-10T12:00:00",
+              "place": "Gran Meli\u00e1 Palacio de Los Duques",
+              "category": "museum",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "e94a1fd75936544c"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        },
+        {
+          "date": "2027-04-11",
+          "items": [
+            {
+              "id": "2027-04-11:item:1",
+              "start": "2027-04-11T08:00:00",
+              "end": "2027-04-11T10:00:00",
+              "place": "Gran V\u00eda",
+              "category": "street",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "e94a1fd75936544c"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            },
+            {
+              "id": "2027-04-11:item:2",
+              "start": "2027-04-11T10:00:00",
+              "end": "2027-04-11T12:00:00",
+              "place": "Hotel Villa Magna",
+              "category": "hotel",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "e94a1fd75936544c"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            },
+            {
+              "id": "2027-04-11:item:3",
+              "start": "2027-04-11T12:00:00",
+              "end": "2027-04-11T14:00:00",
+              "place": "Paseo del Arte",
+              "category": "art_gallery",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "e94a1fd75936544c"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        },
+        {
+          "date": "2027-04-12",
+          "items": [
+            {
+              "id": "2027-04-12:item:1",
+              "start": "2027-04-12T08:00:00",
+              "end": "2027-04-12T10:00:00",
+              "place": "Retiro",
+              "category": "park",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "e94a1fd75936544c"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            },
+            {
+              "id": "2027-04-12:item:2",
+              "start": "2027-04-12T10:00:00",
+              "end": "2027-04-12T12:00:00",
+              "place": "Madrid Ritz",
+              "category": "hotel",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "e94a1fd75936544c"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            },
+            {
+              "id": "2027-04-12:item:3",
+              "start": "2027-04-12T12:00:00",
+              "end": "2027-04-12T14:00:00",
+              "place": "Salamanca district",
+              "category": "district",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "e94a1fd75936544c"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        },
+        {
+          "date": "2027-04-13",
+          "items": [
+            {
+              "id": "2027-04-13:item:1",
+              "start": "2027-04-13T08:00:00",
+              "end": "2027-04-13T10:00:00",
+              "place": "Hotel Villa Magna",
+              "category": "hotel",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "e94a1fd75936544c"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            },
+            {
+              "id": "2027-04-13:item:2",
+              "start": "2027-04-13T10:00:00",
+              "end": "2027-04-13T12:00:00",
+              "place": "Paseo del Arte",
+              "category": "art_gallery",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [
+                "e94a1fd75936544c"
+              ],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        }
+      ]
+    },
+    "diff": null,
+    "citations": [
+      {
+        "chunk_id": "e94a1fd75936544c",
+        "title": "Madrid",
+        "url": "https://en.wikivoyage.org/wiki/Madrid",
+        "license": "CC BY-SA 4.0",
+        "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+        "excerpt": "A stay in a plush hotel will set you back at least \u20ac90 per night and there is no upper limit. Most of them are found in the posh Salamanca district, along the Gran V\u00eda, in the historic centre and in the Retiro and Paseo del Arte area. Among the most famous names in the business are the Hotel Villa Magna, the Gran Meli\u00e1 Palacio de Los Duques and the Madrid Ritz."
+      }
+    ],
+    "tool_trace": [
+      {
+        "tool_result_id": "57ca497f-8c07-408a-b54f-7a5b7c7dd124",
+        "tool": "search_hotels",
+        "status": "ok",
+        "data": {
+          "hotels": [
+            {
+              "id": 133,
+              "name": "Synthetic Amber Pebble Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 1",
+              "tier": "budget",
+              "price_per_night": "55.00",
+              "total_price": "165.00",
+              "nights": 3,
+              "rating": 4.1,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 136,
+              "name": "Synthetic Ivory Lantern Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 4",
+              "tier": "budget",
+              "price_per_night": "55.00",
+              "total_price": "165.00",
+              "nights": 3,
+              "rating": 4.5,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 139,
+              "name": "Synthetic Azure Pebble Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 3",
+              "tier": "budget",
+              "price_per_night": "55.00",
+              "total_price": "165.00",
+              "nights": 3,
+              "rating": 4.0,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 142,
+              "name": "Synthetic Ivory Orchard Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 2",
+              "tier": "budget",
+              "price_per_night": "55.00",
+              "total_price": "165.00",
+              "nights": 3,
+              "rating": 3.9,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 134,
+              "name": "Synthetic Coral Pebble Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 2",
+              "tier": "mid",
+              "price_per_night": "110.00",
+              "total_price": "330.00",
+              "nights": 3,
+              "rating": 4.4,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 137,
+              "name": "Synthetic Azure Lantern Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 1",
+              "tier": "mid",
+              "price_per_night": "110.00",
+              "total_price": "330.00",
+              "nights": 3,
+              "rating": 4.1,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 140,
+              "name": "Synthetic Coral Orchard Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 4",
+              "tier": "mid",
+              "price_per_night": "110.00",
+              "total_price": "330.00",
+              "nights": 3,
+              "rating": 3.0,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 135,
+              "name": "Synthetic Azure Orchard Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 3",
+              "tier": "upscale",
+              "price_per_night": "210.00",
+              "total_price": "630.00",
+              "nights": 3,
+              "rating": 4.1,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 138,
+              "name": "Synthetic Amber Orchard Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 2",
+              "tier": "upscale",
+              "price_per_night": "210.00",
+              "total_price": "630.00",
+              "nights": 3,
+              "rating": 3.7,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 141,
+              "name": "Synthetic Amber Lantern Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 1",
+              "tier": "upscale",
+              "price_per_night": "210.00",
+              "total_price": "630.00",
+              "nights": 3,
+              "rating": 4.4,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            }
+          ],
+          "check_in": "2027-04-10",
+          "check_out": "2027-04-13",
+          "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+          "truncated": false
+        },
+        "source": "synthetic-v1",
+        "fetched_at": "2026-11-11T20:53:22.192824Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "8988f41a-4212-432d-b4f9-4ee5548cb744",
+        "tool": "search_destinations",
+        "status": "ok",
+        "data": {
+          "chunks": [
+            {
+              "chunk_id": "cfad6968248ff5f2",
+              "title": "Madrid",
+              "url": "https://en.wikivoyage.org/wiki/Madrid",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Tourism website of the city of Madrid."
+            },
+            {
+              "chunk_id": "388272c418c5761e",
+              "title": "Madrid",
+              "url": "https://en.wikivoyage.org/wiki/Madrid",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "As of Sept 2021, Madrid has 5G from all Spanish carriers.\nLocutorios (call shops) are widely spread in Madrid near touristy locations and are very cheap to use. Some shops and kiosks have tourist SIM cards from carriers like Orange and Vodafone with plans that run \u20ac10\u201320 for a month of 50\u2013100 gigabytes of data or more. Employees are willing to install the card and configure the plan."
+            },
+            {
+              "chunk_id": "7ef166f6e83d1f04",
+              "title": "Madrid",
+              "url": "https://en.wikivoyage.org/wiki/Madrid",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Madrid is Spain's capital and largest city. A city that has been marked by Spain's varied and tumultuous history, Madrid has some of Europe's most impressive cultural and architectural heritage, which includes grand avenues, plazas, buildings and monuments, world-class art galleries and museums, highly popular football teams, and cultural events of international fame for everyone. Madrid is also renowned for gastronomic delights and a nightlife lasting up until dawn.\nMadrid is more often than not disregarded by tourists who gravitate to other parts of the country. But though it may appear to l"
+            },
+            {
+              "chunk_id": "e94a1fd75936544c",
+              "title": "Madrid",
+              "url": "https://en.wikivoyage.org/wiki/Madrid",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "A stay in a plush hotel will set you back at least \u20ac90 per night and there is no upper limit. Most of them are found in the posh Salamanca district, along the Gran V\u00eda, in the historic centre and in the Retiro and Paseo del Arte area. Among the most famous names in the business are the Hotel Villa Magna, the Gran Meli\u00e1 Palacio de Los Duques and the Madrid Ritz."
+            }
+          ]
+        },
+        "source": "local-rag",
+        "fetched_at": "2026-11-11T20:53:24.465113Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "cc4b59d5-3a0a-4199-9562-0c3f1d3ebcfd",
+        "tool": "validate_itinerary",
+        "status": "ok",
+        "data": {
+          "valid": true,
+          "total_cost": "165.00",
+          "currency": "USD",
+          "issues": [
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:3"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-12:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-12:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-12:item:3"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-13:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-13:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:1",
+                "2027-04-11:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:2",
+                "2027-04-11:item:3"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:3",
+                "2027-04-12:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-12:item:1",
+                "2027-04-12:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-12:item:2",
+                "2027-04-12:item:3"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-12:item:3",
+                "2027-04-13:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-13:item:1",
+                "2027-04-13:item:2"
+              ]
+            }
+          ]
+        },
+        "source": "deterministic-validator",
+        "fetched_at": "2026-11-11T20:53:57.589856Z",
+        "cache_hit": false
+      }
+    ],
+    "budget_met": null,
+    "usage": {
+      "tokens_in": 8744,
+      "tokens_out": 1918,
+      "cached_tokens": 3324,
+      "uncached_tokens": 5420,
+      "calls": [
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 696,
+          "tokens_out": 82,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2133,
+          "tokens_out": 217,
+          "cached_tokens": 1611
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 1010,
+          "tokens_out": 266,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 4905,
+          "tokens_out": 1353,
+          "cached_tokens": 1707
+        }
+      ]
+    },
+    "issues": [
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-11:item:2"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-11:item:3"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-12:item:1"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-12:item:2"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-12:item:3"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-13:item:1"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-13:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:1",
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:2",
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-11:item:1",
+          "2027-04-11:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-11:item:2",
+          "2027-04-11:item:3"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-11:item:3",
+          "2027-04-12:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-12:item:1",
+          "2027-04-12:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-12:item:2",
+          "2027-04-12:item:3"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-12:item:3",
+          "2027-04-13:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-13:item:1",
+          "2027-04-13:item:2"
+        ]
+      }
+    ],
+    "preference_proposal": null
+  },
+  "tool_results": [
+    {
+      "tool_result_id": "57ca497f-8c07-408a-b54f-7a5b7c7dd124",
+      "tool": "search_hotels",
+      "status": "ok",
+      "data": {
+        "hotels": [
+          {
+            "id": 133,
+            "name": "Synthetic Amber Pebble Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 1",
+            "tier": "budget",
+            "price_per_night": "55.00",
+            "total_price": "165.00",
+            "nights": 3,
+            "rating": 4.1,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 136,
+            "name": "Synthetic Ivory Lantern Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 4",
+            "tier": "budget",
+            "price_per_night": "55.00",
+            "total_price": "165.00",
+            "nights": 3,
+            "rating": 4.5,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 139,
+            "name": "Synthetic Azure Pebble Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 3",
+            "tier": "budget",
+            "price_per_night": "55.00",
+            "total_price": "165.00",
+            "nights": 3,
+            "rating": 4.0,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 142,
+            "name": "Synthetic Ivory Orchard Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 2",
+            "tier": "budget",
+            "price_per_night": "55.00",
+            "total_price": "165.00",
+            "nights": 3,
+            "rating": 3.9,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 134,
+            "name": "Synthetic Coral Pebble Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 2",
+            "tier": "mid",
+            "price_per_night": "110.00",
+            "total_price": "330.00",
+            "nights": 3,
+            "rating": 4.4,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 137,
+            "name": "Synthetic Azure Lantern Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 1",
+            "tier": "mid",
+            "price_per_night": "110.00",
+            "total_price": "330.00",
+            "nights": 3,
+            "rating": 4.1,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 140,
+            "name": "Synthetic Coral Orchard Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 4",
+            "tier": "mid",
+            "price_per_night": "110.00",
+            "total_price": "330.00",
+            "nights": 3,
+            "rating": 3.0,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 135,
+            "name": "Synthetic Azure Orchard Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 3",
+            "tier": "upscale",
+            "price_per_night": "210.00",
+            "total_price": "630.00",
+            "nights": 3,
+            "rating": 4.1,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 138,
+            "name": "Synthetic Amber Orchard Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 2",
+            "tier": "upscale",
+            "price_per_night": "210.00",
+            "total_price": "630.00",
+            "nights": 3,
+            "rating": 3.7,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 141,
+            "name": "Synthetic Amber Lantern Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 1",
+            "tier": "upscale",
+            "price_per_night": "210.00",
+            "total_price": "630.00",
+            "nights": 3,
+            "rating": 4.4,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          }
+        ],
+        "check_in": "2027-04-10",
+        "check_out": "2027-04-13",
+        "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+        "truncated": false
+      },
+      "source": "synthetic-v1",
+      "fetched_at": "2026-11-11T20:53:22.192824Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "8988f41a-4212-432d-b4f9-4ee5548cb744",
+      "tool": "search_destinations",
+      "status": "ok",
+      "data": {
+        "chunks": [
+          {
+            "chunk_id": "cfad6968248ff5f2",
+            "title": "Madrid",
+            "url": "https://en.wikivoyage.org/wiki/Madrid",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Tourism website of the city of Madrid."
+          },
+          {
+            "chunk_id": "388272c418c5761e",
+            "title": "Madrid",
+            "url": "https://en.wikivoyage.org/wiki/Madrid",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "As of Sept 2021, Madrid has 5G from all Spanish carriers.\nLocutorios (call shops) are widely spread in Madrid near touristy locations and are very cheap to use. Some shops and kiosks have tourist SIM cards from carriers like Orange and Vodafone with plans that run \u20ac10\u201320 for a month of 50\u2013100 gigabytes of data or more. Employees are willing to install the card and configure the plan."
+          },
+          {
+            "chunk_id": "7ef166f6e83d1f04",
+            "title": "Madrid",
+            "url": "https://en.wikivoyage.org/wiki/Madrid",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Madrid is Spain's capital and largest city. A city that has been marked by Spain's varied and tumultuous history, Madrid has some of Europe's most impressive cultural and architectural heritage, which includes grand avenues, plazas, buildings and monuments, world-class art galleries and museums, highly popular football teams, and cultural events of international fame for everyone. Madrid is also renowned for gastronomic delights and a nightlife lasting up until dawn.\nMadrid is more often than not disregarded by tourists who gravitate to other parts of the country. But though it may appear to l"
+          },
+          {
+            "chunk_id": "e94a1fd75936544c",
+            "title": "Madrid",
+            "url": "https://en.wikivoyage.org/wiki/Madrid",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "A stay in a plush hotel will set you back at least \u20ac90 per night and there is no upper limit. Most of them are found in the posh Salamanca district, along the Gran V\u00eda, in the historic centre and in the Retiro and Paseo del Arte area. Among the most famous names in the business are the Hotel Villa Magna, the Gran Meli\u00e1 Palacio de Los Duques and the Madrid Ritz."
+          }
+        ]
+      },
+      "source": "local-rag",
+      "fetched_at": "2026-11-11T20:53:24.465113Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "cc4b59d5-3a0a-4199-9562-0c3f1d3ebcfd",
+      "tool": "validate_itinerary",
+      "status": "ok",
+      "data": {
+        "valid": true,
+        "total_cost": "165.00",
+        "currency": "USD",
+        "issues": [
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:3"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-12:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-12:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-12:item:3"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-13:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-13:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:1",
+              "2027-04-11:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:2",
+              "2027-04-11:item:3"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:3",
+              "2027-04-12:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-12:item:1",
+              "2027-04-12:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-12:item:2",
+              "2027-04-12:item:3"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-12:item:3",
+              "2027-04-13:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-13:item:1",
+              "2027-04-13:item:2"
+            ]
+          }
+        ]
+      },
+      "source": "deterministic-validator",
+      "fetched_at": "2026-11-11T20:53:57.589856Z",
+      "cache_hit": false
+    }
+  ],
+  "previous_itinerary": null,
+  "edit_day": null,
+  "latency_ms": 42439.21137508005,
+  "tokens_in": 8744,
+  "tokens_out": 1918,
+  "fingerprint": "d1836acdb787de73e2ed0feee52f604a69e8cc6e05f0e374a4a3ca7ae9ad6853",
+  "experiment": "model-single",
+  "judge": {
+    "relevance": {
+      "score": 2,
+      "reason": "The itinerary completely misses the requested food interest and populates sightseeing with luxury hotels rather than actual museums."
+    },
+    "coherence": {
+      "score": 2,
+      "reason": "The schedule repeatedly revisits the same locations (Hotel Villa Magna and Paseo del Arte) and schedules hotel visits inappropriately."
+    },
+    "tone": {
+      "score": 5,
+      "reason": "Clear, polite, and candid about synthetic quotes and unpriced items."
+    }
+  },
+  "judge_protocol": {
+    "seed": 46,
+    "pairwise": false,
+    "rubric_version": 1
+  }
+}

@@ -126,3 +126,17 @@ The default seed now generates explicitly labeled `synthetic-v1` flights and hot
 ### Conversational agent
 
 `POST /api/chat` runs a bounded, grounded planning loop with single-day edits and Postgres itinerary versions. Preferences require explicit confirmation. See [architecture and local verification](docs/architecture.md) for the CLI, undo/version endpoints, context limits, and synthetic-inventory limitations. Run `make test-agent` for offline checks.
+
+<!-- EVAL:START -->
+## Evaluation results
+
+Missing measurements are "not run". Rates are check-weighted; spread is population standard deviation. No booking or paid-price claims.
+
+| Model | n | Repeats | Check pass % | Citation support % | Judge mean | p50 / p95 ms | Tokens in / out mean | Cost |
+|---|---:|---:|---|---|---|---|---|---|
+| gemini-3.5-flash-lite | 2 | 1 | 43.75 | 0.0 | 3.3333333333333335 | 26434.008896001615 / 37741.4345399593 | 3893.5 / 762 | $0 (free tier) |
+| llama3.2:3b | 2 | 1 | 75.0 | 0.0 | 4 | 51877.19793745782 / 74781.52348160511 | 17082 / 1489 | $0 (free tier) |
+| qwen2.5:3b | 52 | 1 | 49.71098265895954 | 20.0 | 3.55 | 41877.64527101535 / 113225.51358139602 | 20797.615384615383 / 1438.3076923076924 | $0 (free tier) |
+
+
+<!-- EVAL:END -->

@@ -1,0 +1,373 @@
+{
+  "models": [
+    {
+      "provider": "gemini",
+      "model": "gemini-3.5-flash-lite",
+      "results": {
+        "n": 2,
+        "cases": 2,
+        "repeats": 1,
+        "pass_rate": 43.75,
+        "per_check": {
+          "schema_valid": {
+            "n": 2,
+            "pass_rate": 50.0
+          },
+          "budget_respected": {
+            "n": 2,
+            "pass_rate": 50.0
+          },
+          "no_overlap": {
+            "n": 2,
+            "pass_rate": 50.0
+          },
+          "dates_in_range": {
+            "n": 2,
+            "pass_rate": 50.0
+          },
+          "prices_traceable": {
+            "n": 2,
+            "pass_rate": 50.0
+          },
+          "citations_present": {
+            "n": 2,
+            "pass_rate": 0.0
+          },
+          "citations_supported": {
+            "n": 2,
+            "pass_rate": 0.0
+          },
+          "no_forbidden_urls": {
+            "n": 2,
+            "pass_rate": 100.0
+          }
+        },
+        "trip_pass_rate": {
+          "mean": 43.75,
+          "stddev": 31.25,
+          "min": 12.5,
+          "max": 75.0
+        },
+        "judge_score": {
+          "mean": 3.3333333333333335,
+          "stddev": 1.247219128924647,
+          "min": 2,
+          "max": 5
+        },
+        "latency_ms": {
+          "mean": 26434.008896001615,
+          "stddev": 12563.806271064095,
+          "min": 13870.20262493752,
+          "max": 38997.81516706571
+        },
+        "p50_ms": 26434.008896001615,
+        "p95_ms": 37741.4345399593,
+        "tokens_in_per_trip": {
+          "mean": 3893.5,
+          "stddev": 1444.5,
+          "min": 2449,
+          "max": 5338
+        },
+        "tokens_out_per_trip": {
+          "mean": 762,
+          "stddev": 583.0,
+          "min": 179,
+          "max": 1345
+        }
+      }
+    },
+    {
+      "provider": "ollama",
+      "model": "llama3.2:3b",
+      "results": {
+        "n": 2,
+        "cases": 2,
+        "repeats": 1,
+        "pass_rate": 75.0,
+        "per_check": {
+          "schema_valid": {
+            "n": 2,
+            "pass_rate": 100.0
+          },
+          "budget_respected": {
+            "n": 2,
+            "pass_rate": 100.0
+          },
+          "no_overlap": {
+            "n": 2,
+            "pass_rate": 100.0
+          },
+          "dates_in_range": {
+            "n": 2,
+            "pass_rate": 100.0
+          },
+          "prices_traceable": {
+            "n": 2,
+            "pass_rate": 100.0
+          },
+          "citations_present": {
+            "n": 2,
+            "pass_rate": 0.0
+          },
+          "citations_supported": {
+            "n": 2,
+            "pass_rate": 0.0
+          },
+          "no_forbidden_urls": {
+            "n": 2,
+            "pass_rate": 100.0
+          }
+        },
+        "trip_pass_rate": {
+          "mean": 75.0,
+          "stddev": 0.0,
+          "min": 75.0,
+          "max": 75.0
+        },
+        "judge_score": {
+          "mean": 4,
+          "stddev": 1.4142135623730951,
+          "min": 2,
+          "max": 5
+        },
+        "latency_ms": {
+          "mean": 51877.19793745782,
+          "stddev": 25449.250604608096,
+          "min": 26427.947332849726,
+          "max": 77326.44854206592
+        },
+        "p50_ms": 51877.19793745782,
+        "p95_ms": 74781.52348160511,
+        "tokens_in_per_trip": {
+          "mean": 17082,
+          "stddev": 10554.0,
+          "min": 6528,
+          "max": 27636
+        },
+        "tokens_out_per_trip": {
+          "mean": 1489,
+          "stddev": 440.0,
+          "min": 1049,
+          "max": 1929
+        }
+      }
+    },
+    {
+      "provider": "ollama",
+      "model": "qwen2.5:3b",
+      "results": {
+        "n": 52,
+        "cases": 20,
+        "repeats": 1,
+        "pass_rate": 49.71098265895954,
+        "per_check": {
+          "schema_valid": {
+            "n": 40,
+            "pass_rate": 50.0
+          },
+          "budget_respected": {
+            "n": 40,
+            "pass_rate": 50.0
+          },
+          "no_overlap": {
+            "n": 40,
+            "pass_rate": 50.0
+          },
+          "dates_in_range": {
+            "n": 40,
+            "pass_rate": 50.0
+          },
+          "prices_traceable": {
+            "n": 40,
+            "pass_rate": 50.0
+          },
+          "citations_present": {
+            "n": 40,
+            "pass_rate": 30.0
+          },
+          "citations_supported": {
+            "n": 40,
+            "pass_rate": 20.0
+          },
+          "no_forbidden_urls": {
+            "n": 52,
+            "pass_rate": 100.0
+          },
+          "travel_times_plausible": {
+            "n": 14,
+            "pass_rate": 0.0
+          }
+        },
+        "trip_pass_rate": {
+          "mean": 60.52350427350427,
+          "stddev": 39.560690549116,
+          "min": 11.11111111111111,
+          "max": 100.0
+        },
+        "judge_score": {
+          "mean": 3.55,
+          "stddev": 1.4309088021254184,
+          "min": 1,
+          "max": 5
+        },
+        "latency_ms": {
+          "mean": 47255.89736135086,
+          "stddev": 35341.32295908596,
+          "min": 1746.57041602768,
+          "max": 127976.06420796365
+        },
+        "p50_ms": 41877.64527101535,
+        "p95_ms": 113225.51358139602,
+        "tokens_in_per_trip": {
+          "mean": 20797.615384615383,
+          "stddev": 21279.757967603,
+          "min": 681,
+          "max": 70047
+        },
+        "tokens_out_per_trip": {
+          "mean": 1438.3076923076924,
+          "stddev": 1192.1265023616982,
+          "min": 61,
+          "max": 4851
+        }
+      }
+    }
+  ],
+  "routing": {
+    "single": {
+      "n": 2,
+      "cases": 2,
+      "repeats": 1,
+      "pass_rate": 12.5,
+      "per_check": {
+        "schema_valid": {
+          "n": 2,
+          "pass_rate": 0.0
+        },
+        "budget_respected": {
+          "n": 2,
+          "pass_rate": 0.0
+        },
+        "no_overlap": {
+          "n": 2,
+          "pass_rate": 0.0
+        },
+        "dates_in_range": {
+          "n": 2,
+          "pass_rate": 0.0
+        },
+        "prices_traceable": {
+          "n": 2,
+          "pass_rate": 0.0
+        },
+        "citations_present": {
+          "n": 2,
+          "pass_rate": 0.0
+        },
+        "citations_supported": {
+          "n": 2,
+          "pass_rate": 0.0
+        },
+        "no_forbidden_urls": {
+          "n": 2,
+          "pass_rate": 100.0
+        }
+      },
+      "trip_pass_rate": {
+        "mean": 12.5,
+        "stddev": 0.0,
+        "min": 12.5,
+        "max": 12.5
+      },
+      "judge_score": "not run",
+      "latency_ms": {
+        "mean": 53747.63400002848,
+        "stddev": 47070.07341703866,
+        "min": 6677.560582989827,
+        "max": 100817.70741706714
+      },
+      "p50_ms": 53747.63400002848,
+      "p95_ms": 96110.70007536327,
+      "tokens_in_per_trip": {
+        "mean": 28889,
+        "stddev": 28194.0,
+        "min": 695,
+        "max": 57083
+      },
+      "tokens_out_per_trip": {
+        "mean": 1681.5,
+        "stddev": 1595.5,
+        "min": 86,
+        "max": 3277
+      }
+    },
+    "split": {
+      "n": 2,
+      "cases": 2,
+      "repeats": 1,
+      "pass_rate": 12.5,
+      "per_check": {
+        "schema_valid": {
+          "n": 2,
+          "pass_rate": 0.0
+        },
+        "budget_respected": {
+          "n": 2,
+          "pass_rate": 0.0
+        },
+        "no_overlap": {
+          "n": 2,
+          "pass_rate": 0.0
+        },
+        "dates_in_range": {
+          "n": 2,
+          "pass_rate": 0.0
+        },
+        "prices_traceable": {
+          "n": 2,
+          "pass_rate": 0.0
+        },
+        "citations_present": {
+          "n": 2,
+          "pass_rate": 0.0
+        },
+        "citations_supported": {
+          "n": 2,
+          "pass_rate": 0.0
+        },
+        "no_forbidden_urls": {
+          "n": 2,
+          "pass_rate": 100.0
+        }
+      },
+      "trip_pass_rate": {
+        "mean": 12.5,
+        "stddev": 0.0,
+        "min": 12.5,
+        "max": 12.5
+      },
+      "judge_score": "not run",
+      "latency_ms": {
+        "mean": 125858.48664608784,
+        "stddev": 3377.686728956178,
+        "min": 122480.79991713166,
+        "max": 129236.17337504402
+      },
+      "p50_ms": 125858.48664608784,
+      "p95_ms": 128898.4047021484,
+      "tokens_in_per_trip": {
+        "mean": 40732,
+        "stddev": 16174.0,
+        "min": 24558,
+        "max": 56906
+      },
+      "tokens_out_per_trip": {
+        "mean": 3327,
+        "stddev": 74.0,
+        "min": 3253,
+        "max": 3401
+      }
+    }
+  },
+  "synthetic": "not run"
+}

@@ -13,6 +13,7 @@ from backend.agent.errors import public_failure_detail
 
 HEARTBEAT_SECONDS = 15
 ERROR_MESSAGES = {
+    'tool_unavailable': 'A required tool is unavailable. Check the database and local dependencies before retrying.',
     'sensitive_content': 'The generated content contained sensitive information and was not saved.',
     'usage_limit': 'The session, user or turn usage limit has been reached.',
     'timeout': 'The request exceeded its deadline. Please retry.',

@@ -1,0 +1,192 @@
+{
+  "output": {
+    "itinerary": {
+      "trip": {
+        "start_date": "2027-04-10",
+        "end_date": "2027-04-10",
+        "currency": "USD"
+      },
+      "days": [
+        {
+          "date": "2027-04-10",
+          "items": [
+            {
+              "id": "a",
+              "start": "2027-04-10T10:00:00",
+              "end": "2027-04-10T11:00:00",
+              "place": "Synthetic Museum",
+              "category": "museum",
+              "cost": "10",
+              "currency": "USD",
+              "chunk_ids": [
+                "c"
+              ],
+              "tool_result_ids": [
+                "q"
+              ],
+              "coords": {
+                "lat": 0,
+                "lon": 0
+              },
+              "coord_tool_result_id": "g"
+            },
+            {
+              "id": "b",
+              "start": "2027-04-10T12:00:00",
+              "end": "2027-04-10T13:00:00",
+              "place": "Synthetic Museum",
+              "category": "museum",
+              "cost": "10",
+              "currency": "USD",
+              "chunk_ids": [
+                "c"
+              ],
+              "tool_result_ids": [
+                "q"
+              ],
+              "coords": {
+                "lat": 0,
+                "lon": 0
+              },
+              "coord_tool_result_id": "g"
+            }
+          ]
+        }
+      ]
+    },
+    "budget_met": true,
+    "message": "Cannot find matching flights.",
+    "citations": [
+      {
+        "chunk_id": "c",
+        "title": "Synthetic guide",
+        "excerpt": "Synthetic Museum displays paintings."
+      }
+    ]
+  },
+  "constraints": {
+    "destination": "Paris",
+    "length": 3,
+    "budget": 1600,
+    "currency": "USD",
+    "interests": [
+      "parks",
+      "architecture"
+    ],
+    "pace": "fast",
+    "must_include": [
+      "a park"
+    ],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 3,
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-12"
+  },
+  "category": "hard",
+  "previous_itinerary": {
+    "trip": {
+      "start_date": "2027-04-10",
+      "end_date": "2027-04-10",
+      "currency": "USD"
+    },
+    "days": [
+      {
+        "date": "2027-04-10",
+        "items": [
+          {
+            "id": "a",
+            "start": "2027-04-10T10:00:00",
+            "end": "2027-04-10T11:00:00",
+            "place": "Synthetic Museum",
+            "category": "museum",
+            "cost": "10",
+            "currency": "USD",
+            "chunk_ids": [
+              "c"
+            ],
+            "tool_result_ids": [
+              "q"
+            ],
+            "coords": {
+              "lat": 0,
+              "lon": 0
+            },
+            "coord_tool_result_id": "g"
+          },
+          {
+            "id": "b",
+            "start": "2027-04-10T12:00:00",
+            "end": "2027-04-10T13:00:00",
+            "place": "Synthetic Museum",
+            "category": "museum",
+            "cost": "10",
+            "currency": "USD",
+            "chunk_ids": [
+              "c"
+            ],
+            "tool_result_ids": [
+              "q"
+            ],
+            "coords": {
+              "lat": 0,
+              "lon": 0
+            },
+            "coord_tool_result_id": "g"
+          }
+        ]
+      }
+    ]
+  },
+  "edit_day": 1,
+  "tool_results": [
+    {
+      "tool_result_id": "q",
+      "tool": "search_hotels",
+      "status": "ok",
+      "data": {
+        "hotels": [
+          {
+            "price_per_night": 10,
+            "total_price": 10,
+            "currency": "USD"
+          }
+        ]
+      }
+    },
+    {
+      "tool_result_id": "g",
+      "tool": "geocode_place",
+      "status": "ok",
+      "data": {
+        "lat": 0,
+        "lon": 0
+      }
+    }
+  ],
+  "id": "synthetic:hard-06",
+  "synthetic": true,
+  "request": "Plan 3 days in Paris for 3 people under 1600 USD, with parks and architecture, at a fast pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. Dates: 2027-04-10 through 2027-04-12. Include a park; use a fast pace and verify travel times between visits.",
+  "rubric": [
+    "schema_valid",
+    "budget_respected",
+    "no_overlap",
+    "dates_in_range",
+    "prices_traceable",
+    "citations_present",
+    "citations_supported",
+    "no_forbidden_urls",
+    "travel_times_plausible"
+  ],
+  "turns": [],
+  "case_id": "hard-06",
+  "source": "synthetic",
+  "provider": "synthetic",
+  "model": "synthetic: tests the harness, not a model",
+  "label": "synthetic: tests the harness, not a model",
+  "repeat": 0,
+  "tokens_in": null,
+  "tokens_out": null,
+  "latency_ms": null
+}

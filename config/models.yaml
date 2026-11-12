@@ -24,6 +24,14 @@ providers:
         tool_mode: json       # schema-constrained calls for the local model
         context_window: 32768    # accommodates agent input budget plus output allowance
 
+      qwen2.5:3b:
+        limits: { rpm: 30, tpm: null, rpd: null }
+        supports: { tools: true, structured_output: true }
+        generation_options: {temperature: 0}
+        request_timeout_seconds: 300
+        tool_mode: json
+        context_window: 32768
+
   # Paid-provider protocols are replay-only; add model IDs only when recordings exist.
   claude:
     replay_only: true
@@ -103,3 +111,21 @@ guardrails:
   ip_requests_per_window: 30
   user_requests_per_window: 20
   max_body_bytes: 65536
+
+evaluation:
+  judge:
+    output_tokens_per_itinerary: 1024
+    max_batch_size: 8
+    attempts: 2
+  concurrency: 1
+  models:
+    - {provider: gemini, model: gemini-3.5-flash-lite}
+    - {provider: ollama, model: llama3.2:3b}
+    - {provider: ollama, model: qwen2.5:3b}
+  routes:
+    single:
+      extract: {provider: ollama, model: qwen2.5:3b}
+      plan: {provider: ollama, model: qwen2.5:3b}
+    split:
+      extract: {provider: ollama, model: llama3.2:3b}
+      plan: {provider: ollama, model: qwen2.5:3b}

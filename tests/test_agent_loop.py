@@ -800,3 +800,126 @@ def test_cheaper_unpriced_day_skips_search_and_validates_patch():
     assert updated['days'][1]['items'] == []
     for index in (0, 2):
         assert json.dumps(updated['days'][index]) == json.dumps(state['itinerary']['days'][index])
+
+
+def test_missing_hotel_dates_clarifies_without_tools():
+    agent, runtime, plan = setup([], intent={'intent':'new_trip','budget':600})
+    result = run(agent, 'Plan Lisbon with hotels under 600 USD. I have not chosen dates yet.')
+    assert 'arrival and departure dates' in result.message
+    assert result.itinerary is None
+    assert runtime.calls == [] and plan.calls == []
+
+
+def test_hotel_schema_does_not_invent_optional_filters():
+    from backend.agent.requirements import bind_tool_definitions
+    agent, _, _ = setup([])
+    tools = bind_tool_definitions(agent.definitions, 'Lisbon hotel 2027-04-10 through 2027-04-11 under 600 USD')
+    hotel = next(tool for tool in tools if tool['name']=='search_hotels')['parameters']['properties']
+    assert hotel['city']['enum'] == ['Lisbon']
+    for key in ('max_price_per_night','min_rating','tier'):
+        assert hotel[key] == {'type':'null'}
+
+
+def test_generated_overlap_is_separated_but_explicit_times_are_preserved():
+    from backend.agent.requirements import separate_generated_visits
+    plan = itinerary()
+    first = plan['days'][0]['items'][0]
+    first['category'] = 'museum'
+    second = {**first, 'id':'second'}
+    plan['days'][0]['items'].append(second)
+    original = deepcopy(plan)
+    separate_generated_visits(plan, 'Plan a trip')
+    assert second['start'] == first['end']
+    assert second['end'] == '2027-04-10T12:00:00'
+    separate_generated_visits(original, 'Visit at 10:00')
+    assert original['days'][0]['items'][1]['start'] == first['start']
+
+
+def test_activity_requires_its_own_supporting_excerpt():
+    from backend.agent.requirements import grounded_activity_issues
+    plan = itinerary()
+    item = plan['days'][0]['items'][0]
+    item.update(place='Synthetic Museum',chunk_ids=['wrong'])
+    sources = [{'chunk_id':'right','excerpt':'Synthetic Museum displays paintings.'},
+               {'chunk_id':'wrong','excerpt':'Synthetic Park has trees.'}]
+    assert grounded_activity_issues(plan,sources)[0]['name']=='unsupported_activity'
+    item['chunk_ids']=['right']
+    assert not grounded_activity_issues(plan,sources)
+
+
+def test_reference_link_sanitization_preserves_following_prose():
+    from backend.security.content import sanitize_text
+    assert 'Synthetic Museum' in sanitize_text('[x]: javascript:alert(1) Synthetic Museum')
+    assert 'javascript:' not in sanitize_text('[x]: javascript:alert(1) Synthetic Museum')
+
+
+def test_grounded_schema_couples_activity_name_to_its_source():
+    from backend.agent.requirements import bind_itinerary_schema
+    from backend.tools.models import Itinerary
+    from jsonschema import validate, ValidationError
+    citations=[{'chunk_id':'museum','excerpt':'Synthetic Museum'}, {'chunk_id':'park','excerpt':'Synthetic Park'}]
+    evidence=[{'tool_result_id':'q','tool':'search_hotels','status':'ok','data':{'hotels':[
+        {'name':'Synthetic Stay','currency':'USD','total_price':'10','price_per_night':'10'}]}}]
+    schema=bind_itinerary_schema(Itinerary,'Lisbon museums 2027-04-10 through 2027-04-12',evidence,citations,activity_places=['Synthetic Museum'])
+    item=itinerary()['days'][0]['items'][0]
+    item.update(place='Synthetic Museum',chunk_ids=['museum'])
+    for variant in schema['$defs']['UnpricedItem']['anyOf']:
+        assert {'id','start','end','place','category','currency','cost'} <= set(variant['required'])
+        assert variant['type'] == 'object'
+    contract={'$defs':schema['$defs'],'$ref':'#/$defs/UnpricedItem'}
+    validate(item,contract)
+    item['chunk_ids']=['park']
+    with pytest.raises(ValidationError):
+        validate(item,contract)
+
+
+def test_hotel_stay_is_a_checkin_visit_not_a_multiday_overlap():
+    from backend.agent.requirements import separate_generated_visits
+    plan=itinerary('100')
+    item=plan['days'][0]['items'][0]
+    item['end']='2027-04-12T10:00:00'
+    separate_generated_visits(plan,'Plan a hotel stay')
+    assert item['end']=='2027-04-10T10:30:00'
+    assert item['cost']=='100' and item['tool_result_ids']==['quote']
+
+
+def test_schema_repair_receives_rejected_candidate_as_data():
+    from backend.llm.validation import validate_response
+    from backend.llm.types import InvalidOutput
+    candidate=itinerary()
+    candidate['days'][0]['items'][0]['cost']='invented'
+    try:
+        validate_response(Response(text=json.dumps(candidate),provider='synthetic',model='synthetic'),
+                          response_schema=__import__('backend.tools.models',fromlist=['Itinerary']).Itinerary)
+    except InvalidOutput as exc:
+        rejected=exc
+    agent, _, plan=setup([{},rejected,itinerary()])
+    result=run(agent)
+    assert result.itinerary is not None
+    assert 'invented' in plan.calls[-1][0][-1]['content']
+    assert '<DATA>' in plan.calls[-1][0][-1]['content']
+
+
+def test_attraction_extraction_rejects_destination_name_alone():
+    from backend.agent.attractions import extract_attractions
+    script=Script([{'places':[{'name':'Lisbon','chunk_id':'c'}]},
+                   {'places':[{'name':'Synthetic Museum','chunk_id':'c'}]}])
+    async def generate(role,messages,**kwargs):
+        return script.generate(messages,**kwargs)
+    result=asyncio.run(extract_attractions([{'chunk_id':'c','excerpt':'Lisbon has Synthetic Museum.'}],generate,['Lisbon']))
+    assert result==['Synthetic Museum']
+    assert len(script.calls)==2
+
+
+def test_nonretryable_database_failure_stops_tool_loop():
+    agent,runtime,plan=setup([calls('search_hotels')])
+    def execute(name,arguments):
+        return ToolResult(tool_result_id='failed',tool=name,status='error',
+            data={'error':{'code':'internal_error','message':'Database unavailable','retryable':False}},
+            source='synthetic',fetched_at=utcnow(),cache_hit=False)
+    runtime.execute=execute
+    result=run(agent)
+    assert result.itinerary is None
+    assert result.issues[0]['name']=='tool_unavailable'
+    assert len(plan.calls)==1
+    assert len(result.tool_trace)==1

@@ -14,7 +14,7 @@ from backend.agent.attractions import extract_attractions
 from backend.agent.context import ContextBuilder
 from backend.agent.errors import failure_issue, validation_details
 from backend.agent.models import ChatResponse, DayPatch, Intent, Usage
-from backend.agent.requirements import requested_hotels, requirement_issues, assign_item_ids, requested_retrieval, bind_tool_definitions, bind_itinerary_schema, scoped_tools, requested_city, requested_dates, quoted_item_issues, substantive_itinerary
+from backend.agent.requirements import grounded_activity_issues, separate_generated_visits, requested_hotels, requirement_issues, assign_item_ids, requested_retrieval, bind_tool_definitions, bind_itinerary_schema, scoped_tools, requested_city, requested_dates, quoted_item_issues, substantive_itinerary
 from backend.agent.policy import ALLOWLISTS, apply_patch, data_block, sensitive, sensitive_state, safe_citations
 from backend.agent.providers import provider_for
 from backend.agent.store import PostgresTripStore
@@ -161,6 +161,8 @@ class Agent:
                     output.preference_proposal = proposal
                 if intent.intent == 'chitchat':
                     output.message = 'I can help plan or edit a trip. Tell me the destination, dates and budget.'
+                elif intent.intent == 'new_trip' and requested_hotels(request.message) and requested_city(request.message) and not requested_dates(request.message):
+                    output.message = 'What are your arrival and departure dates? I need both dates before looking up hotel quotes.'
                 elif intent.intent == 'edit_trip' and (state['itinerary'] is None or intent.day is None or intent.day > len(state['itinerary']['days'])):
                     if output.preference_proposal is not None:
                         output.message = 'I prepared a preference update.'
@@ -289,6 +291,14 @@ class Agent:
                 messages.append({'role': 'tool', 'name': call.name, 'tool_name': call.name, 'tool_call_id': call.id or call.name, 'content': data_block(observation)})
                 if result['status'] == 'ok' and call.name == 'search_destinations':
                     state['citations'].extend(result['data']['chunks'])
+            unavailable = any(row['status'] == 'error' and
+                              (row.get('data') or {}).get('error', {}).get('code') in {'internal_error', 'configuration'} and
+                              (row.get('data') or {}).get('error', {}).get('retryable') is False
+                              for row in results)
+            if unavailable:
+                output.message = 'A required tool is unavailable. Check the database and local dependencies before retrying.'
+                output.issues.append(dict(name='tool_unavailable', severity='error', message=output.message))
+                return
             completed = {row['tool'] for row in output.tool_trace if row['status'] in {'ok', 'no_data'}}
             if required and required <= completed:
                 break
@@ -320,7 +330,7 @@ class Agent:
                                 evidence[key] = clean_tool_result({**saved, 'tool_result_id': key})
         activity_places = []
         if schema is Itinerary and requested_city(request.message) and requested_dates(request.message) and state['citations']:
-            activity_places = await extract_attractions(state['citations'], generate)
+            activity_places = await extract_attractions(state['citations'], generate, [requested_city(request.message)])
             messages.append({'role': 'user', 'content': 'For activity items, choose named places from this verified excerpt list. Hotel quotes are accommodation only. ' + data_block(activity_places)})
         final_schema = bind_itinerary_schema(schema, request.message, list(evidence.values()), state['citations'], state['itinerary'], intent.day, activity_places)
         best = None
@@ -347,8 +357,10 @@ class Agent:
                 else:
                     candidate = json.loads(response.text)
                     candidate = Itinerary.model_validate(candidate).model_dump(mode='json')
+                    separate_generated_visits(candidate, request.message)
                     assign_item_ids(candidate)
                     issues.extend(requirement_issues(candidate, request.message, hotel_results, state['citations']))
+                issues.extend(grounded_activity_issues(candidate, state['citations']))
                 encoded_candidate = json.dumps(candidate, ensure_ascii=False)
                 if redact(encoded_candidate) != encoded_candidate:
                     issues.append(dict(name='pii_output', severity='error', message='Remove personal contact or payment data.'))
@@ -391,6 +403,12 @@ class Agent:
             except LimitExceeded:
                 raise
             except (ValidationError, ValueError, LLMError) as exc:
+                rejected = getattr(exc, 'rejected_response', None)
+                if rejected is not None:
+                    try:
+                        candidate = json.loads(redact(rejected.text))
+                    except (ValueError, TypeError):
+                        candidate = None
                 detail = failure_issue(exc, 'edit' if schema is DayPatch else 'itinerary')
                 issues = [{**detail, 'name': 'schema_valid', 'reason': detail['name']}]
                 if isinstance(exc, ValidationError):

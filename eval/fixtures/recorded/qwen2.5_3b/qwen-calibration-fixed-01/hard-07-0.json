@@ -1,0 +1,544 @@
+{
+  "id": "qwen-calibration-fixed-01:hard-07:0",
+  "synthetic": true,
+  "request": "Plan 4 days in Vienna for 1 people under 1800 USD, with museums and food, at a fast pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. Dates: 2027-04-10 through 2027-04-13. Include a park; use a fast pace and verify travel times between visits.",
+  "constraints": {
+    "destination": "Vienna",
+    "length": 4,
+    "budget": 1800,
+    "currency": "USD",
+    "interests": [
+      "museums",
+      "food"
+    ],
+    "pace": "fast",
+    "must_include": [
+      "a park"
+    ],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 1,
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-13"
+  },
+  "category": "hard",
+  "rubric": [
+    "schema_valid",
+    "budget_respected",
+    "no_overlap",
+    "dates_in_range",
+    "prices_traceable",
+    "citations_present",
+    "citations_supported",
+    "no_forbidden_urls",
+    "travel_times_plausible"
+  ],
+  "turns": [],
+  "case_id": "hard-07",
+  "run_id": "qwen-calibration-fixed-01",
+  "repeat": 0,
+  "source": "recorded",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "route": {
+    "extract": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    },
+    "plan": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    }
+  },
+  "output": {
+    "trip_id": "71628cc8-de94-4bad-a69b-2cfbd528cda2",
+    "message": "I could not produce a valid itinerary after two repairs. See issues. Inventory quotes are synthetic; they do not establish booking availability.",
+    "itinerary": null,
+    "diff": null,
+    "citations": [],
+    "tool_trace": [
+      {
+        "tool_result_id": "b073c743-2c68-4ac6-aad3-a8543e847e7a",
+        "tool": "search_hotels",
+        "status": "ok",
+        "data": {
+          "hotels": [
+            {
+              "id": 243,
+              "name": "Synthetic Ivory Lantern Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 1",
+              "tier": "budget",
+              "price_per_night": "63.25",
+              "total_price": "189.75",
+              "nights": 3,
+              "rating": 3.9,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 246,
+              "name": "Synthetic Coral Pebble Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 4",
+              "tier": "budget",
+              "price_per_night": "63.25",
+              "total_price": "189.75",
+              "nights": 3,
+              "rating": 3.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 249,
+              "name": "Synthetic Ivory Orchard Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 3",
+              "tier": "budget",
+              "price_per_night": "63.25",
+              "total_price": "189.75",
+              "nights": 3,
+              "rating": 4.9,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 252,
+              "name": "Synthetic Coral Lantern Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 2",
+              "tier": "budget",
+              "price_per_night": "63.25",
+              "total_price": "189.75",
+              "nights": 3,
+              "rating": 4.0,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 244,
+              "name": "Synthetic Azure Pebble Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 2",
+              "tier": "mid",
+              "price_per_night": "126.50",
+              "total_price": "379.50",
+              "nights": 3,
+              "rating": 4.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 247,
+              "name": "Synthetic Ivory Pebble Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 1",
+              "tier": "mid",
+              "price_per_night": "126.50",
+              "total_price": "379.50",
+              "nights": 3,
+              "rating": 4.7,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 250,
+              "name": "Synthetic Amber Orchard Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 4",
+              "tier": "mid",
+              "price_per_night": "126.50",
+              "total_price": "379.50",
+              "nights": 3,
+              "rating": 3.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 245,
+              "name": "Synthetic Azure Orchard Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 3",
+              "tier": "upscale",
+              "price_per_night": "241.50",
+              "total_price": "724.50",
+              "nights": 3,
+              "rating": 4.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 248,
+              "name": "Synthetic Azure Lantern Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 2",
+              "tier": "upscale",
+              "price_per_night": "241.50",
+              "total_price": "724.50",
+              "nights": 3,
+              "rating": 4.5,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 251,
+              "name": "Synthetic Amber Pebble Stay",
+              "city": "Vienna",
+              "district": "Synthetic District 1",
+              "tier": "upscale",
+              "price_per_night": "241.50",
+              "total_price": "724.50",
+              "nights": 3,
+              "rating": 4.6,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            }
+          ],
+          "check_in": "2027-04-10",
+          "check_out": "2027-04-13",
+          "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+          "truncated": false
+        },
+        "source": "synthetic-v1",
+        "fetched_at": "2026-11-11T21:01:23.998750Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "57d09cf0-a71a-424b-ae53-e42926210b96",
+        "tool": "search_destinations",
+        "status": "ok",
+        "data": {
+          "chunks": [
+            {
+              "chunk_id": "b395617511f083b0",
+              "title": "Vienna",
+              "url": "https://en.wikivoyage.org/wiki/Vienna",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Only one in two Viennese households has a car and fewer than 1/3 of the trips taken within the city are by car. However, since parking space is scarce in the inner districts and parking fees apply to all inner and most of the outer districts, it is usually a good idea for visitors to leave their car parked somewhere in the periphery and use the city's excellent subway & tram system to get to the center. The Park and Ride is available at some subway and S-Bahn stations in the city periphery for \u20ac4.60 per day. The weekly rates come with a discount if you add a public transport ticket for Vienna "
+            },
+            {
+              "chunk_id": "12ba00bbbd1cfc88",
+              "title": "Vienna",
+              "url": "https://en.wikivoyage.org/wiki/Vienna",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "city of around 400,000 people in the Czech Republic with close historical links with Vienna, is 11\u20442 hours from Vienna by fast train.\nPrague, the capital of the Czech Republic, is a very well preserved medieval city. The city's historic buildings and narrow, winding streets are testament to its centuries-old role as capital of the historic region of Bohemia.\nInnsbruck, regional capital of Tyrol and largest city in the Alps.\nBudapest, the capital city of Hungary, is a beautiful city located on the banks of the Danube. It is a UNESCO World Heritage site for its cultural and architectural signifi"
+            },
+            {
+              "chunk_id": "b91a9edbf87b90ad",
+              "title": "Vienna",
+              "url": "https://en.wikivoyage.org/wiki/Vienna",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Vienna has a rich history as the capital city of the monarchy, and thus, there is an abundance of historical buildings and museums. Most of these, including Stephansdom (St. Stephen's Cathedral) and the three most well-known museums, Kunsthistorisches Museum (Museum of Fine Arts), Naturhistorisches Museum (Museum of Natural History) and Albertina, are located in the Innere Stadt. The Ring Road (German: Ringstra\u00dfe) is a circular road surrounding the Innere Stadt district of Vienna and is one of its main sights. Its architecture is typical of the eclectic, historicist style called Ringstra\u00dfensti"
+            },
+            {
+              "chunk_id": "e4d67ba5f923f387",
+              "title": "Vienna",
+              "url": "https://en.wikivoyage.org/wiki/Vienna",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Vienna has a good public transportation system, which includes rail, commuter rail, underground, trams (trolleys), and buses. The underground is very efficient and will take you to within a few minutes walk of anywhere you are likely to want to visit. The subway alone has the second highest per-capita ridership in the world, and that is not accounting for the 27 tram lines, dozens of train lines or numerous buses.\nEnquiries for routes and timetables are possible with the mobile application WienMobil, that is supplied by the public transport operator. The app is available for Android, iOS and c"
+            },
+            {
+              "chunk_id": "1220c467d65cf68e",
+              "title": "Vienna",
+              "url": "https://en.wikivoyage.org/wiki/Vienna",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Vienna is a major tourist hotspot and offers a complete range of accommodation options. Prices are relatively higher than in neighboring countries, or even in the rest of Austria. Many of the Viennese hotels, hostels and pensions, especially its centre, are housed in historic buildings dating from before the Second World War, most from the 19th-century Gr\u00fcnderzeit. This means that many of them offer relatively small rooms with sometimes compromised views, and rooms within the same property can vary widely, even at the same price.\nYou will probably find that Viennese hotels usually offer very t"
+            }
+          ]
+        },
+        "source": "local-rag",
+        "fetched_at": "2026-11-11T21:01:26.228047Z",
+        "cache_hit": false
+      }
+    ],
+    "budget_met": null,
+    "usage": {
+      "tokens_in": 23476,
+      "tokens_out": 3984,
+      "cached_tokens": 13150,
+      "uncached_tokens": 10326,
+      "calls": [
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 711,
+          "tokens_out": 73,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2147,
+          "tokens_out": 319,
+          "cached_tokens": 1611
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 1435,
+          "tokens_out": 210,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 5301,
+          "tokens_out": 1120,
+          "cached_tokens": 1721
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 6391,
+          "tokens_out": 1131,
+          "cached_tokens": 4361
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 7491,
+          "tokens_out": 1131,
+          "cached_tokens": 5451
+        }
+      ]
+    },
+    "issues": [
+      {
+        "name": "schema_valid",
+        "severity": "error",
+        "stage": "itinerary",
+        "message": "The response did not match the required schema.",
+        "reason": "schema_validation",
+        "validation_error_types": [
+          "value_error"
+        ],
+        "details": [
+          {
+            "path": [
+              "days",
+              0,
+              "items",
+              0
+            ],
+            "type": "value_error",
+            "message": "Item end must follow start"
+          }
+        ]
+      }
+    ],
+    "preference_proposal": null
+  },
+  "tool_results": [
+    {
+      "tool_result_id": "b073c743-2c68-4ac6-aad3-a8543e847e7a",
+      "tool": "search_hotels",
+      "status": "ok",
+      "data": {
+        "hotels": [
+          {
+            "id": 243,
+            "name": "Synthetic Ivory Lantern Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 1",
+            "tier": "budget",
+            "price_per_night": "63.25",
+            "total_price": "189.75",
+            "nights": 3,
+            "rating": 3.9,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 246,
+            "name": "Synthetic Coral Pebble Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 4",
+            "tier": "budget",
+            "price_per_night": "63.25",
+            "total_price": "189.75",
+            "nights": 3,
+            "rating": 3.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 249,
+            "name": "Synthetic Ivory Orchard Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 3",
+            "tier": "budget",
+            "price_per_night": "63.25",
+            "total_price": "189.75",
+            "nights": 3,
+            "rating": 4.9,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 252,
+            "name": "Synthetic Coral Lantern Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 2",
+            "tier": "budget",
+            "price_per_night": "63.25",
+            "total_price": "189.75",
+            "nights": 3,
+            "rating": 4.0,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 244,
+            "name": "Synthetic Azure Pebble Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 2",
+            "tier": "mid",
+            "price_per_night": "126.50",
+            "total_price": "379.50",
+            "nights": 3,
+            "rating": 4.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 247,
+            "name": "Synthetic Ivory Pebble Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 1",
+            "tier": "mid",
+            "price_per_night": "126.50",
+            "total_price": "379.50",
+            "nights": 3,
+            "rating": 4.7,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 250,
+            "name": "Synthetic Amber Orchard Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 4",
+            "tier": "mid",
+            "price_per_night": "126.50",
+            "total_price": "379.50",
+            "nights": 3,
+            "rating": 3.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 245,
+            "name": "Synthetic Azure Orchard Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 3",
+            "tier": "upscale",
+            "price_per_night": "241.50",
+            "total_price": "724.50",
+            "nights": 3,
+            "rating": 4.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 248,
+            "name": "Synthetic Azure Lantern Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 2",
+            "tier": "upscale",
+            "price_per_night": "241.50",
+            "total_price": "724.50",
+            "nights": 3,
+            "rating": 4.5,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 251,
+            "name": "Synthetic Amber Pebble Stay",
+            "city": "Vienna",
+            "district": "Synthetic District 1",
+            "tier": "upscale",
+            "price_per_night": "241.50",
+            "total_price": "724.50",
+            "nights": 3,
+            "rating": 4.6,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          }
+        ],
+        "check_in": "2027-04-10",
+        "check_out": "2027-04-13",
+        "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+        "truncated": false
+      },
+      "source": "synthetic-v1",
+      "fetched_at": "2026-11-11T21:01:23.998750Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "57d09cf0-a71a-424b-ae53-e42926210b96",
+      "tool": "search_destinations",
+      "status": "ok",
+      "data": {
+        "chunks": [
+          {
+            "chunk_id": "b395617511f083b0",
+            "title": "Vienna",
+            "url": "https://en.wikivoyage.org/wiki/Vienna",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Only one in two Viennese households has a car and fewer than 1/3 of the trips taken within the city are by car. However, since parking space is scarce in the inner districts and parking fees apply to all inner and most of the outer districts, it is usually a good idea for visitors to leave their car parked somewhere in the periphery and use the city's excellent subway & tram system to get to the center. The Park and Ride is available at some subway and S-Bahn stations in the city periphery for \u20ac4.60 per day. The weekly rates come with a discount if you add a public transport ticket for Vienna "
+          },
+          {
+            "chunk_id": "12ba00bbbd1cfc88",
+            "title": "Vienna",
+            "url": "https://en.wikivoyage.org/wiki/Vienna",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "city of around 400,000 people in the Czech Republic with close historical links with Vienna, is 11\u20442 hours from Vienna by fast train.\nPrague, the capital of the Czech Republic, is a very well preserved medieval city. The city's historic buildings and narrow, winding streets are testament to its centuries-old role as capital of the historic region of Bohemia.\nInnsbruck, regional capital of Tyrol and largest city in the Alps.\nBudapest, the capital city of Hungary, is a beautiful city located on the banks of the Danube. It is a UNESCO World Heritage site for its cultural and architectural signifi"
+          },
+          {
+            "chunk_id": "b91a9edbf87b90ad",
+            "title": "Vienna",
+            "url": "https://en.wikivoyage.org/wiki/Vienna",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Vienna has a rich history as the capital city of the monarchy, and thus, there is an abundance of historical buildings and museums. Most of these, including Stephansdom (St. Stephen's Cathedral) and the three most well-known museums, Kunsthistorisches Museum (Museum of Fine Arts), Naturhistorisches Museum (Museum of Natural History) and Albertina, are located in the Innere Stadt. The Ring Road (German: Ringstra\u00dfe) is a circular road surrounding the Innere Stadt district of Vienna and is one of its main sights. Its architecture is typical of the eclectic, historicist style called Ringstra\u00dfensti"
+          },
+          {
+            "chunk_id": "e4d67ba5f923f387",
+            "title": "Vienna",
+            "url": "https://en.wikivoyage.org/wiki/Vienna",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Vienna has a good public transportation system, which includes rail, commuter rail, underground, trams (trolleys), and buses. The underground is very efficient and will take you to within a few minutes walk of anywhere you are likely to want to visit. The subway alone has the second highest per-capita ridership in the world, and that is not accounting for the 27 tram lines, dozens of train lines or numerous buses.\nEnquiries for routes and timetables are possible with the mobile application WienMobil, that is supplied by the public transport operator. The app is available for Android, iOS and c"
+          },
+          {
+            "chunk_id": "1220c467d65cf68e",
+            "title": "Vienna",
+            "url": "https://en.wikivoyage.org/wiki/Vienna",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Vienna is a major tourist hotspot and offers a complete range of accommodation options. Prices are relatively higher than in neighboring countries, or even in the rest of Austria. Many of the Viennese hotels, hostels and pensions, especially its centre, are housed in historic buildings dating from before the Second World War, most from the 19th-century Gr\u00fcnderzeit. This means that many of them offer relatively small rooms with sometimes compromised views, and rooms within the same property can vary widely, even at the same price.\nYou will probably find that Viennese hotels usually offer very t"
+          }
+        ]
+      },
+      "source": "local-rag",
+      "fetched_at": "2026-11-11T21:01:26.228047Z",
+      "cache_hit": false
+    }
+  ],
+  "previous_itinerary": null,
+  "edit_day": null,
+  "latency_ms": 85227.76820906438,
+  "tokens_in": 23476,
+  "tokens_out": 3984,
+  "fingerprint": "f863089f09ce842d50399fa9167488dd87572bc1da69302cc1aa6ec0ab7dac20",
+  "experiment": "model-single"
+}

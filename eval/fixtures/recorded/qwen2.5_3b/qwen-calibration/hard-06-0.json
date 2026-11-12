@@ -1,0 +1,201 @@
+{
+  "id": "qwen-calibration:hard-06:0",
+  "synthetic": true,
+  "request": "Plan 3 days in Paris for 3 people under 1600 USD, with parks and architecture, at a fast pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. Dates: 2027-04-10 through 2027-04-12. Include a park; use a fast pace and verify travel times between visits.",
+  "constraints": {
+    "destination": "Paris",
+    "length": 3,
+    "budget": 1600,
+    "currency": "USD",
+    "interests": [
+      "parks",
+      "architecture"
+    ],
+    "pace": "fast",
+    "must_include": [
+      "a park"
+    ],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 3,
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-12"
+  },
+  "category": "hard",
+  "rubric": [
+    "schema_valid",
+    "budget_respected",
+    "no_overlap",
+    "dates_in_range",
+    "prices_traceable",
+    "citations_present",
+    "citations_supported",
+    "no_forbidden_urls",
+    "travel_times_plausible"
+  ],
+  "turns": [],
+  "case_id": "hard-06",
+  "run_id": "qwen-calibration",
+  "repeat": 0,
+  "source": "recorded",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "route": {
+    "extract": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    },
+    "plan": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    }
+  },
+  "output": {
+    "trip_id": "2c3fc6c0-0238-42fc-a190-b77bf6c2c3a7",
+    "message": "I reached the planning step limit before producing a validated itinerary.",
+    "itinerary": null,
+    "diff": null,
+    "citations": [],
+    "tool_trace": [
+      {
+        "tool": "search_hotels",
+        "status": "error",
+        "data": {
+          "error": {
+            "code": "untrusted_arguments",
+            "message": "Arguments must come from the user request or earlier structured tool results"
+          }
+        }
+      },
+      {
+        "tool": "search_hotels",
+        "status": "error",
+        "data": {
+          "error": {
+            "code": "untrusted_arguments",
+            "message": "Arguments must come from the user request or earlier structured tool results"
+          }
+        }
+      },
+      {
+        "tool": "search_hotels",
+        "status": "error",
+        "data": {
+          "error": {
+            "code": "untrusted_arguments",
+            "message": "Arguments must come from the user request or earlier structured tool results"
+          }
+        }
+      },
+      {
+        "tool": "search_hotels",
+        "status": "error",
+        "data": {
+          "error": {
+            "code": "untrusted_arguments",
+            "message": "Arguments must come from the user request or earlier structured tool results"
+          }
+        }
+      },
+      {
+        "tool": "search_hotels",
+        "status": "error",
+        "data": {
+          "error": {
+            "code": "untrusted_arguments",
+            "message": "Arguments must come from the user request or earlier structured tool results"
+          }
+        }
+      }
+    ],
+    "budget_met": null,
+    "usage": {
+      "tokens_in": 20361,
+      "tokens_out": 618,
+      "cached_tokens": 14579,
+      "uncached_tokens": 5782,
+      "calls": [
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 711,
+          "tokens_out": 76,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2051,
+          "tokens_out": 168,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2206,
+          "tokens_out": 105,
+          "cached_tokens": 1721
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2361,
+          "tokens_out": 11,
+          "cached_tokens": 1876
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2402,
+          "tokens_out": 92,
+          "cached_tokens": 2032
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2545,
+          "tokens_out": 11,
+          "cached_tokens": 2072
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2586,
+          "tokens_out": 72,
+          "cached_tokens": 2216
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2729,
+          "tokens_out": 11,
+          "cached_tokens": 2256
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2770,
+          "tokens_out": 72,
+          "cached_tokens": 2400
+        }
+      ]
+    },
+    "issues": [
+      {
+        "name": "step_limit",
+        "severity": "error",
+        "message": "Planning step limit reached"
+      }
+    ],
+    "preference_proposal": null
+  },
+  "tool_results": [],
+  "previous_itinerary": null,
+  "edit_day": null,
+  "latency_ms": 17978.33549999632,
+  "tokens_in": 20361,
+  "tokens_out": 618,
+  "fingerprint": "2a87f5599615930720d505161e64987871eb7fc6d20a9758116d026ac4a28353",
+  "experiment": "model-single"
+}
