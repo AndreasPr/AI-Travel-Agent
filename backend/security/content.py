@@ -65,7 +65,7 @@ def sanitize_text(text, limit=600):
     # Images are never rendered from retrieved content; links become plain labels.
     text = re.sub(r'!\[[^\]]*\]\([^\n]*?\)', '', text)
     text = re.sub(r'\[([^\]]*)\]\([^\n]*?\)', r'\1', text)
-    text = re.sub(r'(?im)^\s*\[[^\]]+\]:\s*\S+.*$', '', text)
+    text = re.sub(r'(?im)^[ \t]*\[[^\]]+\]:[ \t]*\S+', '', text)
     text = URL.sub('', text)
     return redact(text)[:limit]
 

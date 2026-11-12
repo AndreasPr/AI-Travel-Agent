@@ -1,0 +1,1032 @@
+{
+  "id": "qwen-calibration:hard-01:0",
+  "synthetic": true,
+  "request": "Plan 2 days in Lisbon for 1 people under 600 USD, with museums and food, at a fast pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. Dates: 2027-04-10 through 2027-04-11. Include a park; use a fast pace and verify travel times between visits.",
+  "constraints": {
+    "destination": "Lisbon",
+    "length": 2,
+    "budget": 600,
+    "currency": "USD",
+    "interests": [
+      "museums",
+      "food"
+    ],
+    "pace": "fast",
+    "must_include": [
+      "a park"
+    ],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 1,
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-11"
+  },
+  "category": "hard",
+  "rubric": [
+    "schema_valid",
+    "budget_respected",
+    "no_overlap",
+    "dates_in_range",
+    "prices_traceable",
+    "citations_present",
+    "citations_supported",
+    "no_forbidden_urls",
+    "travel_times_plausible"
+  ],
+  "turns": [],
+  "case_id": "hard-01",
+  "run_id": "qwen-calibration",
+  "repeat": 0,
+  "source": "recorded",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "route": {
+    "extract": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    },
+    "plan": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    }
+  },
+  "output": {
+    "trip_id": "5a06cb81-7ab0-4d28-9359-d849c4f6ff4e",
+    "message": "I could not produce a valid itinerary after two repairs. See issues. Inventory quotes are synthetic; they do not establish booking availability.",
+    "itinerary": null,
+    "diff": null,
+    "citations": [],
+    "tool_trace": [
+      {
+        "tool_result_id": "b033cafa-c6ef-440c-94ae-95153b0accc1",
+        "tool": "search_hotels",
+        "status": "ok",
+        "data": {
+          "hotels": [
+            {
+              "id": 113,
+              "name": "Synthetic Coral Pebble Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 1",
+              "tier": "budget",
+              "price_per_night": "49.50",
+              "total_price": "49.50",
+              "nights": 1,
+              "rating": 4.9,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 116,
+              "name": "Synthetic Ivory Orchard Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 4",
+              "tier": "budget",
+              "price_per_night": "49.50",
+              "total_price": "49.50",
+              "nights": 1,
+              "rating": 4.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 119,
+              "name": "Synthetic Azure Pebble Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 3",
+              "tier": "budget",
+              "price_per_night": "49.50",
+              "total_price": "49.50",
+              "nights": 1,
+              "rating": 3.1,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 122,
+              "name": "Synthetic Amber Orchard Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 2",
+              "tier": "budget",
+              "price_per_night": "49.50",
+              "total_price": "49.50",
+              "nights": 1,
+              "rating": 4.4,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 114,
+              "name": "Synthetic Amber Pebble Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 2",
+              "tier": "mid",
+              "price_per_night": "99.00",
+              "total_price": "99.00",
+              "nights": 1,
+              "rating": 4.4,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 117,
+              "name": "Synthetic Azure Orchard Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 1",
+              "tier": "mid",
+              "price_per_night": "99.00",
+              "total_price": "99.00",
+              "nights": 1,
+              "rating": 3.1,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 120,
+              "name": "Synthetic Coral Lantern Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 4",
+              "tier": "mid",
+              "price_per_night": "99.00",
+              "total_price": "99.00",
+              "nights": 1,
+              "rating": 3.8,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 115,
+              "name": "Synthetic Azure Lantern Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 3",
+              "tier": "upscale",
+              "price_per_night": "189.00",
+              "total_price": "189.00",
+              "nights": 1,
+              "rating": 4.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 118,
+              "name": "Synthetic Ivory Pebble Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 2",
+              "tier": "upscale",
+              "price_per_night": "189.00",
+              "total_price": "189.00",
+              "nights": 1,
+              "rating": 4.4,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 121,
+              "name": "Synthetic Ivory Lantern Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 1",
+              "tier": "upscale",
+              "price_per_night": "189.00",
+              "total_price": "189.00",
+              "nights": 1,
+              "rating": 3.5,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            }
+          ],
+          "check_in": "2027-04-10",
+          "check_out": "2027-04-11",
+          "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+          "truncated": false
+        },
+        "source": "synthetic-v1",
+        "fetched_at": "2026-11-11T16:16:20.706471Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "b86465c2-7be4-4ce9-884c-befb79d4635b",
+        "tool": "search_destinations",
+        "status": "ok",
+        "data": {
+          "chunks": [
+            {
+              "chunk_id": "322e24464434a270",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Lisbon's western district is packed with famous monuments, especially along the riverbank. These include the Torre de Bel\u00e9m, the Monument to the Discoveries, and Jer\u00f3nimos Monastery. Museums include the Navy Museum, the Museu Colec\u00e7\u00e3o Berardo, and the National Coach Museum."
+            },
+            {
+              "chunk_id": "8bbaf8e37d474a4e",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "This large expanse of Lisbon has a few sights of interest, including Parque Eduardo VII, the Calouste Gulbenkian Museum, and the zoo."
+            },
+            {
+              "chunk_id": "b8eb3d68d1dd4bfc",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "The Bairro Alto, or \"Upper District\" (dare we say \"High Neighbourhood\"), has become Lisbon's youthful, trendy quarter. The district includes the Chiado neighbourhood, known for its numerous historic landmarks and theatres. Among the district's many sights are the S\u00e3o Bento Palace (where the Portuguese parliament meets), the Museu Nacional de Arte Antiga (a museum of antique art), and the Lisbon Botanical Gardens."
+            },
+            {
+              "chunk_id": "c00f1210e5481690",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Lisbon (Portuguese: Lisboa) is the capital of Portugal situated on seven hills at the wide mouth of the river Tagus (Tejo) where it meets the Atlantic Ocean. With 545,000 residents in the city and 3.0 million in the Lisbon Region (2024) and a thriving mix of Portugal's rich history and vivid contemporary culture, Lisbon enchants travellers with its white bleached limestone buildings, intimate alleyways, and an easy going charm that makes it a popular year round destination.\nGreater Lisbon comprises many other splendid tourist destinations such as the  UNESCO World Heritage Site of Sintra, the "
+            },
+            {
+              "chunk_id": "1af66742e799837d",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "All of Lisbon has 4G from all Portuguese carriers. As of Jan 2023, 5G coverage is quite broad in most popular areas. Deep inside some older buildings, or underground you might find coverage to be spotty.\nPrivate international call centres and public telephone booths are common throughout Lisbon. Be warned, however, public phones can be less generous than slot machines: many times they'll swallow your change and give you no credit. You're better off purchasing a Portugal Telecom pre-paid card you can insert into the phone, or even a discount calling card which connects you via a toll-free numbe"
+            }
+          ]
+        },
+        "source": "local-rag",
+        "fetched_at": "2026-11-11T16:16:23.047109Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "857b2821-ac83-4d28-8e9d-361ad43eeab3",
+        "tool": "validate_itinerary",
+        "status": "ok",
+        "data": {
+          "valid": false,
+          "total_cost": "49.50",
+          "currency": "USD",
+          "issues": [
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:2"
+              ]
+            },
+            {
+              "name": "overlap",
+              "severity": "error",
+              "message": "Items overlap in time",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:1",
+                "2027-04-11:item:2"
+              ]
+            }
+          ]
+        },
+        "source": "deterministic-validator",
+        "fetched_at": "2026-11-11T16:16:47.899139Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "0b5e9267-5ee8-47bc-8f73-8c082c748712",
+        "tool": "validate_itinerary",
+        "status": "ok",
+        "data": {
+          "valid": false,
+          "total_cost": "49.50",
+          "currency": "USD",
+          "issues": [
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:2"
+              ]
+            },
+            {
+              "name": "overlap",
+              "severity": "error",
+              "message": "Items overlap in time",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:1",
+                "2027-04-11:item:2"
+              ]
+            }
+          ]
+        },
+        "source": "deterministic-validator",
+        "fetched_at": "2026-11-11T16:17:04.294627Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "4d4bf264-95c0-4321-8612-375af023dfbf",
+        "tool": "validate_itinerary",
+        "status": "ok",
+        "data": {
+          "valid": false,
+          "total_cost": "49.50",
+          "currency": "USD",
+          "issues": [
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:2"
+              ]
+            },
+            {
+              "name": "overlap",
+              "severity": "error",
+              "message": "Items overlap in time",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:1",
+                "2027-04-11:item:2"
+              ]
+            }
+          ]
+        },
+        "source": "deterministic-validator",
+        "fetched_at": "2026-11-11T16:17:21.597060Z",
+        "cache_hit": false
+      }
+    ],
+    "budget_met": null,
+    "usage": {
+      "tokens_in": 23170,
+      "tokens_out": 2926,
+      "cached_tokens": 11351,
+      "uncached_tokens": 11819,
+      "calls": [
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 710,
+          "tokens_out": 60,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2282,
+          "tokens_out": 280,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 1233,
+          "tokens_out": 479,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 5187,
+          "tokens_out": 622,
+          "cached_tokens": 1720
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 6315,
+          "tokens_out": 720,
+          "cached_tokens": 4247
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 7443,
+          "tokens_out": 765,
+          "cached_tokens": 5375
+        }
+      ]
+    },
+    "issues": [
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-11:item:2"
+        ]
+      },
+      {
+        "name": "overlap",
+        "severity": "error",
+        "message": "Items overlap in time",
+        "item_ids": [
+          "2027-04-10:item:1",
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:1",
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:2",
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-11:item:1",
+          "2027-04-11:item:2"
+        ]
+      }
+    ],
+    "preference_proposal": null
+  },
+  "tool_results": [
+    {
+      "tool_result_id": "b033cafa-c6ef-440c-94ae-95153b0accc1",
+      "tool": "search_hotels",
+      "status": "ok",
+      "data": {
+        "hotels": [
+          {
+            "id": 113,
+            "name": "Synthetic Coral Pebble Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 1",
+            "tier": "budget",
+            "price_per_night": "49.50",
+            "total_price": "49.50",
+            "nights": 1,
+            "rating": 4.9,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 116,
+            "name": "Synthetic Ivory Orchard Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 4",
+            "tier": "budget",
+            "price_per_night": "49.50",
+            "total_price": "49.50",
+            "nights": 1,
+            "rating": 4.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 119,
+            "name": "Synthetic Azure Pebble Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 3",
+            "tier": "budget",
+            "price_per_night": "49.50",
+            "total_price": "49.50",
+            "nights": 1,
+            "rating": 3.1,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 122,
+            "name": "Synthetic Amber Orchard Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 2",
+            "tier": "budget",
+            "price_per_night": "49.50",
+            "total_price": "49.50",
+            "nights": 1,
+            "rating": 4.4,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 114,
+            "name": "Synthetic Amber Pebble Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 2",
+            "tier": "mid",
+            "price_per_night": "99.00",
+            "total_price": "99.00",
+            "nights": 1,
+            "rating": 4.4,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 117,
+            "name": "Synthetic Azure Orchard Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 1",
+            "tier": "mid",
+            "price_per_night": "99.00",
+            "total_price": "99.00",
+            "nights": 1,
+            "rating": 3.1,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 120,
+            "name": "Synthetic Coral Lantern Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 4",
+            "tier": "mid",
+            "price_per_night": "99.00",
+            "total_price": "99.00",
+            "nights": 1,
+            "rating": 3.8,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 115,
+            "name": "Synthetic Azure Lantern Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 3",
+            "tier": "upscale",
+            "price_per_night": "189.00",
+            "total_price": "189.00",
+            "nights": 1,
+            "rating": 4.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 118,
+            "name": "Synthetic Ivory Pebble Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 2",
+            "tier": "upscale",
+            "price_per_night": "189.00",
+            "total_price": "189.00",
+            "nights": 1,
+            "rating": 4.4,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 121,
+            "name": "Synthetic Ivory Lantern Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 1",
+            "tier": "upscale",
+            "price_per_night": "189.00",
+            "total_price": "189.00",
+            "nights": 1,
+            "rating": 3.5,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          }
+        ],
+        "check_in": "2027-04-10",
+        "check_out": "2027-04-11",
+        "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+        "truncated": false
+      },
+      "source": "synthetic-v1",
+      "fetched_at": "2026-11-11T16:16:20.706471Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "b86465c2-7be4-4ce9-884c-befb79d4635b",
+      "tool": "search_destinations",
+      "status": "ok",
+      "data": {
+        "chunks": [
+          {
+            "chunk_id": "322e24464434a270",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Lisbon's western district is packed with famous monuments, especially along the riverbank. These include the Torre de Bel\u00e9m, the Monument to the Discoveries, and Jer\u00f3nimos Monastery. Museums include the Navy Museum, the Museu Colec\u00e7\u00e3o Berardo, and the National Coach Museum."
+          },
+          {
+            "chunk_id": "8bbaf8e37d474a4e",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "This large expanse of Lisbon has a few sights of interest, including Parque Eduardo VII, the Calouste Gulbenkian Museum, and the zoo."
+          },
+          {
+            "chunk_id": "b8eb3d68d1dd4bfc",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "The Bairro Alto, or \"Upper District\" (dare we say \"High Neighbourhood\"), has become Lisbon's youthful, trendy quarter. The district includes the Chiado neighbourhood, known for its numerous historic landmarks and theatres. Among the district's many sights are the S\u00e3o Bento Palace (where the Portuguese parliament meets), the Museu Nacional de Arte Antiga (a museum of antique art), and the Lisbon Botanical Gardens."
+          },
+          {
+            "chunk_id": "c00f1210e5481690",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Lisbon (Portuguese: Lisboa) is the capital of Portugal situated on seven hills at the wide mouth of the river Tagus (Tejo) where it meets the Atlantic Ocean. With 545,000 residents in the city and 3.0 million in the Lisbon Region (2024) and a thriving mix of Portugal's rich history and vivid contemporary culture, Lisbon enchants travellers with its white bleached limestone buildings, intimate alleyways, and an easy going charm that makes it a popular year round destination.\nGreater Lisbon comprises many other splendid tourist destinations such as the  UNESCO World Heritage Site of Sintra, the "
+          },
+          {
+            "chunk_id": "1af66742e799837d",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "All of Lisbon has 4G from all Portuguese carriers. As of Jan 2023, 5G coverage is quite broad in most popular areas. Deep inside some older buildings, or underground you might find coverage to be spotty.\nPrivate international call centres and public telephone booths are common throughout Lisbon. Be warned, however, public phones can be less generous than slot machines: many times they'll swallow your change and give you no credit. You're better off purchasing a Portugal Telecom pre-paid card you can insert into the phone, or even a discount calling card which connects you via a toll-free numbe"
+          }
+        ]
+      },
+      "source": "local-rag",
+      "fetched_at": "2026-11-11T16:16:23.047109Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "857b2821-ac83-4d28-8e9d-361ad43eeab3",
+      "tool": "validate_itinerary",
+      "status": "ok",
+      "data": {
+        "valid": false,
+        "total_cost": "49.50",
+        "currency": "USD",
+        "issues": [
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:2"
+            ]
+          },
+          {
+            "name": "overlap",
+            "severity": "error",
+            "message": "Items overlap in time",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:1",
+              "2027-04-11:item:2"
+            ]
+          }
+        ]
+      },
+      "source": "deterministic-validator",
+      "fetched_at": "2026-11-11T16:16:47.899139Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "0b5e9267-5ee8-47bc-8f73-8c082c748712",
+      "tool": "validate_itinerary",
+      "status": "ok",
+      "data": {
+        "valid": false,
+        "total_cost": "49.50",
+        "currency": "USD",
+        "issues": [
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:2"
+            ]
+          },
+          {
+            "name": "overlap",
+            "severity": "error",
+            "message": "Items overlap in time",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:1",
+              "2027-04-11:item:2"
+            ]
+          }
+        ]
+      },
+      "source": "deterministic-validator",
+      "fetched_at": "2026-11-11T16:17:04.294627Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "4d4bf264-95c0-4321-8612-375af023dfbf",
+      "tool": "validate_itinerary",
+      "status": "ok",
+      "data": {
+        "valid": false,
+        "total_cost": "49.50",
+        "currency": "USD",
+        "issues": [
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:2"
+            ]
+          },
+          {
+            "name": "overlap",
+            "severity": "error",
+            "message": "Items overlap in time",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:1",
+              "2027-04-11:item:2"
+            ]
+          }
+        ]
+      },
+      "source": "deterministic-validator",
+      "fetched_at": "2026-11-11T16:17:21.597060Z",
+      "cache_hit": false
+    }
+  ],
+  "previous_itinerary": null,
+  "edit_day": null,
+  "latency_ms": 70469.26304185763,
+  "tokens_in": 23170,
+  "tokens_out": 2926,
+  "fingerprint": "1dc89e92266e05f2eced223338d30141c9e8926c2b145330930a2a131c304ec7",
+  "experiment": "model-single"
+}

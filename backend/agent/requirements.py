@@ -61,6 +61,11 @@ def bind_tool_definitions(definitions, message):
         props = tool['parameters'].get('properties', {})
         if city and tool['name'] in {'search_hotels', 'search_destinations'}:
             props['city'] = {'type': 'string', 'enum': [city]}
+        if tool['name'] == 'search_hotels':
+            # Do not ask the model to invent optional price, rating or tier filters.
+            for field, pattern in (('max_price_per_night', r'per night|nightly'), ('min_rating', r'rating|stars?'), ('tier', r'budget hotel|mid|upscale')):
+                if field in props and not re.search(pattern, message, re.I):
+                    props[field] = {'type': 'null'}
         if dates and tool['name'] == 'search_hotels' and dates[0] != dates[1]:
             props['check_in'] = {'type': 'string', 'enum': [dates[0]]}
             props['check_out'] = {'type': 'string', 'enum': [dates[1]]}
@@ -132,11 +137,24 @@ def bind_itinerary_schema(schema, message, results, citations, original=None, ed
             variant = deepcopy(base)
             props = variant['properties']
             props['place'] = {'type': 'string', 'enum': [hotel['name']]}
+            props['category'] = {'const': 'hotel'}
             props['currency'] = {'type': 'string', 'enum': [hotel['currency']]}
             props['cost'] = {'type': 'string', 'enum': [str(hotel['total_price'])] if dates and 'days' in result['properties'] else [str(hotel['price_per_night']), str(hotel['total_price'])]}
             props['tool_result_ids'] = {'type': 'array', 'items': {'type': 'string', 'enum': [key]}, 'minItems': 1, 'maxItems': 1}
             variant['required'] = list(dict.fromkeys([*variant['required'], 'cost', 'tool_result_ids']))
             variants.append(variant)
+        if activity_places:
+            grounded_variants = []
+            for place in activity_places:
+                grounded = deepcopy(unpriced)
+                grounded['properties']['place'] = {'const': place}
+                grounded['properties']['chunk_ids']['items']['enum'] = [
+                    row['chunk_id'] for row in citations
+                    if place.casefold() in row.get('excerpt', '').casefold()]
+                grounded_variants.append(grounded)
+            # Each union branch is a complete object schema. Partial properties
+            # alongside anyOf can yield incomplete objects in local grammars.
+            unpriced = {'anyOf': grounded_variants}
         result['$defs']['UnpricedItem'] = unpriced
         result['$defs']['QuotedHotelItem'] = {'anyOf': variants[1:]}
         result['$defs']['Item'] = {'anyOf': [{'$ref': '#/$defs/UnpricedItem'}, {'$ref': '#/$defs/QuotedHotelItem'}]}
@@ -201,3 +219,46 @@ def substantive_itinerary(candidate):
             for key in ('id', 'chunk_ids', 'tool_result_ids', 'coord_tool_result_id'):
                 item.pop(key, None)
     return result
+
+
+def grounded_activity_issues(candidate, citations):
+    """Require each cited place name in at least one of its actual excerpts."""
+    chunks = {row['chunk_id']: row.get('excerpt', '') for row in citations}
+    issues = []
+    for day in candidate['days']:
+        for item in day['items']:
+            if item['cost'] is not None or not item['chunk_ids']:
+                continue
+            if citations and not any(item['place'].strip().casefold() in chunks.get(key, '').casefold()
+                                     for key in item['chunk_ids']):
+                issues.append(dict(name='unsupported_activity', severity='error', item_ids=[item['id']],
+                                   message='Copy the place name from its cited excerpt and use that excerpt ID.'))
+    return issues
+
+
+def separate_generated_visits(candidate, message):
+    """Pack generated visits; represent hotel accommodation as a short check-in.
+
+    Explicit user times are never moved; impossible schedules remain validator errors.
+    This does not establish travel-time feasibility.
+    """
+    from datetime import datetime, time, timedelta
+    if re.search(r'\b\d{1,2}:\d{2}\b|\b\d{1,2}\s*(?:am|pm)\b', message, re.I):
+        return
+    for day in candidate['days']:
+        end = None
+        for item in sorted(day['items'], key=lambda item: item['start']):
+            start, finish = datetime.fromisoformat(item['start']), datetime.fromisoformat(item['end'])
+            # Accommodation appears as a check-in visit, not a multi-day activity
+            # blocking every subsequent visit; the quote still covers its stay.
+            overlaps = any(other is not item and start < datetime.fromisoformat(other['end'])
+                           and finish > datetime.fromisoformat(other['start']) for other in day['items'])
+            if item['category'].casefold() == 'hotel' and (finish.date() != start.date() or overlaps):
+                finish = start + timedelta(minutes=30)
+                item['end'] = finish.isoformat()
+            if end is not None and start < end and start.date() == end.date():
+                shifted = end + (finish-start)
+                if shifted.date() == start.date() and shifted.time() <= time(22):
+                    start, finish = end, shifted
+                    item['start'], item['end'] = start.isoformat(), finish.isoformat()
+            end = max(end, finish) if end is not None else finish

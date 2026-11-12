@@ -1,0 +1,76 @@
+{
+  "id": "qwen-calibration-fixed-01:ambiguous-03:0",
+  "synthetic": true,
+  "request": "Plan 4 days in Madrid for 3 people under 1000 USD, with museums and food, at a moderate pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. I have not chosen travel dates yet; ask for clarification.",
+  "constraints": {
+    "destination": "Madrid",
+    "length": 4,
+    "budget": 1000,
+    "currency": "USD",
+    "interests": [
+      "museums",
+      "food"
+    ],
+    "pace": "moderate",
+    "must_include": [],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 3
+  },
+  "category": "ambiguous",
+  "rubric": [
+    "no_forbidden_urls"
+  ],
+  "turns": [],
+  "case_id": "ambiguous-03",
+  "run_id": "qwen-calibration-fixed-01",
+  "repeat": 0,
+  "source": "recorded",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "route": {
+    "extract": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    },
+    "plan": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    }
+  },
+  "output": {
+    "trip_id": "cba88ffd-75cb-4f96-9083-e35277a877c1",
+    "message": "What are your arrival and departure dates? I need both dates before looking up hotel quotes.",
+    "itinerary": null,
+    "diff": null,
+    "citations": [],
+    "tool_trace": [],
+    "budget_met": null,
+    "usage": {
+      "tokens_in": 682,
+      "tokens_out": 61,
+      "cached_tokens": 100,
+      "uncached_tokens": 582,
+      "calls": [
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 682,
+          "tokens_out": 61,
+          "cached_tokens": 100
+        }
+      ]
+    },
+    "issues": [],
+    "preference_proposal": null
+  },
+  "tool_results": [],
+  "previous_itinerary": null,
+  "edit_day": null,
+  "latency_ms": 1746.57041602768,
+  "tokens_in": 682,
+  "tokens_out": 61,
+  "fingerprint": "b40a1963390ec7b1f9ea5626d9abc60376fd02af68f71785fc7f400d29f836ea",
+  "experiment": "model-single"
+}

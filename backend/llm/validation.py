@@ -46,5 +46,10 @@ def validate_response(response, tools=None, response_schema=None):
         exc.rejected_tool_response = response
         raise
     if response_schema is not None and not response.tool_calls:
-        parse_json(response.text, response_schema)
+        try:
+            parse_json(response.text, response_schema)
+        except InvalidOutput as exc:
+            # Preserve rejected output for a bounded, data-delimited repair only.
+            exc.rejected_response = response
+            raise
     return response

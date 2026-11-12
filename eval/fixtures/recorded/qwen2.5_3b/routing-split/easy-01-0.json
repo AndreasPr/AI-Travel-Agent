@@ -1,0 +1,1399 @@
+{
+  "id": "routing-split:easy-01:0",
+  "synthetic": true,
+  "request": "Plan 2 days in Lisbon for 1 people under 600 USD, with museums and food, at a moderate pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. Dates: 2027-04-10 through 2027-04-11.",
+  "constraints": {
+    "destination": "Lisbon",
+    "length": 2,
+    "budget": 600,
+    "currency": "USD",
+    "interests": [
+      "museums",
+      "food"
+    ],
+    "pace": "moderate",
+    "must_include": [],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 1,
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-11"
+  },
+  "category": "easy",
+  "rubric": [
+    "schema_valid",
+    "budget_respected",
+    "no_overlap",
+    "dates_in_range",
+    "prices_traceable",
+    "citations_present",
+    "citations_supported",
+    "no_forbidden_urls"
+  ],
+  "turns": [],
+  "case_id": "easy-01",
+  "run_id": "routing-split",
+  "repeat": 0,
+  "source": "recorded",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "route": {
+    "extract": {
+      "provider": "ollama",
+      "model": "llama3.2:3b"
+    },
+    "plan": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    }
+  },
+  "output": {
+    "trip_id": "125e989c-fc31-4c73-90d2-b0a39770b827",
+    "message": "I could not produce a valid itinerary after two repairs. See issues. Inventory quotes are synthetic; they do not establish booking availability.",
+    "itinerary": null,
+    "diff": null,
+    "citations": [],
+    "tool_trace": [
+      {
+        "tool": "search_hotels",
+        "status": "error",
+        "data": {
+          "error": {
+            "code": "untrusted_arguments",
+            "message": "Arguments must come from the user request or earlier structured tool results"
+          }
+        }
+      },
+      {
+        "tool_result_id": "02bae9d6-3630-46ba-a34e-05015f893ba0",
+        "tool": "search_destinations",
+        "status": "ok",
+        "data": {
+          "chunks": [
+            {
+              "chunk_id": "322e24464434a270",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Lisbon's western district is packed with famous monuments, especially along the riverbank. These include the Torre de Bel\u00e9m, the Monument to the Discoveries, and Jer\u00f3nimos Monastery. Museums include the Navy Museum, the Museu Colec\u00e7\u00e3o Berardo, and the National Coach Museum."
+            },
+            {
+              "chunk_id": "b8eb3d68d1dd4bfc",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "The Bairro Alto, or \"Upper District\" (dare we say \"High Neighbourhood\"), has become Lisbon's youthful, trendy quarter. The district includes the Chiado neighbourhood, known for its numerous historic landmarks and theatres. Among the district's many sights are the S\u00e3o Bento Palace (where the Portuguese parliament meets), the Museu Nacional de Arte Antiga (a museum of antique art), and the Lisbon Botanical Gardens."
+            },
+            {
+              "chunk_id": "8bbaf8e37d474a4e",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "This large expanse of Lisbon has a few sights of interest, including Parque Eduardo VII, the Calouste Gulbenkian Museum, and the zoo."
+            },
+            {
+              "chunk_id": "c00f1210e5481690",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Lisbon (Portuguese: Lisboa) is the capital of Portugal situated on seven hills at the wide mouth of the river Tagus (Tejo) where it meets the Atlantic Ocean. With 545,000 residents in the city and 3.0 million in the Lisbon Region (2024) and a thriving mix of Portugal's rich history and vivid contemporary culture, Lisbon enchants travellers with its white bleached limestone buildings, intimate alleyways, and an easy going charm that makes it a popular year round destination.\nGreater Lisbon comprises many other splendid tourist destinations such as the  UNESCO World Heritage Site of Sintra, the "
+            },
+            {
+              "chunk_id": "b08825a80e13911a",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Individual listings can be found in Lisbon's district articles\nFinding a decent sleeping place in the centre should not be a big problem. There is a tourist service centre in the airport, where a room can be booked for you. Expect to pay at least \u20ac55 for a double room. If you are in Lisbon for sightseeing (especially for your first visit), the best location is along the route of tram #28 (see official map of the route). This especially works if you are with a baby stroller, as it will save from huge part of hill-climbing.\nLisbon sets high standards for budget accommodation, with numerous clean"
+            }
+          ]
+        },
+        "source": "local-rag",
+        "fetched_at": "2026-11-11T15:29:21.851296Z",
+        "cache_hit": false
+      },
+      {
+        "tool": "search_hotels",
+        "status": "error",
+        "data": {
+          "error": {
+            "code": "untrusted_arguments",
+            "message": "Arguments must come from the user request or earlier structured tool results"
+          }
+        }
+      },
+      {
+        "tool_result_id": "39f5e40b-0f26-4105-a7d3-ee6ee3aa1d66",
+        "tool": "search_destinations",
+        "status": "ok",
+        "data": {
+          "chunks": [
+            {
+              "chunk_id": "322e24464434a270",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Lisbon's western district is packed with famous monuments, especially along the riverbank. These include the Torre de Bel\u00e9m, the Monument to the Discoveries, and Jer\u00f3nimos Monastery. Museums include the Navy Museum, the Museu Colec\u00e7\u00e3o Berardo, and the National Coach Museum."
+            },
+            {
+              "chunk_id": "b8eb3d68d1dd4bfc",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "The Bairro Alto, or \"Upper District\" (dare we say \"High Neighbourhood\"), has become Lisbon's youthful, trendy quarter. The district includes the Chiado neighbourhood, known for its numerous historic landmarks and theatres. Among the district's many sights are the S\u00e3o Bento Palace (where the Portuguese parliament meets), the Museu Nacional de Arte Antiga (a museum of antique art), and the Lisbon Botanical Gardens."
+            },
+            {
+              "chunk_id": "8bbaf8e37d474a4e",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "This large expanse of Lisbon has a few sights of interest, including Parque Eduardo VII, the Calouste Gulbenkian Museum, and the zoo."
+            },
+            {
+              "chunk_id": "c00f1210e5481690",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Lisbon (Portuguese: Lisboa) is the capital of Portugal situated on seven hills at the wide mouth of the river Tagus (Tejo) where it meets the Atlantic Ocean. With 545,000 residents in the city and 3.0 million in the Lisbon Region (2024) and a thriving mix of Portugal's rich history and vivid contemporary culture, Lisbon enchants travellers with its white bleached limestone buildings, intimate alleyways, and an easy going charm that makes it a popular year round destination.\nGreater Lisbon comprises many other splendid tourist destinations such as the  UNESCO World Heritage Site of Sintra, the "
+            },
+            {
+              "chunk_id": "b08825a80e13911a",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Individual listings can be found in Lisbon's district articles\nFinding a decent sleeping place in the centre should not be a big problem. There is a tourist service centre in the airport, where a room can be booked for you. Expect to pay at least \u20ac55 for a double room. If you are in Lisbon for sightseeing (especially for your first visit), the best location is along the route of tram #28 (see official map of the route). This especially works if you are with a baby stroller, as it will save from huge part of hill-climbing.\nLisbon sets high standards for budget accommodation, with numerous clean"
+            }
+          ]
+        },
+        "source": "local-rag",
+        "fetched_at": "2026-11-11T15:29:29.144717Z",
+        "cache_hit": false
+      },
+      {
+        "tool": "search_hotels",
+        "status": "error",
+        "data": {
+          "error": {
+            "code": "untrusted_arguments",
+            "message": "Arguments must come from the user request or earlier structured tool results"
+          }
+        }
+      },
+      {
+        "tool_result_id": "ca4975fb-c3b5-4b29-8609-63abcf319c24",
+        "tool": "search_destinations",
+        "status": "ok",
+        "data": {
+          "chunks": [
+            {
+              "chunk_id": "322e24464434a270",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Lisbon's western district is packed with famous monuments, especially along the riverbank. These include the Torre de Bel\u00e9m, the Monument to the Discoveries, and Jer\u00f3nimos Monastery. Museums include the Navy Museum, the Museu Colec\u00e7\u00e3o Berardo, and the National Coach Museum."
+            },
+            {
+              "chunk_id": "b8eb3d68d1dd4bfc",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "The Bairro Alto, or \"Upper District\" (dare we say \"High Neighbourhood\"), has become Lisbon's youthful, trendy quarter. The district includes the Chiado neighbourhood, known for its numerous historic landmarks and theatres. Among the district's many sights are the S\u00e3o Bento Palace (where the Portuguese parliament meets), the Museu Nacional de Arte Antiga (a museum of antique art), and the Lisbon Botanical Gardens."
+            },
+            {
+              "chunk_id": "8bbaf8e37d474a4e",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "This large expanse of Lisbon has a few sights of interest, including Parque Eduardo VII, the Calouste Gulbenkian Museum, and the zoo."
+            },
+            {
+              "chunk_id": "c00f1210e5481690",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Lisbon (Portuguese: Lisboa) is the capital of Portugal situated on seven hills at the wide mouth of the river Tagus (Tejo) where it meets the Atlantic Ocean. With 545,000 residents in the city and 3.0 million in the Lisbon Region (2024) and a thriving mix of Portugal's rich history and vivid contemporary culture, Lisbon enchants travellers with its white bleached limestone buildings, intimate alleyways, and an easy going charm that makes it a popular year round destination.\nGreater Lisbon comprises many other splendid tourist destinations such as the  UNESCO World Heritage Site of Sintra, the "
+            },
+            {
+              "chunk_id": "b08825a80e13911a",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Individual listings can be found in Lisbon's district articles\nFinding a decent sleeping place in the centre should not be a big problem. There is a tourist service centre in the airport, where a room can be booked for you. Expect to pay at least \u20ac55 for a double room. If you are in Lisbon for sightseeing (especially for your first visit), the best location is along the route of tram #28 (see official map of the route). This especially works if you are with a baby stroller, as it will save from huge part of hill-climbing.\nLisbon sets high standards for budget accommodation, with numerous clean"
+            }
+          ]
+        },
+        "source": "local-rag",
+        "fetched_at": "2026-11-11T15:29:36.032134Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "e7bb5bb0-7dd4-40ce-857d-ceae0b9d057f",
+        "tool": "search_hotels",
+        "status": "ok",
+        "data": {
+          "hotels": [
+            {
+              "id": 113,
+              "name": "Synthetic Coral Pebble Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 1",
+              "tier": "budget",
+              "price_per_night": "49.50",
+              "total_price": "49.50",
+              "nights": 1,
+              "rating": 4.9,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 116,
+              "name": "Synthetic Ivory Orchard Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 4",
+              "tier": "budget",
+              "price_per_night": "49.50",
+              "total_price": "49.50",
+              "nights": 1,
+              "rating": 4.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 119,
+              "name": "Synthetic Azure Pebble Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 3",
+              "tier": "budget",
+              "price_per_night": "49.50",
+              "total_price": "49.50",
+              "nights": 1,
+              "rating": 3.1,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 122,
+              "name": "Synthetic Amber Orchard Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 2",
+              "tier": "budget",
+              "price_per_night": "49.50",
+              "total_price": "49.50",
+              "nights": 1,
+              "rating": 4.4,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 114,
+              "name": "Synthetic Amber Pebble Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 2",
+              "tier": "mid",
+              "price_per_night": "99.00",
+              "total_price": "99.00",
+              "nights": 1,
+              "rating": 4.4,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 117,
+              "name": "Synthetic Azure Orchard Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 1",
+              "tier": "mid",
+              "price_per_night": "99.00",
+              "total_price": "99.00",
+              "nights": 1,
+              "rating": 3.1,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 120,
+              "name": "Synthetic Coral Lantern Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 4",
+              "tier": "mid",
+              "price_per_night": "99.00",
+              "total_price": "99.00",
+              "nights": 1,
+              "rating": 3.8,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 115,
+              "name": "Synthetic Azure Lantern Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 3",
+              "tier": "upscale",
+              "price_per_night": "189.00",
+              "total_price": "189.00",
+              "nights": 1,
+              "rating": 4.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 118,
+              "name": "Synthetic Ivory Pebble Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 2",
+              "tier": "upscale",
+              "price_per_night": "189.00",
+              "total_price": "189.00",
+              "nights": 1,
+              "rating": 4.4,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 121,
+              "name": "Synthetic Ivory Lantern Stay",
+              "city": "Lisbon",
+              "district": "Synthetic District 1",
+              "tier": "upscale",
+              "price_per_night": "189.00",
+              "total_price": "189.00",
+              "nights": 1,
+              "rating": 3.5,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            }
+          ],
+          "check_in": "2027-04-10",
+          "check_out": "2027-04-11",
+          "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+          "truncated": false
+        },
+        "source": "synthetic-v1",
+        "fetched_at": "2026-11-11T15:29:42.548619Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "34d457b2-3af5-45d1-a903-1575fff8cc68",
+        "tool": "search_destinations",
+        "status": "ok",
+        "data": {
+          "chunks": [
+            {
+              "chunk_id": "322e24464434a270",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Lisbon's western district is packed with famous monuments, especially along the riverbank. These include the Torre de Bel\u00e9m, the Monument to the Discoveries, and Jer\u00f3nimos Monastery. Museums include the Navy Museum, the Museu Colec\u00e7\u00e3o Berardo, and the National Coach Museum."
+            },
+            {
+              "chunk_id": "b8eb3d68d1dd4bfc",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "The Bairro Alto, or \"Upper District\" (dare we say \"High Neighbourhood\"), has become Lisbon's youthful, trendy quarter. The district includes the Chiado neighbourhood, known for its numerous historic landmarks and theatres. Among the district's many sights are the S\u00e3o Bento Palace (where the Portuguese parliament meets), the Museu Nacional de Arte Antiga (a museum of antique art), and the Lisbon Botanical Gardens."
+            },
+            {
+              "chunk_id": "8bbaf8e37d474a4e",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "This large expanse of Lisbon has a few sights of interest, including Parque Eduardo VII, the Calouste Gulbenkian Museum, and the zoo."
+            },
+            {
+              "chunk_id": "c00f1210e5481690",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Lisbon (Portuguese: Lisboa) is the capital of Portugal situated on seven hills at the wide mouth of the river Tagus (Tejo) where it meets the Atlantic Ocean. With 545,000 residents in the city and 3.0 million in the Lisbon Region (2024) and a thriving mix of Portugal's rich history and vivid contemporary culture, Lisbon enchants travellers with its white bleached limestone buildings, intimate alleyways, and an easy going charm that makes it a popular year round destination.\nGreater Lisbon comprises many other splendid tourist destinations such as the  UNESCO World Heritage Site of Sintra, the "
+            },
+            {
+              "chunk_id": "b08825a80e13911a",
+              "title": "Lisbon",
+              "url": "https://en.wikivoyage.org/wiki/Lisbon",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Individual listings can be found in Lisbon's district articles\nFinding a decent sleeping place in the centre should not be a big problem. There is a tourist service centre in the airport, where a room can be booked for you. Expect to pay at least \u20ac55 for a double room. If you are in Lisbon for sightseeing (especially for your first visit), the best location is along the route of tram #28 (see official map of the route). This especially works if you are with a baby stroller, as it will save from huge part of hill-climbing.\nLisbon sets high standards for budget accommodation, with numerous clean"
+            }
+          ]
+        },
+        "source": "local-rag",
+        "fetched_at": "2026-11-11T15:29:43.930692Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "1dd96368-4ff5-4198-92ae-ccde9f93163d",
+        "tool": "validate_itinerary",
+        "status": "ok",
+        "data": {
+          "valid": false,
+          "total_cost": "49.50",
+          "currency": "USD",
+          "issues": [
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:2"
+              ]
+            },
+            {
+              "name": "overlap",
+              "severity": "error",
+              "message": "Items overlap in time",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:1",
+                "2027-04-11:item:2"
+              ]
+            }
+          ]
+        },
+        "source": "deterministic-validator",
+        "fetched_at": "2026-11-11T15:30:30.588398Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "d23ec646-e49d-40b5-901f-b8a42badd2ff",
+        "tool": "validate_itinerary",
+        "status": "ok",
+        "data": {
+          "valid": false,
+          "total_cost": "49.50",
+          "currency": "USD",
+          "issues": [
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:2"
+              ]
+            },
+            {
+              "name": "overlap",
+              "severity": "error",
+              "message": "Items overlap in time",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:1",
+                "2027-04-11:item:2"
+              ]
+            }
+          ]
+        },
+        "source": "deterministic-validator",
+        "fetched_at": "2026-11-11T15:30:47.504944Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "ced341be-6b07-4d61-841f-3df1b3131306",
+        "tool": "validate_itinerary",
+        "status": "ok",
+        "data": {
+          "valid": false,
+          "total_cost": "49.50",
+          "currency": "USD",
+          "issues": [
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:2"
+              ]
+            },
+            {
+              "name": "overlap",
+              "severity": "error",
+              "message": "Items overlap in time",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:1",
+                "2027-04-11:item:2"
+              ]
+            }
+          ]
+        },
+        "source": "deterministic-validator",
+        "fetched_at": "2026-11-11T15:31:05.791379Z",
+        "cache_hit": false
+      }
+    ],
+    "budget_met": null,
+    "usage": {
+      "tokens_in": 56906,
+      "tokens_out": 3253,
+      "cached_tokens": 31186,
+      "uncached_tokens": 25720,
+      "calls": [
+        {
+          "provider": "ollama",
+          "model": "llama3.2:3b",
+          "tokens_in": 697,
+          "tokens_out": 75,
+          "cached_tokens": 0
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2266,
+          "tokens_out": 282,
+          "cached_tokens": 0
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 3488,
+          "tokens_out": 155,
+          "cached_tokens": 1704
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 4710,
+          "tokens_out": 155,
+          "cached_tokens": 2926
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 5931,
+          "tokens_out": 11,
+          "cached_tokens": 4148
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 5972,
+          "tokens_out": 117,
+          "cached_tokens": 5370
+        },
+        {
+          "provider": "ollama",
+          "model": "llama3.2:3b",
+          "tokens_in": 3779,
+          "tokens_out": 408,
+          "cached_tokens": 0
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 8897,
+          "tokens_out": 618,
+          "cached_tokens": 0
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 10021,
+          "tokens_out": 716,
+          "cached_tokens": 7957
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 11145,
+          "tokens_out": 716,
+          "cached_tokens": 9081
+        }
+      ]
+    },
+    "issues": [
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-11:item:2"
+        ]
+      },
+      {
+        "name": "overlap",
+        "severity": "error",
+        "message": "Items overlap in time",
+        "item_ids": [
+          "2027-04-10:item:1",
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:1",
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:2",
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-11:item:1",
+          "2027-04-11:item:2"
+        ]
+      }
+    ],
+    "preference_proposal": null
+  },
+  "tool_results": [
+    {
+      "tool_result_id": "02bae9d6-3630-46ba-a34e-05015f893ba0",
+      "tool": "search_destinations",
+      "status": "ok",
+      "data": {
+        "chunks": [
+          {
+            "chunk_id": "322e24464434a270",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Lisbon's western district is packed with famous monuments, especially along the riverbank. These include the Torre de Bel\u00e9m, the Monument to the Discoveries, and Jer\u00f3nimos Monastery. Museums include the Navy Museum, the Museu Colec\u00e7\u00e3o Berardo, and the National Coach Museum."
+          },
+          {
+            "chunk_id": "b8eb3d68d1dd4bfc",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "The Bairro Alto, or \"Upper District\" (dare we say \"High Neighbourhood\"), has become Lisbon's youthful, trendy quarter. The district includes the Chiado neighbourhood, known for its numerous historic landmarks and theatres. Among the district's many sights are the S\u00e3o Bento Palace (where the Portuguese parliament meets), the Museu Nacional de Arte Antiga (a museum of antique art), and the Lisbon Botanical Gardens."
+          },
+          {
+            "chunk_id": "8bbaf8e37d474a4e",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "This large expanse of Lisbon has a few sights of interest, including Parque Eduardo VII, the Calouste Gulbenkian Museum, and the zoo."
+          },
+          {
+            "chunk_id": "c00f1210e5481690",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Lisbon (Portuguese: Lisboa) is the capital of Portugal situated on seven hills at the wide mouth of the river Tagus (Tejo) where it meets the Atlantic Ocean. With 545,000 residents in the city and 3.0 million in the Lisbon Region (2024) and a thriving mix of Portugal's rich history and vivid contemporary culture, Lisbon enchants travellers with its white bleached limestone buildings, intimate alleyways, and an easy going charm that makes it a popular year round destination.\nGreater Lisbon comprises many other splendid tourist destinations such as the  UNESCO World Heritage Site of Sintra, the "
+          },
+          {
+            "chunk_id": "b08825a80e13911a",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Individual listings can be found in Lisbon's district articles\nFinding a decent sleeping place in the centre should not be a big problem. There is a tourist service centre in the airport, where a room can be booked for you. Expect to pay at least \u20ac55 for a double room. If you are in Lisbon for sightseeing (especially for your first visit), the best location is along the route of tram #28 (see official map of the route). This especially works if you are with a baby stroller, as it will save from huge part of hill-climbing.\nLisbon sets high standards for budget accommodation, with numerous clean"
+          }
+        ]
+      },
+      "source": "local-rag",
+      "fetched_at": "2026-11-11T15:29:21.851296Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "39f5e40b-0f26-4105-a7d3-ee6ee3aa1d66",
+      "tool": "search_destinations",
+      "status": "ok",
+      "data": {
+        "chunks": [
+          {
+            "chunk_id": "322e24464434a270",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Lisbon's western district is packed with famous monuments, especially along the riverbank. These include the Torre de Bel\u00e9m, the Monument to the Discoveries, and Jer\u00f3nimos Monastery. Museums include the Navy Museum, the Museu Colec\u00e7\u00e3o Berardo, and the National Coach Museum."
+          },
+          {
+            "chunk_id": "b8eb3d68d1dd4bfc",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "The Bairro Alto, or \"Upper District\" (dare we say \"High Neighbourhood\"), has become Lisbon's youthful, trendy quarter. The district includes the Chiado neighbourhood, known for its numerous historic landmarks and theatres. Among the district's many sights are the S\u00e3o Bento Palace (where the Portuguese parliament meets), the Museu Nacional de Arte Antiga (a museum of antique art), and the Lisbon Botanical Gardens."
+          },
+          {
+            "chunk_id": "8bbaf8e37d474a4e",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "This large expanse of Lisbon has a few sights of interest, including Parque Eduardo VII, the Calouste Gulbenkian Museum, and the zoo."
+          },
+          {
+            "chunk_id": "c00f1210e5481690",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Lisbon (Portuguese: Lisboa) is the capital of Portugal situated on seven hills at the wide mouth of the river Tagus (Tejo) where it meets the Atlantic Ocean. With 545,000 residents in the city and 3.0 million in the Lisbon Region (2024) and a thriving mix of Portugal's rich history and vivid contemporary culture, Lisbon enchants travellers with its white bleached limestone buildings, intimate alleyways, and an easy going charm that makes it a popular year round destination.\nGreater Lisbon comprises many other splendid tourist destinations such as the  UNESCO World Heritage Site of Sintra, the "
+          },
+          {
+            "chunk_id": "b08825a80e13911a",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Individual listings can be found in Lisbon's district articles\nFinding a decent sleeping place in the centre should not be a big problem. There is a tourist service centre in the airport, where a room can be booked for you. Expect to pay at least \u20ac55 for a double room. If you are in Lisbon for sightseeing (especially for your first visit), the best location is along the route of tram #28 (see official map of the route). This especially works if you are with a baby stroller, as it will save from huge part of hill-climbing.\nLisbon sets high standards for budget accommodation, with numerous clean"
+          }
+        ]
+      },
+      "source": "local-rag",
+      "fetched_at": "2026-11-11T15:29:29.144717Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "ca4975fb-c3b5-4b29-8609-63abcf319c24",
+      "tool": "search_destinations",
+      "status": "ok",
+      "data": {
+        "chunks": [
+          {
+            "chunk_id": "322e24464434a270",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Lisbon's western district is packed with famous monuments, especially along the riverbank. These include the Torre de Bel\u00e9m, the Monument to the Discoveries, and Jer\u00f3nimos Monastery. Museums include the Navy Museum, the Museu Colec\u00e7\u00e3o Berardo, and the National Coach Museum."
+          },
+          {
+            "chunk_id": "b8eb3d68d1dd4bfc",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "The Bairro Alto, or \"Upper District\" (dare we say \"High Neighbourhood\"), has become Lisbon's youthful, trendy quarter. The district includes the Chiado neighbourhood, known for its numerous historic landmarks and theatres. Among the district's many sights are the S\u00e3o Bento Palace (where the Portuguese parliament meets), the Museu Nacional de Arte Antiga (a museum of antique art), and the Lisbon Botanical Gardens."
+          },
+          {
+            "chunk_id": "8bbaf8e37d474a4e",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "This large expanse of Lisbon has a few sights of interest, including Parque Eduardo VII, the Calouste Gulbenkian Museum, and the zoo."
+          },
+          {
+            "chunk_id": "c00f1210e5481690",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Lisbon (Portuguese: Lisboa) is the capital of Portugal situated on seven hills at the wide mouth of the river Tagus (Tejo) where it meets the Atlantic Ocean. With 545,000 residents in the city and 3.0 million in the Lisbon Region (2024) and a thriving mix of Portugal's rich history and vivid contemporary culture, Lisbon enchants travellers with its white bleached limestone buildings, intimate alleyways, and an easy going charm that makes it a popular year round destination.\nGreater Lisbon comprises many other splendid tourist destinations such as the  UNESCO World Heritage Site of Sintra, the "
+          },
+          {
+            "chunk_id": "b08825a80e13911a",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Individual listings can be found in Lisbon's district articles\nFinding a decent sleeping place in the centre should not be a big problem. There is a tourist service centre in the airport, where a room can be booked for you. Expect to pay at least \u20ac55 for a double room. If you are in Lisbon for sightseeing (especially for your first visit), the best location is along the route of tram #28 (see official map of the route). This especially works if you are with a baby stroller, as it will save from huge part of hill-climbing.\nLisbon sets high standards for budget accommodation, with numerous clean"
+          }
+        ]
+      },
+      "source": "local-rag",
+      "fetched_at": "2026-11-11T15:29:36.032134Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "e7bb5bb0-7dd4-40ce-857d-ceae0b9d057f",
+      "tool": "search_hotels",
+      "status": "ok",
+      "data": {
+        "hotels": [
+          {
+            "id": 113,
+            "name": "Synthetic Coral Pebble Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 1",
+            "tier": "budget",
+            "price_per_night": "49.50",
+            "total_price": "49.50",
+            "nights": 1,
+            "rating": 4.9,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 116,
+            "name": "Synthetic Ivory Orchard Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 4",
+            "tier": "budget",
+            "price_per_night": "49.50",
+            "total_price": "49.50",
+            "nights": 1,
+            "rating": 4.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 119,
+            "name": "Synthetic Azure Pebble Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 3",
+            "tier": "budget",
+            "price_per_night": "49.50",
+            "total_price": "49.50",
+            "nights": 1,
+            "rating": 3.1,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 122,
+            "name": "Synthetic Amber Orchard Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 2",
+            "tier": "budget",
+            "price_per_night": "49.50",
+            "total_price": "49.50",
+            "nights": 1,
+            "rating": 4.4,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 114,
+            "name": "Synthetic Amber Pebble Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 2",
+            "tier": "mid",
+            "price_per_night": "99.00",
+            "total_price": "99.00",
+            "nights": 1,
+            "rating": 4.4,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 117,
+            "name": "Synthetic Azure Orchard Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 1",
+            "tier": "mid",
+            "price_per_night": "99.00",
+            "total_price": "99.00",
+            "nights": 1,
+            "rating": 3.1,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 120,
+            "name": "Synthetic Coral Lantern Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 4",
+            "tier": "mid",
+            "price_per_night": "99.00",
+            "total_price": "99.00",
+            "nights": 1,
+            "rating": 3.8,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 115,
+            "name": "Synthetic Azure Lantern Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 3",
+            "tier": "upscale",
+            "price_per_night": "189.00",
+            "total_price": "189.00",
+            "nights": 1,
+            "rating": 4.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 118,
+            "name": "Synthetic Ivory Pebble Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 2",
+            "tier": "upscale",
+            "price_per_night": "189.00",
+            "total_price": "189.00",
+            "nights": 1,
+            "rating": 4.4,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 121,
+            "name": "Synthetic Ivory Lantern Stay",
+            "city": "Lisbon",
+            "district": "Synthetic District 1",
+            "tier": "upscale",
+            "price_per_night": "189.00",
+            "total_price": "189.00",
+            "nights": 1,
+            "rating": 3.5,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          }
+        ],
+        "check_in": "2027-04-10",
+        "check_out": "2027-04-11",
+        "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+        "truncated": false
+      },
+      "source": "synthetic-v1",
+      "fetched_at": "2026-11-11T15:29:42.548619Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "34d457b2-3af5-45d1-a903-1575fff8cc68",
+      "tool": "search_destinations",
+      "status": "ok",
+      "data": {
+        "chunks": [
+          {
+            "chunk_id": "322e24464434a270",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Lisbon's western district is packed with famous monuments, especially along the riverbank. These include the Torre de Bel\u00e9m, the Monument to the Discoveries, and Jer\u00f3nimos Monastery. Museums include the Navy Museum, the Museu Colec\u00e7\u00e3o Berardo, and the National Coach Museum."
+          },
+          {
+            "chunk_id": "b8eb3d68d1dd4bfc",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "The Bairro Alto, or \"Upper District\" (dare we say \"High Neighbourhood\"), has become Lisbon's youthful, trendy quarter. The district includes the Chiado neighbourhood, known for its numerous historic landmarks and theatres. Among the district's many sights are the S\u00e3o Bento Palace (where the Portuguese parliament meets), the Museu Nacional de Arte Antiga (a museum of antique art), and the Lisbon Botanical Gardens."
+          },
+          {
+            "chunk_id": "8bbaf8e37d474a4e",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "This large expanse of Lisbon has a few sights of interest, including Parque Eduardo VII, the Calouste Gulbenkian Museum, and the zoo."
+          },
+          {
+            "chunk_id": "c00f1210e5481690",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Lisbon (Portuguese: Lisboa) is the capital of Portugal situated on seven hills at the wide mouth of the river Tagus (Tejo) where it meets the Atlantic Ocean. With 545,000 residents in the city and 3.0 million in the Lisbon Region (2024) and a thriving mix of Portugal's rich history and vivid contemporary culture, Lisbon enchants travellers with its white bleached limestone buildings, intimate alleyways, and an easy going charm that makes it a popular year round destination.\nGreater Lisbon comprises many other splendid tourist destinations such as the  UNESCO World Heritage Site of Sintra, the "
+          },
+          {
+            "chunk_id": "b08825a80e13911a",
+            "title": "Lisbon",
+            "url": "https://en.wikivoyage.org/wiki/Lisbon",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Individual listings can be found in Lisbon's district articles\nFinding a decent sleeping place in the centre should not be a big problem. There is a tourist service centre in the airport, where a room can be booked for you. Expect to pay at least \u20ac55 for a double room. If you are in Lisbon for sightseeing (especially for your first visit), the best location is along the route of tram #28 (see official map of the route). This especially works if you are with a baby stroller, as it will save from huge part of hill-climbing.\nLisbon sets high standards for budget accommodation, with numerous clean"
+          }
+        ]
+      },
+      "source": "local-rag",
+      "fetched_at": "2026-11-11T15:29:43.930692Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "1dd96368-4ff5-4198-92ae-ccde9f93163d",
+      "tool": "validate_itinerary",
+      "status": "ok",
+      "data": {
+        "valid": false,
+        "total_cost": "49.50",
+        "currency": "USD",
+        "issues": [
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:2"
+            ]
+          },
+          {
+            "name": "overlap",
+            "severity": "error",
+            "message": "Items overlap in time",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:1",
+              "2027-04-11:item:2"
+            ]
+          }
+        ]
+      },
+      "source": "deterministic-validator",
+      "fetched_at": "2026-11-11T15:30:30.588398Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "d23ec646-e49d-40b5-901f-b8a42badd2ff",
+      "tool": "validate_itinerary",
+      "status": "ok",
+      "data": {
+        "valid": false,
+        "total_cost": "49.50",
+        "currency": "USD",
+        "issues": [
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:2"
+            ]
+          },
+          {
+            "name": "overlap",
+            "severity": "error",
+            "message": "Items overlap in time",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:1",
+              "2027-04-11:item:2"
+            ]
+          }
+        ]
+      },
+      "source": "deterministic-validator",
+      "fetched_at": "2026-11-11T15:30:47.504944Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "ced341be-6b07-4d61-841f-3df1b3131306",
+      "tool": "validate_itinerary",
+      "status": "ok",
+      "data": {
+        "valid": false,
+        "total_cost": "49.50",
+        "currency": "USD",
+        "issues": [
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:2"
+            ]
+          },
+          {
+            "name": "overlap",
+            "severity": "error",
+            "message": "Items overlap in time",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:1",
+              "2027-04-11:item:2"
+            ]
+          }
+        ]
+      },
+      "source": "deterministic-validator",
+      "fetched_at": "2026-11-11T15:31:05.791379Z",
+      "cache_hit": false
+    }
+  ],
+  "previous_itinerary": null,
+  "edit_day": null,
+  "latency_ms": 129236.17337504402,
+  "tokens_in": 56906,
+  "tokens_out": 3253,
+  "fingerprint": "c7412ced8c1ed7e7b6e3c672f9a7cbf0b5d42b709a951a04a5dc503e7561292f",
+  "experiment": "split"
+}

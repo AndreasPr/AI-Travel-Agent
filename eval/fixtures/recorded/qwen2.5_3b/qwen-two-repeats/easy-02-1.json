@@ -1,0 +1,92 @@
+{
+  "id": "qwen-two-repeats:easy-02:1",
+  "synthetic": true,
+  "request": "Plan 3 days in Porto for 2 people under 800 USD, with parks and architecture, at a slow pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. Dates: 2027-04-10 through 2027-04-12.",
+  "constraints": {
+    "destination": "Porto",
+    "length": 3,
+    "budget": 800,
+    "currency": "USD",
+    "interests": [
+      "parks",
+      "architecture"
+    ],
+    "pace": "slow",
+    "must_include": [],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 2,
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-12"
+  },
+  "category": "easy",
+  "rubric": [
+    "schema_valid",
+    "budget_respected",
+    "no_overlap",
+    "dates_in_range",
+    "prices_traceable",
+    "citations_present",
+    "citations_supported",
+    "no_forbidden_urls"
+  ],
+  "turns": [],
+  "case_id": "easy-02",
+  "run_id": "qwen-two-repeats",
+  "repeat": 1,
+  "source": "recorded",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "route": {
+    "extract": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    },
+    "plan": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    }
+  },
+  "output": {
+    "trip_id": "a8f7f6cb-942f-4d89-9d34-7dd39d61ad5e",
+    "message": "I could not complete the plan stage: The provider response did not match the required schema.",
+    "itinerary": null,
+    "diff": null,
+    "citations": [],
+    "tool_trace": [],
+    "budget_met": null,
+    "usage": {
+      "tokens_in": 695,
+      "tokens_out": 86,
+      "cached_tokens": 694,
+      "uncached_tokens": 1,
+      "calls": [
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 695,
+          "tokens_out": 86,
+          "cached_tokens": 694
+        }
+      ]
+    },
+    "issues": [
+      {
+        "name": "schema_validation",
+        "severity": "error",
+        "stage": "plan",
+        "message": "The provider response did not match the required schema."
+      }
+    ],
+    "preference_proposal": null
+  },
+  "tool_results": [],
+  "previous_itinerary": null,
+  "edit_day": null,
+  "latency_ms": 3738.251999951899,
+  "tokens_in": 695,
+  "tokens_out": 86,
+  "fingerprint": "cf5428226cb5f4e4ae5b84d9d4bb6a1eea7349a64b9b081aa490559e9fe5dfb1",
+  "experiment": "model-single"
+}

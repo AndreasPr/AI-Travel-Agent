@@ -1,0 +1,37 @@
+name: Manual live evaluation
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        default: '1'
+        required: true
+      repeats:
+        default: '1'
+        required: true
+      run_id:
+        default: 'manual-live'
+        required: true
+permissions:
+  contents: read
+jobs:
+  live:
+    # Operator-provisioned runner: migrated Postgres, local corpus/models and venv.
+    runs-on: self-hosted
+    environment: eval-live
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      EVAL_LIMIT: ${{ inputs.limit }}
+      EVAL_REPEATS: ${{ inputs.repeats }}
+      EVAL_RUN_ID: ${{ inputs.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require explicitly configured free provider key
+        run: test -n "$GEMINI_API_KEY"
+      - name: Record limited live run
+        run: make eval-record
+      - uses: actions/upload-artifact@v4
+        with:
+          name: live-evaluation
+          path: |
+            eval/fixtures/recorded/
+            eval/results/

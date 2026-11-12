@@ -1,0 +1,755 @@
+{
+  "id": "local-first-comparison:easy-02:0",
+  "synthetic": true,
+  "request": "Plan 3 days in Porto for 2 people under 800 USD, with parks and architecture, at a slow pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. Dates: 2027-04-10 through 2027-04-12.",
+  "constraints": {
+    "destination": "Porto",
+    "length": 3,
+    "budget": 800,
+    "currency": "USD",
+    "interests": [
+      "parks",
+      "architecture"
+    ],
+    "pace": "slow",
+    "must_include": [],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 2,
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-12"
+  },
+  "category": "easy",
+  "rubric": [
+    "schema_valid",
+    "budget_respected",
+    "no_overlap",
+    "dates_in_range",
+    "prices_traceable",
+    "citations_present",
+    "citations_supported",
+    "no_forbidden_urls"
+  ],
+  "turns": [],
+  "case_id": "easy-02",
+  "run_id": "local-first-comparison",
+  "repeat": 0,
+  "source": "recorded",
+  "provider": "ollama",
+  "model": "llama3.2:3b",
+  "route": {
+    "extract": {
+      "provider": "ollama",
+      "model": "llama3.2:3b"
+    },
+    "plan": {
+      "provider": "ollama",
+      "model": "llama3.2:3b"
+    }
+  },
+  "output": {
+    "trip_id": "096718ba-e0a9-4cdb-b908-b114e6ced50a",
+    "message": "Here is the itinerary. Some items are unpriced, so the full budget cannot be verified. Inventory quotes are synthetic; they do not establish booking availability.",
+    "itinerary": {
+      "trip": {
+        "start_date": "2027-04-10",
+        "end_date": "2027-04-12",
+        "currency": "USD"
+      },
+      "days": [
+        {
+          "date": "2027-04-10",
+          "items": [
+            {
+              "id": "2027-04-10:item:1",
+              "start": "2027-04-10T10:00:00",
+              "end": "2027-04-10T12:00:00",
+              "place": "Synthetic Ivory Pebble Stay",
+              "category": "Accommodation",
+              "cost": "93.50",
+              "currency": "USD",
+              "chunk_ids": [],
+              "tool_result_ids": [
+                "f1d974f0-f837-4113-b09f-a84a442cf375"
+              ],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            },
+            {
+              "id": "2027-04-10:item:2",
+              "start": "2027-04-10T12:00:00",
+              "end": "2027-04-10T14:00:00",
+              "place": "Jardim da Serra do Pilar",
+              "category": "Park",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [],
+              "tool_result_ids": [
+                "f1d974f0-f837-4113-b09f-a84a442cf375"
+              ],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        },
+        {
+          "date": "2027-04-11",
+          "items": [
+            {
+              "id": "2027-04-11:item:1",
+              "start": "2027-04-11T10:00:00",
+              "end": "2027-04-11T12:00:00",
+              "place": "Ribeira",
+              "category": "Park",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [],
+              "tool_result_ids": [
+                "f1d974f0-f837-4113-b09f-a84a442cf375"
+              ],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            },
+            {
+              "id": "2027-04-11:item:2",
+              "start": "2027-04-11T12:00:00",
+              "end": "2027-04-11T14:00:00",
+              "place": "Luis I Bridge",
+              "category": "Landmark",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [],
+              "tool_result_ids": [
+                "f1d974f0-f837-4113-b09f-a84a442cf375"
+              ],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        },
+        {
+          "date": "2027-04-12",
+          "items": [
+            {
+              "id": "2027-04-12:item:1",
+              "start": "2027-04-12T10:00:00",
+              "end": "2027-04-12T12:00:00",
+              "place": "Miradouro da Vit\u00f3ria",
+              "category": "Park",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [],
+              "tool_result_ids": [
+                "f1d974f0-f837-4113-b09f-a84a442cf375"
+              ],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        }
+      ]
+    },
+    "diff": null,
+    "citations": [],
+    "tool_trace": [
+      {
+        "tool_result_id": "f1d974f0-f837-4113-b09f-a84a442cf375",
+        "tool": "search_hotels",
+        "status": "ok",
+        "data": {
+          "hotels": [
+            {
+              "id": 183,
+              "name": "Synthetic Ivory Pebble Stay",
+              "city": "Porto",
+              "district": "Synthetic District 1",
+              "tier": "budget",
+              "price_per_night": "46.75",
+              "total_price": "93.50",
+              "nights": 2,
+              "rating": 4.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 186,
+              "name": "Synthetic Ivory Lantern Stay",
+              "city": "Porto",
+              "district": "Synthetic District 4",
+              "tier": "budget",
+              "price_per_night": "46.75",
+              "total_price": "93.50",
+              "nights": 2,
+              "rating": 3.9,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 189,
+              "name": "Synthetic Amber Pebble Stay",
+              "city": "Porto",
+              "district": "Synthetic District 3",
+              "tier": "budget",
+              "price_per_night": "46.75",
+              "total_price": "93.50",
+              "nights": 2,
+              "rating": 4.5,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 192,
+              "name": "Synthetic Amber Lantern Stay",
+              "city": "Porto",
+              "district": "Synthetic District 2",
+              "tier": "budget",
+              "price_per_night": "46.75",
+              "total_price": "93.50",
+              "nights": 2,
+              "rating": 3.7,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 184,
+              "name": "Synthetic Azure Lantern Stay",
+              "city": "Porto",
+              "district": "Synthetic District 2",
+              "tier": "mid",
+              "price_per_night": "93.50",
+              "total_price": "187.00",
+              "nights": 2,
+              "rating": 4.7,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 187,
+              "name": "Synthetic Coral Orchard Stay",
+              "city": "Porto",
+              "district": "Synthetic District 1",
+              "tier": "mid",
+              "price_per_night": "93.50",
+              "total_price": "187.00",
+              "nights": 2,
+              "rating": 4.8,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 190,
+              "name": "Synthetic Amber Orchard Stay",
+              "city": "Porto",
+              "district": "Synthetic District 4",
+              "tier": "mid",
+              "price_per_night": "93.50",
+              "total_price": "187.00",
+              "nights": 2,
+              "rating": 4.6,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 185,
+              "name": "Synthetic Azure Pebble Stay",
+              "city": "Porto",
+              "district": "Synthetic District 3",
+              "tier": "upscale",
+              "price_per_night": "178.50",
+              "total_price": "357.00",
+              "nights": 2,
+              "rating": 4.5,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 188,
+              "name": "Synthetic Ivory Orchard Stay",
+              "city": "Porto",
+              "district": "Synthetic District 2",
+              "tier": "upscale",
+              "price_per_night": "178.50",
+              "total_price": "357.00",
+              "nights": 2,
+              "rating": 4.0,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 191,
+              "name": "Synthetic Azure Orchard Stay",
+              "city": "Porto",
+              "district": "Synthetic District 1",
+              "tier": "upscale",
+              "price_per_night": "178.50",
+              "total_price": "357.00",
+              "nights": 2,
+              "rating": 4.0,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            }
+          ],
+          "check_in": "2027-04-10",
+          "check_out": "2027-04-12",
+          "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+          "truncated": false
+        },
+        "source": "synthetic-v1",
+        "fetched_at": "2026-11-11T15:03:37.886852Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "96920923-9fa7-4ae4-85eb-a3d37f448e9f",
+        "tool": "validate_itinerary",
+        "status": "ok",
+        "data": {
+          "valid": true,
+          "total_cost": "93.50",
+          "currency": "USD",
+          "issues": [
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-12:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:1",
+                "2027-04-11:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:2",
+                "2027-04-12:item:1"
+              ]
+            }
+          ]
+        },
+        "source": "deterministic-validator",
+        "fetched_at": "2026-11-11T15:03:56.064897Z",
+        "cache_hit": false
+      }
+    ],
+    "budget_met": null,
+    "usage": {
+      "tokens_in": 6528,
+      "tokens_out": 1049,
+      "cached_tokens": 1701,
+      "uncached_tokens": 4827,
+      "calls": [
+        {
+          "provider": "ollama",
+          "model": "llama3.2:3b",
+          "tokens_in": 697,
+          "tokens_out": 88,
+          "cached_tokens": 15
+        },
+        {
+          "provider": "ollama",
+          "model": "llama3.2:3b",
+          "tokens_in": 1994,
+          "tokens_out": 152,
+          "cached_tokens": 15
+        },
+        {
+          "provider": "ollama",
+          "model": "llama3.2:3b",
+          "tokens_in": 3837,
+          "tokens_out": 809,
+          "cached_tokens": 1671
+        }
+      ]
+    },
+    "issues": [
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-11:item:2"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-12:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:1",
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:2",
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-11:item:1",
+          "2027-04-11:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-11:item:2",
+          "2027-04-12:item:1"
+        ]
+      }
+    ],
+    "preference_proposal": null
+  },
+  "tool_results": [
+    {
+      "tool_result_id": "f1d974f0-f837-4113-b09f-a84a442cf375",
+      "tool": "search_hotels",
+      "status": "ok",
+      "data": {
+        "hotels": [
+          {
+            "id": 183,
+            "name": "Synthetic Ivory Pebble Stay",
+            "city": "Porto",
+            "district": "Synthetic District 1",
+            "tier": "budget",
+            "price_per_night": "46.75",
+            "total_price": "93.50",
+            "nights": 2,
+            "rating": 4.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 186,
+            "name": "Synthetic Ivory Lantern Stay",
+            "city": "Porto",
+            "district": "Synthetic District 4",
+            "tier": "budget",
+            "price_per_night": "46.75",
+            "total_price": "93.50",
+            "nights": 2,
+            "rating": 3.9,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 189,
+            "name": "Synthetic Amber Pebble Stay",
+            "city": "Porto",
+            "district": "Synthetic District 3",
+            "tier": "budget",
+            "price_per_night": "46.75",
+            "total_price": "93.50",
+            "nights": 2,
+            "rating": 4.5,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 192,
+            "name": "Synthetic Amber Lantern Stay",
+            "city": "Porto",
+            "district": "Synthetic District 2",
+            "tier": "budget",
+            "price_per_night": "46.75",
+            "total_price": "93.50",
+            "nights": 2,
+            "rating": 3.7,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 184,
+            "name": "Synthetic Azure Lantern Stay",
+            "city": "Porto",
+            "district": "Synthetic District 2",
+            "tier": "mid",
+            "price_per_night": "93.50",
+            "total_price": "187.00",
+            "nights": 2,
+            "rating": 4.7,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 187,
+            "name": "Synthetic Coral Orchard Stay",
+            "city": "Porto",
+            "district": "Synthetic District 1",
+            "tier": "mid",
+            "price_per_night": "93.50",
+            "total_price": "187.00",
+            "nights": 2,
+            "rating": 4.8,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 190,
+            "name": "Synthetic Amber Orchard Stay",
+            "city": "Porto",
+            "district": "Synthetic District 4",
+            "tier": "mid",
+            "price_per_night": "93.50",
+            "total_price": "187.00",
+            "nights": 2,
+            "rating": 4.6,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 185,
+            "name": "Synthetic Azure Pebble Stay",
+            "city": "Porto",
+            "district": "Synthetic District 3",
+            "tier": "upscale",
+            "price_per_night": "178.50",
+            "total_price": "357.00",
+            "nights": 2,
+            "rating": 4.5,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 188,
+            "name": "Synthetic Ivory Orchard Stay",
+            "city": "Porto",
+            "district": "Synthetic District 2",
+            "tier": "upscale",
+            "price_per_night": "178.50",
+            "total_price": "357.00",
+            "nights": 2,
+            "rating": 4.0,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 191,
+            "name": "Synthetic Azure Orchard Stay",
+            "city": "Porto",
+            "district": "Synthetic District 1",
+            "tier": "upscale",
+            "price_per_night": "178.50",
+            "total_price": "357.00",
+            "nights": 2,
+            "rating": 4.0,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          }
+        ],
+        "check_in": "2027-04-10",
+        "check_out": "2027-04-12",
+        "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+        "truncated": false
+      },
+      "source": "synthetic-v1",
+      "fetched_at": "2026-11-11T15:03:37.886852Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "96920923-9fa7-4ae4-85eb-a3d37f448e9f",
+      "tool": "validate_itinerary",
+      "status": "ok",
+      "data": {
+        "valid": true,
+        "total_cost": "93.50",
+        "currency": "USD",
+        "issues": [
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-12:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:1",
+              "2027-04-11:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:2",
+              "2027-04-12:item:1"
+            ]
+          }
+        ]
+      },
+      "source": "deterministic-validator",
+      "fetched_at": "2026-11-11T15:03:56.064897Z",
+      "cache_hit": false
+    }
+  ],
+  "previous_itinerary": null,
+  "edit_day": null,
+  "latency_ms": 26427.947332849726,
+  "tokens_in": 6528,
+  "tokens_out": 1049,
+  "fingerprint": "b31c4ebcd05d535ee911b39aefa1db69ef03431bf247eadb31f9ce58083fd018",
+  "experiment": "model-single",
+  "judge": {
+    "relevance": {
+      "score": 5,
+      "reason": "The plan aligns with all requested parameters: Porto destination, slow pace, synthetic hotel quote, and scenic parks and architectural landmarks."
+    },
+    "coherence": {
+      "score": 5,
+      "reason": "The daily activities are arranged in a realistic, unhurried order with appropriate spacing and logical transit between nearby locations."
+    },
+    "tone": {
+      "score": 5,
+      "reason": "The accompanying note is polite, clear, and transparent about synthetic quotes and unpriced items."
+    }
+  },
+  "judge_protocol": {
+    "seed": 42,
+    "pairwise": false,
+    "rubric_version": 1
+  }
+}

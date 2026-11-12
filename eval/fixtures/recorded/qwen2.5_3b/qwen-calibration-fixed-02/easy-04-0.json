@@ -1,0 +1,823 @@
+{
+  "id": "qwen-calibration-fixed-02:easy-04:0",
+  "synthetic": true,
+  "request": "Plan 5 days in Barcelona for 1 people under 1200 USD, with parks and architecture, at a slow pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. Dates: 2027-04-10 through 2027-04-14.",
+  "constraints": {
+    "destination": "Barcelona",
+    "length": 5,
+    "budget": 1200,
+    "currency": "USD",
+    "interests": [
+      "parks",
+      "architecture"
+    ],
+    "pace": "slow",
+    "must_include": [],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 1,
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-14"
+  },
+  "category": "easy",
+  "rubric": [
+    "schema_valid",
+    "budget_respected",
+    "no_overlap",
+    "dates_in_range",
+    "prices_traceable",
+    "citations_present",
+    "citations_supported",
+    "no_forbidden_urls"
+  ],
+  "turns": [],
+  "case_id": "easy-04",
+  "run_id": "qwen-calibration-fixed-02",
+  "repeat": 0,
+  "source": "recorded",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "route": {
+    "extract": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    },
+    "plan": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    }
+  },
+  "output": {
+    "trip_id": "d68aebb3-2c28-4f46-bb40-8015fc1cc817",
+    "message": "Here is the itinerary. Some items are unpriced, so the full budget cannot be verified. Inventory quotes are synthetic; they do not establish booking availability.",
+    "itinerary": {
+      "trip": {
+        "start_date": "2027-04-10",
+        "end_date": "2027-04-14",
+        "currency": "USD"
+      },
+      "days": [
+        {
+          "date": "2027-04-10",
+          "items": [
+            {
+              "id": "2027-04-10:item:1",
+              "start": "2027-04-10T08:00:00",
+              "end": "2027-04-10T08:30:00",
+              "place": "Synthetic Azure Pebble Stay",
+              "category": "hotel",
+              "cost": "242.00",
+              "currency": "USD",
+              "chunk_ids": [],
+              "tool_result_ids": [
+                "6e268193-9b1c-4493-a3fb-18b8ddaa0006"
+              ],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            },
+            {
+              "id": "2027-04-10:item:2",
+              "start": "2027-04-10T09:00:00",
+              "end": "2027-04-10T11:00:00",
+              "place": "Paseo de Gracia, Barcelona",
+              "category": "visit",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        },
+        {
+          "date": "2027-04-11",
+          "items": [
+            {
+              "id": "2027-04-11:item:1",
+              "start": "2027-04-11T09:00:00",
+              "end": "2027-04-11T11:00:00",
+              "place": "Park G\u00fcell, Barcelona",
+              "category": "visit",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        },
+        {
+          "date": "2027-04-12",
+          "items": [
+            {
+              "id": "2027-04-12:item:1",
+              "start": "2027-04-12T09:00:00",
+              "end": "2027-04-12T11:00:00",
+              "place": "Barcelona Cathedral, Barcelona",
+              "category": "visit",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        },
+        {
+          "date": "2027-04-13",
+          "items": [
+            {
+              "id": "2027-04-13:item:1",
+              "start": "2027-04-13T09:00:00",
+              "end": "2027-04-13T11:00:00",
+              "place": "Barcelona Museum of Contemporary Art, Barcelona",
+              "category": "visit",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        },
+        {
+          "date": "2027-04-14",
+          "items": [
+            {
+              "id": "2027-04-14:item:1",
+              "start": "2027-04-14T09:00:00",
+              "end": "2027-04-14T11:00:00",
+              "place": "Barcelona Picasso Museum, Barcelona",
+              "category": "visit",
+              "cost": null,
+              "currency": "USD",
+              "chunk_ids": [],
+              "tool_result_ids": [],
+              "coords": null,
+              "coord_tool_result_id": null,
+              "allow_outside_visiting_window": false,
+              "travel_mode": "walking"
+            }
+          ]
+        }
+      ]
+    },
+    "diff": null,
+    "citations": [],
+    "tool_trace": [
+      {
+        "tool_result_id": "6e268193-9b1c-4493-a3fb-18b8ddaa0006",
+        "tool": "search_hotels",
+        "status": "ok",
+        "data": {
+          "hotels": [
+            {
+              "id": 23,
+              "name": "Synthetic Azure Pebble Stay",
+              "city": "Barcelona",
+              "district": "Synthetic District 1",
+              "tier": "budget",
+              "price_per_night": "60.50",
+              "total_price": "242.00",
+              "nights": 4,
+              "rating": 4.9,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 26,
+              "name": "Synthetic Azure Orchard Stay",
+              "city": "Barcelona",
+              "district": "Synthetic District 4",
+              "tier": "budget",
+              "price_per_night": "60.50",
+              "total_price": "242.00",
+              "nights": 4,
+              "rating": 4.4,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 29,
+              "name": "Synthetic Coral Pebble Stay",
+              "city": "Barcelona",
+              "district": "Synthetic District 3",
+              "tier": "budget",
+              "price_per_night": "60.50",
+              "total_price": "242.00",
+              "nights": 4,
+              "rating": 4.1,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 32,
+              "name": "Synthetic Amber Lantern Stay",
+              "city": "Barcelona",
+              "district": "Synthetic District 2",
+              "tier": "budget",
+              "price_per_night": "60.50",
+              "total_price": "242.00",
+              "nights": 4,
+              "rating": 4.0,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 24,
+              "name": "Synthetic Amber Pebble Stay",
+              "city": "Barcelona",
+              "district": "Synthetic District 2",
+              "tier": "mid",
+              "price_per_night": "121.00",
+              "total_price": "484.00",
+              "nights": 4,
+              "rating": 3.4,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 27,
+              "name": "Synthetic Coral Orchard Stay",
+              "city": "Barcelona",
+              "district": "Synthetic District 1",
+              "tier": "mid",
+              "price_per_night": "121.00",
+              "total_price": "484.00",
+              "nights": 4,
+              "rating": 4.8,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 30,
+              "name": "Synthetic Ivory Lantern Stay",
+              "city": "Barcelona",
+              "district": "Synthetic District 4",
+              "tier": "mid",
+              "price_per_night": "121.00",
+              "total_price": "484.00",
+              "nights": 4,
+              "rating": 3.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 25,
+              "name": "Synthetic Ivory Orchard Stay",
+              "city": "Barcelona",
+              "district": "Synthetic District 3",
+              "tier": "upscale",
+              "price_per_night": "231.00",
+              "total_price": "924.00",
+              "nights": 4,
+              "rating": 4.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 28,
+              "name": "Synthetic Ivory Pebble Stay",
+              "city": "Barcelona",
+              "district": "Synthetic District 2",
+              "tier": "upscale",
+              "price_per_night": "231.00",
+              "total_price": "924.00",
+              "nights": 4,
+              "rating": 4.9,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 31,
+              "name": "Synthetic Coral Lantern Stay",
+              "city": "Barcelona",
+              "district": "Synthetic District 1",
+              "tier": "upscale",
+              "price_per_night": "231.00",
+              "total_price": "924.00",
+              "nights": 4,
+              "rating": 4.8,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            }
+          ],
+          "check_in": "2027-04-10",
+          "check_out": "2027-04-14",
+          "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+          "truncated": false
+        },
+        "source": "synthetic-v1",
+        "fetched_at": "2026-11-11T21:10:01.424519Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "359c559b-9d91-441c-b37b-2135afbe3ca6",
+        "tool": "validate_itinerary",
+        "status": "ok",
+        "data": {
+          "valid": true,
+          "total_cost": "242.00",
+          "currency": "USD",
+          "issues": [
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-12:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-13:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-14:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:1",
+                "2027-04-12:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-12:item:1",
+                "2027-04-13:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-13:item:1",
+                "2027-04-14:item:1"
+              ]
+            }
+          ]
+        },
+        "source": "deterministic-validator",
+        "fetched_at": "2026-11-11T21:10:19.664015Z",
+        "cache_hit": false
+      }
+    ],
+    "budget_met": null,
+    "usage": {
+      "tokens_in": 6570,
+      "tokens_out": 1126,
+      "cached_tokens": 3321,
+      "uncached_tokens": 3249,
+      "calls": [
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 696,
+          "tokens_out": 76,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 1904,
+          "tokens_out": 162,
+          "cached_tokens": 1611
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 3970,
+          "tokens_out": 888,
+          "cached_tokens": 1707
+        }
+      ]
+    },
+    "issues": [
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-12:item:1"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-13:item:1"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-14:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:1",
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:2",
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-11:item:1",
+          "2027-04-12:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-12:item:1",
+          "2027-04-13:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-13:item:1",
+          "2027-04-14:item:1"
+        ]
+      }
+    ],
+    "preference_proposal": null
+  },
+  "tool_results": [
+    {
+      "tool_result_id": "6e268193-9b1c-4493-a3fb-18b8ddaa0006",
+      "tool": "search_hotels",
+      "status": "ok",
+      "data": {
+        "hotels": [
+          {
+            "id": 23,
+            "name": "Synthetic Azure Pebble Stay",
+            "city": "Barcelona",
+            "district": "Synthetic District 1",
+            "tier": "budget",
+            "price_per_night": "60.50",
+            "total_price": "242.00",
+            "nights": 4,
+            "rating": 4.9,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 26,
+            "name": "Synthetic Azure Orchard Stay",
+            "city": "Barcelona",
+            "district": "Synthetic District 4",
+            "tier": "budget",
+            "price_per_night": "60.50",
+            "total_price": "242.00",
+            "nights": 4,
+            "rating": 4.4,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 29,
+            "name": "Synthetic Coral Pebble Stay",
+            "city": "Barcelona",
+            "district": "Synthetic District 3",
+            "tier": "budget",
+            "price_per_night": "60.50",
+            "total_price": "242.00",
+            "nights": 4,
+            "rating": 4.1,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 32,
+            "name": "Synthetic Amber Lantern Stay",
+            "city": "Barcelona",
+            "district": "Synthetic District 2",
+            "tier": "budget",
+            "price_per_night": "60.50",
+            "total_price": "242.00",
+            "nights": 4,
+            "rating": 4.0,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 24,
+            "name": "Synthetic Amber Pebble Stay",
+            "city": "Barcelona",
+            "district": "Synthetic District 2",
+            "tier": "mid",
+            "price_per_night": "121.00",
+            "total_price": "484.00",
+            "nights": 4,
+            "rating": 3.4,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 27,
+            "name": "Synthetic Coral Orchard Stay",
+            "city": "Barcelona",
+            "district": "Synthetic District 1",
+            "tier": "mid",
+            "price_per_night": "121.00",
+            "total_price": "484.00",
+            "nights": 4,
+            "rating": 4.8,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 30,
+            "name": "Synthetic Ivory Lantern Stay",
+            "city": "Barcelona",
+            "district": "Synthetic District 4",
+            "tier": "mid",
+            "price_per_night": "121.00",
+            "total_price": "484.00",
+            "nights": 4,
+            "rating": 3.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 25,
+            "name": "Synthetic Ivory Orchard Stay",
+            "city": "Barcelona",
+            "district": "Synthetic District 3",
+            "tier": "upscale",
+            "price_per_night": "231.00",
+            "total_price": "924.00",
+            "nights": 4,
+            "rating": 4.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 28,
+            "name": "Synthetic Ivory Pebble Stay",
+            "city": "Barcelona",
+            "district": "Synthetic District 2",
+            "tier": "upscale",
+            "price_per_night": "231.00",
+            "total_price": "924.00",
+            "nights": 4,
+            "rating": 4.9,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 31,
+            "name": "Synthetic Coral Lantern Stay",
+            "city": "Barcelona",
+            "district": "Synthetic District 1",
+            "tier": "upscale",
+            "price_per_night": "231.00",
+            "total_price": "924.00",
+            "nights": 4,
+            "rating": 4.8,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          }
+        ],
+        "check_in": "2027-04-10",
+        "check_out": "2027-04-14",
+        "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+        "truncated": false
+      },
+      "source": "synthetic-v1",
+      "fetched_at": "2026-11-11T21:10:01.424519Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "359c559b-9d91-441c-b37b-2135afbe3ca6",
+      "tool": "validate_itinerary",
+      "status": "ok",
+      "data": {
+        "valid": true,
+        "total_cost": "242.00",
+        "currency": "USD",
+        "issues": [
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-12:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-13:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-14:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:1",
+              "2027-04-12:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-12:item:1",
+              "2027-04-13:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-13:item:1",
+              "2027-04-14:item:1"
+            ]
+          }
+        ]
+      },
+      "source": "deterministic-validator",
+      "fetched_at": "2026-11-11T21:10:19.664015Z",
+      "cache_hit": false
+    }
+  ],
+  "previous_itinerary": null,
+  "edit_day": null,
+  "latency_ms": 23409.381124889478,
+  "tokens_in": 6570,
+  "tokens_out": 1126,
+  "fingerprint": "449be3537b67dc450087d6ba996badd577a210e8c211f44aee6181476fc8974d",
+  "experiment": "model-single",
+  "judge": {
+    "relevance": {
+      "score": 2,
+      "reason": "Fails the destination constraint entirely by planning the trip in Barcelona instead of the requested location."
+    },
+    "coherence": {
+      "score": 4,
+      "reason": "The itinerary sequence day-by-day is internally readable and chronological."
+    },
+    "tone": {
+      "score": 5,
+      "reason": "Clear and professional messaging regarding unpriced items and synthetic quotes."
+    }
+  },
+  "judge_protocol": {
+    "seed": 58,
+    "pairwise": false,
+    "rubric_version": 1
+  }
+}

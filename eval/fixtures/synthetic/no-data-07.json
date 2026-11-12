@@ -1,0 +1,183 @@
+{
+  "output": {
+    "itinerary": {
+      "trip": {
+        "start_date": "2027-04-10",
+        "end_date": "2027-04-10",
+        "currency": "USD"
+      },
+      "days": [
+        {
+          "date": "2027-04-10",
+          "items": [
+            {
+              "id": "a",
+              "start": "2027-04-10T10:00:00",
+              "end": "2027-04-10T11:00:00",
+              "place": "Synthetic Museum",
+              "category": "museum",
+              "cost": "10",
+              "currency": "USD",
+              "chunk_ids": [
+                "c"
+              ],
+              "tool_result_ids": [
+                "q"
+              ],
+              "coords": {
+                "lat": 0,
+                "lon": 0
+              },
+              "coord_tool_result_id": "g"
+            },
+            {
+              "id": "b",
+              "start": "2027-04-10T12:00:00",
+              "end": "2027-04-10T13:00:00",
+              "place": "Synthetic Museum",
+              "category": "museum",
+              "cost": "10",
+              "currency": "USD",
+              "chunk_ids": [
+                "c"
+              ],
+              "tool_result_ids": [
+                "q"
+              ],
+              "coords": {
+                "lat": 0,
+                "lon": 0
+              },
+              "coord_tool_result_id": "g"
+            }
+          ]
+        }
+      ]
+    },
+    "budget_met": true,
+    "message": "Cannot find matching flights.",
+    "citations": [
+      {
+        "chunk_id": "c",
+        "title": "Synthetic guide",
+        "excerpt": "Synthetic Museum displays paintings."
+      }
+    ]
+  },
+  "constraints": {
+    "destination": "Synthetic Outside Inventory Town",
+    "length": 4,
+    "budget": 1800,
+    "currency": "USD",
+    "interests": [
+      "museums",
+      "food"
+    ],
+    "pace": "moderate",
+    "must_include": [],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 1,
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-13"
+  },
+  "category": "no-data",
+  "previous_itinerary": {
+    "trip": {
+      "start_date": "2027-04-10",
+      "end_date": "2027-04-10",
+      "currency": "USD"
+    },
+    "days": [
+      {
+        "date": "2027-04-10",
+        "items": [
+          {
+            "id": "a",
+            "start": "2027-04-10T10:00:00",
+            "end": "2027-04-10T11:00:00",
+            "place": "Synthetic Museum",
+            "category": "museum",
+            "cost": "10",
+            "currency": "USD",
+            "chunk_ids": [
+              "c"
+            ],
+            "tool_result_ids": [
+              "q"
+            ],
+            "coords": {
+              "lat": 0,
+              "lon": 0
+            },
+            "coord_tool_result_id": "g"
+          },
+          {
+            "id": "b",
+            "start": "2027-04-10T12:00:00",
+            "end": "2027-04-10T13:00:00",
+            "place": "Synthetic Museum",
+            "category": "museum",
+            "cost": "10",
+            "currency": "USD",
+            "chunk_ids": [
+              "c"
+            ],
+            "tool_result_ids": [
+              "q"
+            ],
+            "coords": {
+              "lat": 0,
+              "lon": 0
+            },
+            "coord_tool_result_id": "g"
+          }
+        ]
+      }
+    ]
+  },
+  "edit_day": 1,
+  "tool_results": [
+    {
+      "tool_result_id": "q",
+      "tool": "search_hotels",
+      "status": "ok",
+      "data": {
+        "hotels": [
+          {
+            "price_per_night": 10,
+            "total_price": 10,
+            "currency": "USD"
+          }
+        ]
+      }
+    },
+    {
+      "tool_result_id": "g",
+      "tool": "geocode_place",
+      "status": "ok",
+      "data": {
+        "lat": 0,
+        "lon": 0
+      }
+    }
+  ],
+  "id": "synthetic:no-data-07",
+  "synthetic": true,
+  "request": "Plan 4 days in Synthetic Outside Inventory Town for 1 people under 1800 USD, with museums and food, at a moderate pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. Dates: 2027-04-10 through 2027-04-13.",
+  "rubric": [
+    "says_cannot_find",
+    "no_forbidden_urls"
+  ],
+  "turns": [],
+  "case_id": "no-data-07",
+  "source": "synthetic",
+  "provider": "synthetic",
+  "model": "synthetic: tests the harness, not a model",
+  "label": "synthetic: tests the harness, not a model",
+  "repeat": 0,
+  "tokens_in": null,
+  "tokens_out": null,
+  "latency_ms": null
+}

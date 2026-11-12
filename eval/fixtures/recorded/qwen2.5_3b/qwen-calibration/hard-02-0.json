@@ -1,0 +1,962 @@
+{
+  "id": "qwen-calibration:hard-02:0",
+  "synthetic": true,
+  "request": "Plan 3 days in Porto for 2 people under 800 USD, with parks and architecture, at a fast pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. Dates: 2027-04-10 through 2027-04-12. Include a park; use a fast pace and verify travel times between visits.",
+  "constraints": {
+    "destination": "Porto",
+    "length": 3,
+    "budget": 800,
+    "currency": "USD",
+    "interests": [
+      "parks",
+      "architecture"
+    ],
+    "pace": "fast",
+    "must_include": [
+      "a park"
+    ],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 2,
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-12"
+  },
+  "category": "hard",
+  "rubric": [
+    "schema_valid",
+    "budget_respected",
+    "no_overlap",
+    "dates_in_range",
+    "prices_traceable",
+    "citations_present",
+    "citations_supported",
+    "no_forbidden_urls",
+    "travel_times_plausible"
+  ],
+  "turns": [],
+  "case_id": "hard-02",
+  "run_id": "qwen-calibration",
+  "repeat": 0,
+  "source": "recorded",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "route": {
+    "extract": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    },
+    "plan": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    }
+  },
+  "output": {
+    "trip_id": "b408ec32-02df-4e3e-a475-f8d038977981",
+    "message": "I could not produce a valid itinerary after two repairs. See issues. Inventory quotes are synthetic; they do not establish booking availability.",
+    "itinerary": null,
+    "diff": null,
+    "citations": [],
+    "tool_trace": [
+      {
+        "tool": "search_hotels",
+        "status": "error",
+        "data": {
+          "error": {
+            "code": "untrusted_arguments",
+            "message": "Arguments must come from the user request or earlier structured tool results"
+          }
+        }
+      },
+      {
+        "tool": "search_hotels",
+        "status": "error",
+        "data": {
+          "error": {
+            "code": "untrusted_arguments",
+            "message": "Arguments must come from the user request or earlier structured tool results"
+          }
+        }
+      },
+      {
+        "tool_result_id": "78eec0bf-97ff-4e1d-b2ee-eb40067af6bb",
+        "tool": "search_hotels",
+        "status": "ok",
+        "data": {
+          "hotels": [
+            {
+              "id": 183,
+              "name": "Synthetic Ivory Pebble Stay",
+              "city": "Porto",
+              "district": "Synthetic District 1",
+              "tier": "budget",
+              "price_per_night": "46.75",
+              "total_price": "93.50",
+              "nights": 2,
+              "rating": 4.2,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 186,
+              "name": "Synthetic Ivory Lantern Stay",
+              "city": "Porto",
+              "district": "Synthetic District 4",
+              "tier": "budget",
+              "price_per_night": "46.75",
+              "total_price": "93.50",
+              "nights": 2,
+              "rating": 3.9,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 189,
+              "name": "Synthetic Amber Pebble Stay",
+              "city": "Porto",
+              "district": "Synthetic District 3",
+              "tier": "budget",
+              "price_per_night": "46.75",
+              "total_price": "93.50",
+              "nights": 2,
+              "rating": 4.5,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 192,
+              "name": "Synthetic Amber Lantern Stay",
+              "city": "Porto",
+              "district": "Synthetic District 2",
+              "tier": "budget",
+              "price_per_night": "46.75",
+              "total_price": "93.50",
+              "nights": 2,
+              "rating": 3.7,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 184,
+              "name": "Synthetic Azure Lantern Stay",
+              "city": "Porto",
+              "district": "Synthetic District 2",
+              "tier": "mid",
+              "price_per_night": "93.50",
+              "total_price": "187.00",
+              "nights": 2,
+              "rating": 4.7,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 187,
+              "name": "Synthetic Coral Orchard Stay",
+              "city": "Porto",
+              "district": "Synthetic District 1",
+              "tier": "mid",
+              "price_per_night": "93.50",
+              "total_price": "187.00",
+              "nights": 2,
+              "rating": 4.8,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 190,
+              "name": "Synthetic Amber Orchard Stay",
+              "city": "Porto",
+              "district": "Synthetic District 4",
+              "tier": "mid",
+              "price_per_night": "93.50",
+              "total_price": "187.00",
+              "nights": 2,
+              "rating": 4.6,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 185,
+              "name": "Synthetic Azure Pebble Stay",
+              "city": "Porto",
+              "district": "Synthetic District 3",
+              "tier": "upscale",
+              "price_per_night": "178.50",
+              "total_price": "357.00",
+              "nights": 2,
+              "rating": 4.5,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 188,
+              "name": "Synthetic Ivory Orchard Stay",
+              "city": "Porto",
+              "district": "Synthetic District 2",
+              "tier": "upscale",
+              "price_per_night": "178.50",
+              "total_price": "357.00",
+              "nights": 2,
+              "rating": 4.0,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 191,
+              "name": "Synthetic Azure Orchard Stay",
+              "city": "Porto",
+              "district": "Synthetic District 1",
+              "tier": "upscale",
+              "price_per_night": "178.50",
+              "total_price": "357.00",
+              "nights": 2,
+              "rating": 4.0,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            }
+          ],
+          "check_in": "2027-04-10",
+          "check_out": "2027-04-12",
+          "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+          "truncated": false
+        },
+        "source": "synthetic-v1",
+        "fetched_at": "2026-11-11T16:17:33.809727Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "c752bf0e-2ae0-4821-a468-f0a3c660f0d1",
+        "tool": "validate_itinerary",
+        "status": "ok",
+        "data": {
+          "valid": false,
+          "total_cost": "93.50",
+          "currency": "USD",
+          "issues": [
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-12:item:1"
+              ]
+            },
+            {
+              "name": "overlap",
+              "severity": "error",
+              "message": "Items overlap in time",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-10:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-10:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:1",
+                "2027-04-12:item:1"
+              ]
+            }
+          ]
+        },
+        "source": "deterministic-validator",
+        "fetched_at": "2026-11-11T16:17:47.172156Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "28ba3983-8bab-40dc-9e91-a542f6a525c3",
+        "tool": "validate_itinerary",
+        "status": "ok",
+        "data": {
+          "valid": false,
+          "total_cost": "93.50",
+          "currency": "USD",
+          "issues": [
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-12:item:1"
+              ]
+            },
+            {
+              "name": "overlap",
+              "severity": "error",
+              "message": "Items overlap in time",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-10:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-10:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:1",
+                "2027-04-12:item:1"
+              ]
+            }
+          ]
+        },
+        "source": "deterministic-validator",
+        "fetched_at": "2026-11-11T16:18:02.232281Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "4ad1aefe-48ef-4cf4-a9af-8e0ad51fc63a",
+        "tool": "validate_itinerary",
+        "status": "ok",
+        "data": {
+          "valid": false,
+          "total_cost": "93.50",
+          "currency": "USD",
+          "issues": [
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-10:item:2"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "unpriced_item",
+              "severity": "warning",
+              "message": "Item has no cost; total excludes it",
+              "item_ids": [
+                "2027-04-12:item:1"
+              ]
+            },
+            {
+              "name": "overlap",
+              "severity": "error",
+              "message": "Items overlap in time",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-10:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:2",
+                "2027-04-10:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-10:item:1",
+                "2027-04-11:item:1"
+              ]
+            },
+            {
+              "name": "travel_check_skipped_without_coords",
+              "severity": "warning",
+              "message": "Travel-time check skipped: verified coordinates missing",
+              "item_ids": [
+                "2027-04-11:item:1",
+                "2027-04-12:item:1"
+              ]
+            }
+          ]
+        },
+        "source": "deterministic-validator",
+        "fetched_at": "2026-11-11T16:18:15.928154Z",
+        "cache_hit": false
+      }
+    ],
+    "budget_met": null,
+    "usage": {
+      "tokens_in": 25840,
+      "tokens_out": 2281,
+      "cached_tokens": 15455,
+      "uncached_tokens": 10385,
+      "calls": [
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 710,
+          "tokens_out": 58,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2051,
+          "tokens_out": 150,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2194,
+          "tokens_out": 91,
+          "cached_tokens": 1720
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2337,
+          "tokens_out": 11,
+          "cached_tokens": 1863
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2378,
+          "tokens_out": 78,
+          "cached_tokens": 2007
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 4302,
+          "tokens_out": 593,
+          "cached_tokens": 2047
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 5390,
+          "tokens_out": 696,
+          "cached_tokens": 3362
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 6478,
+          "tokens_out": 604,
+          "cached_tokens": 4450
+        }
+      ]
+    },
+    "issues": [
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-10:item:2"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "unpriced_item",
+        "severity": "warning",
+        "message": "Item has no cost; total excludes it",
+        "item_ids": [
+          "2027-04-12:item:1"
+        ]
+      },
+      {
+        "name": "overlap",
+        "severity": "error",
+        "message": "Items overlap in time",
+        "item_ids": [
+          "2027-04-10:item:2",
+          "2027-04-10:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:2",
+          "2027-04-10:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-10:item:1",
+          "2027-04-11:item:1"
+        ]
+      },
+      {
+        "name": "travel_check_skipped_without_coords",
+        "severity": "warning",
+        "message": "Travel-time check skipped: verified coordinates missing",
+        "item_ids": [
+          "2027-04-11:item:1",
+          "2027-04-12:item:1"
+        ]
+      }
+    ],
+    "preference_proposal": null
+  },
+  "tool_results": [
+    {
+      "tool_result_id": "78eec0bf-97ff-4e1d-b2ee-eb40067af6bb",
+      "tool": "search_hotels",
+      "status": "ok",
+      "data": {
+        "hotels": [
+          {
+            "id": 183,
+            "name": "Synthetic Ivory Pebble Stay",
+            "city": "Porto",
+            "district": "Synthetic District 1",
+            "tier": "budget",
+            "price_per_night": "46.75",
+            "total_price": "93.50",
+            "nights": 2,
+            "rating": 4.2,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 186,
+            "name": "Synthetic Ivory Lantern Stay",
+            "city": "Porto",
+            "district": "Synthetic District 4",
+            "tier": "budget",
+            "price_per_night": "46.75",
+            "total_price": "93.50",
+            "nights": 2,
+            "rating": 3.9,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 189,
+            "name": "Synthetic Amber Pebble Stay",
+            "city": "Porto",
+            "district": "Synthetic District 3",
+            "tier": "budget",
+            "price_per_night": "46.75",
+            "total_price": "93.50",
+            "nights": 2,
+            "rating": 4.5,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 192,
+            "name": "Synthetic Amber Lantern Stay",
+            "city": "Porto",
+            "district": "Synthetic District 2",
+            "tier": "budget",
+            "price_per_night": "46.75",
+            "total_price": "93.50",
+            "nights": 2,
+            "rating": 3.7,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 184,
+            "name": "Synthetic Azure Lantern Stay",
+            "city": "Porto",
+            "district": "Synthetic District 2",
+            "tier": "mid",
+            "price_per_night": "93.50",
+            "total_price": "187.00",
+            "nights": 2,
+            "rating": 4.7,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 187,
+            "name": "Synthetic Coral Orchard Stay",
+            "city": "Porto",
+            "district": "Synthetic District 1",
+            "tier": "mid",
+            "price_per_night": "93.50",
+            "total_price": "187.00",
+            "nights": 2,
+            "rating": 4.8,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 190,
+            "name": "Synthetic Amber Orchard Stay",
+            "city": "Porto",
+            "district": "Synthetic District 4",
+            "tier": "mid",
+            "price_per_night": "93.50",
+            "total_price": "187.00",
+            "nights": 2,
+            "rating": 4.6,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 185,
+            "name": "Synthetic Azure Pebble Stay",
+            "city": "Porto",
+            "district": "Synthetic District 3",
+            "tier": "upscale",
+            "price_per_night": "178.50",
+            "total_price": "357.00",
+            "nights": 2,
+            "rating": 4.5,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 188,
+            "name": "Synthetic Ivory Orchard Stay",
+            "city": "Porto",
+            "district": "Synthetic District 2",
+            "tier": "upscale",
+            "price_per_night": "178.50",
+            "total_price": "357.00",
+            "nights": 2,
+            "rating": 4.0,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 191,
+            "name": "Synthetic Azure Orchard Stay",
+            "city": "Porto",
+            "district": "Synthetic District 1",
+            "tier": "upscale",
+            "price_per_night": "178.50",
+            "total_price": "357.00",
+            "nights": 2,
+            "rating": 4.0,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          }
+        ],
+        "check_in": "2027-04-10",
+        "check_out": "2027-04-12",
+        "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+        "truncated": false
+      },
+      "source": "synthetic-v1",
+      "fetched_at": "2026-11-11T16:17:33.809727Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "c752bf0e-2ae0-4821-a468-f0a3c660f0d1",
+      "tool": "validate_itinerary",
+      "status": "ok",
+      "data": {
+        "valid": false,
+        "total_cost": "93.50",
+        "currency": "USD",
+        "issues": [
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-12:item:1"
+            ]
+          },
+          {
+            "name": "overlap",
+            "severity": "error",
+            "message": "Items overlap in time",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-10:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-10:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:1",
+              "2027-04-12:item:1"
+            ]
+          }
+        ]
+      },
+      "source": "deterministic-validator",
+      "fetched_at": "2026-11-11T16:17:47.172156Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "28ba3983-8bab-40dc-9e91-a542f6a525c3",
+      "tool": "validate_itinerary",
+      "status": "ok",
+      "data": {
+        "valid": false,
+        "total_cost": "93.50",
+        "currency": "USD",
+        "issues": [
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-12:item:1"
+            ]
+          },
+          {
+            "name": "overlap",
+            "severity": "error",
+            "message": "Items overlap in time",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-10:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-10:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:1",
+              "2027-04-12:item:1"
+            ]
+          }
+        ]
+      },
+      "source": "deterministic-validator",
+      "fetched_at": "2026-11-11T16:18:02.232281Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "4ad1aefe-48ef-4cf4-a9af-8e0ad51fc63a",
+      "tool": "validate_itinerary",
+      "status": "ok",
+      "data": {
+        "valid": false,
+        "total_cost": "93.50",
+        "currency": "USD",
+        "issues": [
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-10:item:2"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "unpriced_item",
+            "severity": "warning",
+            "message": "Item has no cost; total excludes it",
+            "item_ids": [
+              "2027-04-12:item:1"
+            ]
+          },
+          {
+            "name": "overlap",
+            "severity": "error",
+            "message": "Items overlap in time",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-10:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:2",
+              "2027-04-10:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-10:item:1",
+              "2027-04-11:item:1"
+            ]
+          },
+          {
+            "name": "travel_check_skipped_without_coords",
+            "severity": "warning",
+            "message": "Travel-time check skipped: verified coordinates missing",
+            "item_ids": [
+              "2027-04-11:item:1",
+              "2027-04-12:item:1"
+            ]
+          }
+        ]
+      },
+      "source": "deterministic-validator",
+      "fetched_at": "2026-11-11T16:18:15.928154Z",
+      "cache_hit": false
+    }
+  ],
+  "previous_itinerary": null,
+  "edit_day": null,
+  "latency_ms": 54311.494749970734,
+  "tokens_in": 25840,
+  "tokens_out": 2281,
+  "fingerprint": "a8a4223de12b4cde517876a7b0e155f5f1958d083dc9d49623aef299e2eae0e9",
+  "experiment": "model-single"
+}

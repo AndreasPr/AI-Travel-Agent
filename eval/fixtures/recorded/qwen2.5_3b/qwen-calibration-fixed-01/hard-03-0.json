@@ -1,0 +1,528 @@
+{
+  "id": "qwen-calibration-fixed-01:hard-03:0",
+  "synthetic": true,
+  "request": "Plan 4 days in Madrid for 3 people under 1000 USD, with museums and food, at a fast pace. Avoid nightclubs. Use synthetic hotel quotes and leave unknown costs unpriced. Dates: 2027-04-10 through 2027-04-13. Include a park; use a fast pace and verify travel times between visits.",
+  "constraints": {
+    "destination": "Madrid",
+    "length": 4,
+    "budget": 1000,
+    "currency": "USD",
+    "interests": [
+      "museums",
+      "food"
+    ],
+    "pace": "fast",
+    "must_include": [
+      "a park"
+    ],
+    "must_avoid": [
+      "nightclubs"
+    ],
+    "party_size": 3,
+    "start_date": "2027-04-10",
+    "end_date": "2027-04-13"
+  },
+  "category": "hard",
+  "rubric": [
+    "schema_valid",
+    "budget_respected",
+    "no_overlap",
+    "dates_in_range",
+    "prices_traceable",
+    "citations_present",
+    "citations_supported",
+    "no_forbidden_urls",
+    "travel_times_plausible"
+  ],
+  "turns": [],
+  "case_id": "hard-03",
+  "run_id": "qwen-calibration-fixed-01",
+  "repeat": 0,
+  "source": "recorded",
+  "provider": "ollama",
+  "model": "qwen2.5:3b",
+  "route": {
+    "extract": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    },
+    "plan": {
+      "provider": "ollama",
+      "model": "qwen2.5:3b"
+    }
+  },
+  "output": {
+    "trip_id": "487569ed-8871-4434-9c2b-f494475f2b34",
+    "message": "I could not produce a valid itinerary after two repairs. See issues. Inventory quotes are synthetic; they do not establish booking availability.",
+    "itinerary": null,
+    "diff": null,
+    "citations": [],
+    "tool_trace": [
+      {
+        "tool_result_id": "337b04f8-2826-4698-8870-3701522513c5",
+        "tool": "search_hotels",
+        "status": "ok",
+        "data": {
+          "hotels": [
+            {
+              "id": 133,
+              "name": "Synthetic Amber Pebble Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 1",
+              "tier": "budget",
+              "price_per_night": "55.00",
+              "total_price": "165.00",
+              "nights": 3,
+              "rating": 4.1,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 136,
+              "name": "Synthetic Ivory Lantern Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 4",
+              "tier": "budget",
+              "price_per_night": "55.00",
+              "total_price": "165.00",
+              "nights": 3,
+              "rating": 4.5,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 139,
+              "name": "Synthetic Azure Pebble Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 3",
+              "tier": "budget",
+              "price_per_night": "55.00",
+              "total_price": "165.00",
+              "nights": 3,
+              "rating": 4.0,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 142,
+              "name": "Synthetic Ivory Orchard Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 2",
+              "tier": "budget",
+              "price_per_night": "55.00",
+              "total_price": "165.00",
+              "nights": 3,
+              "rating": 3.9,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 134,
+              "name": "Synthetic Coral Pebble Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 2",
+              "tier": "mid",
+              "price_per_night": "110.00",
+              "total_price": "330.00",
+              "nights": 3,
+              "rating": 4.4,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 137,
+              "name": "Synthetic Azure Lantern Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 1",
+              "tier": "mid",
+              "price_per_night": "110.00",
+              "total_price": "330.00",
+              "nights": 3,
+              "rating": 4.1,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 140,
+              "name": "Synthetic Coral Orchard Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 4",
+              "tier": "mid",
+              "price_per_night": "110.00",
+              "total_price": "330.00",
+              "nights": 3,
+              "rating": 3.0,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 135,
+              "name": "Synthetic Azure Orchard Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 3",
+              "tier": "upscale",
+              "price_per_night": "210.00",
+              "total_price": "630.00",
+              "nights": 3,
+              "rating": 4.1,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 138,
+              "name": "Synthetic Amber Orchard Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 2",
+              "tier": "upscale",
+              "price_per_night": "210.00",
+              "total_price": "630.00",
+              "nights": 3,
+              "rating": 3.7,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            },
+            {
+              "id": 141,
+              "name": "Synthetic Amber Lantern Stay",
+              "city": "Madrid",
+              "district": "Synthetic District 1",
+              "tier": "upscale",
+              "price_per_night": "210.00",
+              "total_price": "630.00",
+              "nights": 3,
+              "rating": 4.4,
+              "currency": "USD",
+              "source": "synthetic-v1"
+            }
+          ],
+          "check_in": "2027-04-10",
+          "check_out": "2027-04-13",
+          "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+          "truncated": false
+        },
+        "source": "synthetic-v1",
+        "fetched_at": "2026-11-11T20:57:08.332431Z",
+        "cache_hit": false
+      },
+      {
+        "tool_result_id": "129f8061-fdf4-4ceb-a17c-01a80a39687b",
+        "tool": "search_destinations",
+        "status": "ok",
+        "data": {
+          "chunks": [
+            {
+              "chunk_id": "388272c418c5761e",
+              "title": "Madrid",
+              "url": "https://en.wikivoyage.org/wiki/Madrid",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "As of Sept 2021, Madrid has 5G from all Spanish carriers.\nLocutorios (call shops) are widely spread in Madrid near touristy locations and are very cheap to use. Some shops and kiosks have tourist SIM cards from carriers like Orange and Vodafone with plans that run \u20ac10\u201320 for a month of 50\u2013100 gigabytes of data or more. Employees are willing to install the card and configure the plan."
+            },
+            {
+              "chunk_id": "cfad6968248ff5f2",
+              "title": "Madrid",
+              "url": "https://en.wikivoyage.org/wiki/Madrid",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Tourism website of the city of Madrid."
+            },
+            {
+              "chunk_id": "7ef166f6e83d1f04",
+              "title": "Madrid",
+              "url": "https://en.wikivoyage.org/wiki/Madrid",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "Madrid is Spain's capital and largest city. A city that has been marked by Spain's varied and tumultuous history, Madrid has some of Europe's most impressive cultural and architectural heritage, which includes grand avenues, plazas, buildings and monuments, world-class art galleries and museums, highly popular football teams, and cultural events of international fame for everyone. Madrid is also renowned for gastronomic delights and a nightlife lasting up until dawn.\nMadrid is more often than not disregarded by tourists who gravitate to other parts of the country. But though it may appear to l"
+            },
+            {
+              "chunk_id": "e94a1fd75936544c",
+              "title": "Madrid",
+              "url": "https://en.wikivoyage.org/wiki/Madrid",
+              "license": "CC BY-SA 4.0",
+              "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+              "excerpt": "A stay in a plush hotel will set you back at least \u20ac90 per night and there is no upper limit. Most of them are found in the posh Salamanca district, along the Gran V\u00eda, in the historic centre and in the Retiro and Paseo del Arte area. Among the most famous names in the business are the Hotel Villa Magna, the Gran Meli\u00e1 Palacio de Los Duques and the Madrid Ritz."
+            }
+          ]
+        },
+        "source": "local-rag",
+        "fetched_at": "2026-11-11T20:57:10.590879Z",
+        "cache_hit": false
+      }
+    ],
+    "budget_met": null,
+    "usage": {
+      "tokens_in": 22026,
+      "tokens_out": 4267,
+      "cached_tokens": 12366,
+      "uncached_tokens": 9660,
+      "calls": [
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 711,
+          "tokens_out": 71,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 2147,
+          "tokens_out": 379,
+          "cached_tokens": 1611
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 1010,
+          "tokens_out": 119,
+          "cached_tokens": 3
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 4882,
+          "tokens_out": 1174,
+          "cached_tokens": 1721
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 6026,
+          "tokens_out": 1262,
+          "cached_tokens": 3942
+        },
+        {
+          "provider": "ollama",
+          "model": "qwen2.5:3b",
+          "tokens_in": 7250,
+          "tokens_out": 1262,
+          "cached_tokens": 5086
+        }
+      ]
+    },
+    "issues": [
+      {
+        "name": "schema_valid",
+        "severity": "error",
+        "stage": "itinerary",
+        "message": "The response did not match the required schema.",
+        "reason": "schema_validation",
+        "validation_error_types": [
+          "value_error"
+        ],
+        "details": [
+          {
+            "path": [
+              "days",
+              0,
+              "items",
+              0
+            ],
+            "type": "value_error",
+            "message": "Item end must follow start"
+          }
+        ]
+      }
+    ],
+    "preference_proposal": null
+  },
+  "tool_results": [
+    {
+      "tool_result_id": "337b04f8-2826-4698-8870-3701522513c5",
+      "tool": "search_hotels",
+      "status": "ok",
+      "data": {
+        "hotels": [
+          {
+            "id": 133,
+            "name": "Synthetic Amber Pebble Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 1",
+            "tier": "budget",
+            "price_per_night": "55.00",
+            "total_price": "165.00",
+            "nights": 3,
+            "rating": 4.1,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 136,
+            "name": "Synthetic Ivory Lantern Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 4",
+            "tier": "budget",
+            "price_per_night": "55.00",
+            "total_price": "165.00",
+            "nights": 3,
+            "rating": 4.5,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 139,
+            "name": "Synthetic Azure Pebble Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 3",
+            "tier": "budget",
+            "price_per_night": "55.00",
+            "total_price": "165.00",
+            "nights": 3,
+            "rating": 4.0,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 142,
+            "name": "Synthetic Ivory Orchard Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 2",
+            "tier": "budget",
+            "price_per_night": "55.00",
+            "total_price": "165.00",
+            "nights": 3,
+            "rating": 3.9,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 134,
+            "name": "Synthetic Coral Pebble Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 2",
+            "tier": "mid",
+            "price_per_night": "110.00",
+            "total_price": "330.00",
+            "nights": 3,
+            "rating": 4.4,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 137,
+            "name": "Synthetic Azure Lantern Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 1",
+            "tier": "mid",
+            "price_per_night": "110.00",
+            "total_price": "330.00",
+            "nights": 3,
+            "rating": 4.1,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 140,
+            "name": "Synthetic Coral Orchard Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 4",
+            "tier": "mid",
+            "price_per_night": "110.00",
+            "total_price": "330.00",
+            "nights": 3,
+            "rating": 3.0,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 135,
+            "name": "Synthetic Azure Orchard Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 3",
+            "tier": "upscale",
+            "price_per_night": "210.00",
+            "total_price": "630.00",
+            "nights": 3,
+            "rating": 4.1,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 138,
+            "name": "Synthetic Amber Orchard Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 2",
+            "tier": "upscale",
+            "price_per_night": "210.00",
+            "total_price": "630.00",
+            "nights": 3,
+            "rating": 3.7,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          },
+          {
+            "id": 141,
+            "name": "Synthetic Amber Lantern Stay",
+            "city": "Madrid",
+            "district": "Synthetic District 1",
+            "tier": "upscale",
+            "price_per_night": "210.00",
+            "total_price": "630.00",
+            "nights": 3,
+            "rating": 4.4,
+            "currency": "USD",
+            "source": "synthetic-v1"
+          }
+        ],
+        "check_in": "2027-04-10",
+        "check_out": "2027-04-13",
+        "availability": "Synthetic seasonal quotes only; no room-stock or booking availability is tracked.",
+        "truncated": false
+      },
+      "source": "synthetic-v1",
+      "fetched_at": "2026-11-11T20:57:08.332431Z",
+      "cache_hit": false
+    },
+    {
+      "tool_result_id": "129f8061-fdf4-4ceb-a17c-01a80a39687b",
+      "tool": "search_destinations",
+      "status": "ok",
+      "data": {
+        "chunks": [
+          {
+            "chunk_id": "388272c418c5761e",
+            "title": "Madrid",
+            "url": "https://en.wikivoyage.org/wiki/Madrid",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "As of Sept 2021, Madrid has 5G from all Spanish carriers.\nLocutorios (call shops) are widely spread in Madrid near touristy locations and are very cheap to use. Some shops and kiosks have tourist SIM cards from carriers like Orange and Vodafone with plans that run \u20ac10\u201320 for a month of 50\u2013100 gigabytes of data or more. Employees are willing to install the card and configure the plan."
+          },
+          {
+            "chunk_id": "cfad6968248ff5f2",
+            "title": "Madrid",
+            "url": "https://en.wikivoyage.org/wiki/Madrid",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Tourism website of the city of Madrid."
+          },
+          {
+            "chunk_id": "7ef166f6e83d1f04",
+            "title": "Madrid",
+            "url": "https://en.wikivoyage.org/wiki/Madrid",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "Madrid is Spain's capital and largest city. A city that has been marked by Spain's varied and tumultuous history, Madrid has some of Europe's most impressive cultural and architectural heritage, which includes grand avenues, plazas, buildings and monuments, world-class art galleries and museums, highly popular football teams, and cultural events of international fame for everyone. Madrid is also renowned for gastronomic delights and a nightlife lasting up until dawn.\nMadrid is more often than not disregarded by tourists who gravitate to other parts of the country. But though it may appear to l"
+          },
+          {
+            "chunk_id": "e94a1fd75936544c",
+            "title": "Madrid",
+            "url": "https://en.wikivoyage.org/wiki/Madrid",
+            "license": "CC BY-SA 4.0",
+            "attribution": "Content from Wikivoyage is licensed under CC BY-SA 4.0.",
+            "excerpt": "A stay in a plush hotel will set you back at least \u20ac90 per night and there is no upper limit. Most of them are found in the posh Salamanca district, along the Gran V\u00eda, in the historic centre and in the Retiro and Paseo del Arte area. Among the most famous names in the business are the Hotel Villa Magna, the Gran Meli\u00e1 Palacio de Los Duques and the Madrid Ritz."
+          }
+        ]
+      },
+      "source": "local-rag",
+      "fetched_at": "2026-11-11T20:57:10.590879Z",
+      "cache_hit": false
+    }
+  ],
+  "previous_itinerary": null,
+  "edit_day": null,
+  "latency_ms": 92833.40508397669,
+  "tokens_in": 22026,
+  "tokens_out": 4267,
+  "fingerprint": "c9552ecceff968481e4af91e8efef7f01c377d610099e408354e0757c016355f",
+  "experiment": "model-single"
+}
