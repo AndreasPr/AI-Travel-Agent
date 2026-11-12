@@ -10,5 +10,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install pydantic PyYAML numpy scipy sqlalchemy python-decouple
+      - run: pip install pydantic PyYAML numpy scipy python-decouple pytest
+      - run: python -m pytest -q tests/test_eval_offline_imports.py
       - run: make eval-gate
