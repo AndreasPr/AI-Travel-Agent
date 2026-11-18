@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from backend.observability.telemetry import span
+
 import argparse
 import json
 import re
@@ -212,33 +214,34 @@ def search(
             vector_rows: list[dict[str, Any]] = []
             lexical_rows: list[dict[str, Any]] = []
             if mode in {"vector", "hybrid", "hybrid(bm25)"}:
-                query_vector = _encode_variant(variant)
-                vector_hits = session.execute(
-                    base_select.order_by(DocumentChunk.embedding.cosine_distance(query_vector)).limit(30)
-                ).all()
-                vector_rows = [_candidate_row(row) for row in vector_hits]
-
-            if mode in {"fts", "hybrid"}:
-                ts_query_sql = build_or_tsquery(variant)
-                if ts_query_sql is None:
-                    lexical_rows = []
-                else:
-                    ts_query = func.to_tsquery("english", ts_query_sql)
-                    fts_query = (
-                        select(DocumentChunk, Document, func.ts_rank_cd(DocumentChunk.search_vector, ts_query).label("rank"))
-                        .join(Document, Document.id == DocumentChunk.document_id)
-                        .where(DocumentChunk.search_vector.isnot(None))
-                        .where(DocumentChunk.search_vector.op("@@")(ts_query))
-                    )
-                    if clauses:
-                        fts_query = fts_query.where(and_(*clauses))
-                    fts_hits = session.execute(
-                        fts_query.order_by(func.ts_rank_cd(DocumentChunk.search_vector, ts_query).desc()).limit(30)
+                with span("retrieval.vector"):
+                    query_vector = _encode_variant(variant)
+                    vector_hits = session.execute(
+                        base_select.order_by(DocumentChunk.embedding.cosine_distance(query_vector)).limit(30)
                     ).all()
-                    lexical_rows = [_candidate_row((row[0], row[1])) for row in fts_hits]
-
+                    vector_rows = [_candidate_row(row) for row in vector_hits]
+            if mode in {"fts", "hybrid"}:
+                with span("retrieval.fts"):
+                    ts_query_sql = build_or_tsquery(variant)
+                    if ts_query_sql is None:
+                        lexical_rows = []
+                    else:
+                        ts_query = func.to_tsquery("english", ts_query_sql)
+                        fts_query = (
+                            select(DocumentChunk, Document, func.ts_rank_cd(DocumentChunk.search_vector, ts_query).label("rank"))
+                            .join(Document, Document.id == DocumentChunk.document_id)
+                            .where(DocumentChunk.search_vector.isnot(None))
+                            .where(DocumentChunk.search_vector.op("@@")(ts_query))
+                        )
+                        if clauses:
+                            fts_query = fts_query.where(and_(*clauses))
+                        fts_hits = session.execute(
+                            fts_query.order_by(func.ts_rank_cd(DocumentChunk.search_vector, ts_query).desc()).limit(30)
+                        ).all()
+                        lexical_rows = [_candidate_row((row[0], row[1])) for row in fts_hits]
             if mode in {"bm25", "hybrid(bm25)"}:
-                lexical_rows = get_bm25_index().search(variant, filters_by_field)
+                with span("retrieval.bm25"):
+                    lexical_rows = get_bm25_index().search(variant, filters_by_field)
 
             if mode == "vector":
                 candidate_ids = [str(row["id"]) for row in vector_rows]
@@ -280,7 +283,8 @@ def search(
         trace.update(extracted_filters=_extract_filters(query)[0], hard_filters=hard_filters,
                      soft_filters=soft_filters, candidate_pool=rerank_candidates)
     if rerank and reranker is not None:
-        reranked = reranker.rerank(rerank_candidates, query_text, limit=limit)
+        with span("retrieval.rerank"):
+            reranked = reranker.rerank(rerank_candidates, query_text, limit=limit)
         return reranked[:limit]
     return [by_id[item_id] for item_id in ranked_ids if item_id in by_id][:limit]
 

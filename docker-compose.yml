@@ -27,6 +27,8 @@ services:
       FRONTEND_ORIGINS: ${FRONTEND_ORIGINS:-http://localhost:3100}
       DEBUG: ${DEBUG:-false}
       PORT: 8080
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+      OBS_CAPTURE_PROMPTS: ${OBS_CAPTURE_PROMPTS:-false}
     depends_on:
       db:
         condition: service_healthy
@@ -61,7 +63,9 @@ services:
     image: jaegertracing/all-in-one:1.58
     profiles: ["obs"]
     ports:
-      - "16686:16686"
+      - "127.0.0.1:${JAEGER_PORT:-16686}:16686"
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
 
   prometheus:
     image: prom/prometheus:v2.54.1
@@ -69,15 +73,37 @@ services:
     command:
       - --config.file=/etc/prometheus/prometheus.yml
     volumes:
+      - prometheus:/prometheus
       - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./observability/alerts.yaml:/etc/prometheus/alerts.yaml:ro
     ports:
-      - "9090:9090"
+      - "127.0.0.1:${PROMETHEUS_PORT:-9090}:9090"
 
   grafana:
     image: grafana/grafana-oss:11.1.5
     profiles: ["obs"]
     ports:
-      - "3001:3000"
+      - "127.0.0.1:${GRAFANA_PORT:-3002}:3000"
+    volumes:
+      - grafana:/var/lib/grafana
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+
+  collector:
+    image: otel/opentelemetry-collector-contrib:0.115.1
+    profiles: ["obs"]
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./observability/collector.yaml:/etc/otelcol/config.yaml:ro
+    ports:
+      - "127.0.0.1:${OTLP_PORT:-4318}:4318"
+    depends_on: [jaeger]
+
+  pushgateway:
+    image: prom/pushgateway:v1.10.0
+    profiles: ["obs"]
+    ports:
+      - "127.0.0.1:${PUSHGATEWAY_PORT:-9091}:9091"
 
   ollama:
     image: ollama/ollama:latest
@@ -90,3 +116,5 @@ services:
 volumes:
   pgdata:
   ollama:
+  prometheus:
+  grafana:

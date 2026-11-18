@@ -1,4 +1,5 @@
 """Status mapping and bounded retries; no retries for ordinary client errors."""
+from backend.observability.telemetry import model_event
 import random
 import asyncio
 import time
@@ -51,6 +52,7 @@ def retry_call(call, *, attempts=3, base_delay=1.0, max_delay=30.0, sleep=time.s
         except (RateLimited, ProviderUnavailable) as exc:
             if attempt + 1 == attempts:
                 raise
+            model_event('retry')
             delay = min(max_delay, base_delay * 2 ** attempt) * (0.5 + jitter() / 2)
             sleep(max(delay, exc.retry_after or 0))
     raise ValueError("Retry attempts must be positive")
@@ -63,6 +65,7 @@ async def retry_call_async(call, *, attempts=3, base_delay=1.0, max_delay=30.0, 
         except (RateLimited, ProviderUnavailable) as exc:
             if attempt + 1 == attempts:
                 raise
+            model_event('retry')
             delay = min(max_delay, base_delay * 2 ** attempt) * (0.5 + jitter() / 2)
             await sleep(max(delay, exc.retry_after or 0))
     raise ValueError("Retry attempts must be positive")

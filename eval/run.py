@@ -122,6 +122,7 @@ def main():
     parser.add_argument('--run-id')
     parser.add_argument('--model-index', type=int, default=0)
     parser.add_argument('--route', choices=['single','split'])
+    parser.add_argument('--pushgateway', help='Explicit opt-in HTTP push of evaluation gauges')
     parser.add_argument('--output', default='/tmp/eval-harness-run.json')
     args = parser.parse_args()
     if args.limit < 1 or args.repeats < 1:
@@ -139,6 +140,9 @@ def main():
     Path(args.output).write_text(json.dumps(results, indent=2))
     from eval.report import write_report
     print(write_report(results, config))
+    if args.pushgateway:
+        from eval.push_metrics import push
+        push(results, args.pushgateway)
 
 
 if __name__ == '__main__':

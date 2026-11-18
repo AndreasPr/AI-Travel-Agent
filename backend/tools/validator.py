@@ -1,4 +1,5 @@
 """Deterministic itinerary checks against the trusted server-side ToolResult ledger."""
+from backend.observability.telemetry import traced
 import math
 from datetime import time
 from decimal import Decimal
@@ -23,6 +24,7 @@ def quoted_prices(result):
     return []
 
 
+@traced('agent.validate_itinerary')
 def validate_itinerary(request, ctx):
     issues = []
 

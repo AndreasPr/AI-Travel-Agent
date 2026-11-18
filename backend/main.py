@@ -1,4 +1,5 @@
 from typing import List
+from backend.observability.telemetry import instrument_app
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -108,3 +109,7 @@ def read_flight_price(
 
 
 app.include_router(agent_router)
+
+
+# Instrument after routes are registered; /metrics contains no prompts or user IDs.
+instrument_app(app)
