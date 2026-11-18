@@ -54,7 +54,7 @@ Tool observations and retrieved text are serialized inside escaped `<DATA>` deli
 - `GET /api/trips/{id}/versions`: immutable version objects, including itinerary and budget.
 - `POST /api/trips/{id}/undo`: restored itinerary and new version number; HTTP 409 if no prior version exists.
 
-The response includes `trip_id`, `message`, `itinerary`, `diff`, `citations`, `tool_trace`, `budget_met`, `usage`, `issues`, and `preference_proposal`. There is no authentication or user ownership layer in this task: run these endpoints locally; a trip ID is not an authorization mechanism.
+The response includes `trip_id`, `message`, `itinerary`, `diff`, `citations`, `tool_trace`, `budget_met`, `usage`, `issues`, and `preference_proposal`. Chat/trip endpoints require bearer authentication and owner-scoped storage; see [auth.md](auth.md) for refresh cookies, quotas and migration behavior. A trip ID alone grants no access.
 
 ## Context and caching
 
@@ -68,7 +68,7 @@ Usage reports provider/model per call, input/output tokens, cached tokens, and u
 
 The sensitive-content filter rejects recognizable health details, identity/payment fields and secrets, while preference fields accept a closed vocabulary of general travel needs. It is a heuristic, not a comprehensive natural-language privacy detector. Do not enter sensitive personal information. Invalid preference fields cannot be persisted. Generated sensitive text is also rejected before conversation/version writes.
 
-Production model calls use cancellable async transports. Tool workers receive cooperative cancellation and retain HTTP/database timeouts; a Python thread cannot be forcibly killed mid-operation. The streaming endpoint owns and joins its agent task on disconnect. See `docs/STREAMING.md` for event contracts and quota accounting. This task does not add booking, live availability, authentication, full prompt-injection protection or distributed rate limiting.
+Production model calls use cancellable async transports. Tool workers receive cooperative cancellation and retain HTTP/database timeouts; a Python thread cannot be forcibly killed mid-operation. The streaming endpoint owns and joins its agent task on disconnect. See `docs/STREAMING.md` for event contracts and quota accounting. Booking and live availability are not implemented. Authentication and ownership are documented in [auth.md](auth.md); guardrail limitations remain in [threat-model.md](threat-model.md).
 
 ## M5 — Local agent verification
 

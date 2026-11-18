@@ -1,5 +1,5 @@
 """TripStore interface and isolated in-memory implementation."""
-from copy import deepcopy
+from copy import deepcopy, copy
 from threading import RLock
 from typing import Protocol
 from uuid import uuid4
@@ -24,18 +24,25 @@ def new_state():
 
 class MemoryTripStore:
     def __init__(self):
+        self.owner_id = None
         self.states = {}
         self.lock = RLock()
 
+    def for_owner(self, owner_id):
+        scoped = copy(self)
+        scoped.owner_id = owner_id
+        return scoped
+
     def create(self):
         state = new_state()
+        state['owner_id'] = self.owner_id
         with self.lock:
             self.states[state['id']] = deepcopy(state)
         return state
 
     def load(self, trip_id):
         with self.lock:
-            if trip_id not in self.states:
+            if trip_id not in self.states or (self.owner_id is not None and self.states[trip_id].get('owner_id') != self.owner_id):
                 raise KeyError(trip_id)
             return deepcopy(self.states[trip_id])
 
@@ -51,6 +58,15 @@ class MemoryTripStore:
             state['revision'] = expected_revision + 1
             self.states[state['id']] = deepcopy(state)
 
+    def list_trips(self):
+        with self.lock:
+            return [dict(id=row['id'], itinerary=deepcopy(row['itinerary'])) for row in self.states.values() if row.get('owner_id') == self.owner_id]
+
+    def delete(self, trip_id):
+        with self.lock:
+            self.load(trip_id)
+            del self.states[trip_id]
+
     def versions(self, trip_id):
         return self.load(trip_id)['versions']
 
@@ -64,31 +80,36 @@ class MemoryTripStore:
 
 class PostgresTripStore:
     """Transactional state writes with optimistic concurrency and immutable history."""
-    def __init__(self, engine=None):
+    def __init__(self, engine=None, owner_id=None):
         if engine is None:
             from backend.db.connect import engine
         self.engine = engine
+        self.owner_id = owner_id
+
+    def for_owner(self, owner_id):
+        return PostgresTripStore(self.engine, owner_id)
 
     def create(self):
         from backend.db.models import AgentConversation, AgentTrip
         state = new_state()
+        state['owner_id'] = self.owner_id
         with self.engine.begin() as conn:
-            conn.execute(AgentConversation.__table__.insert().values(id=state['id'], revision=0, preferences={}, state=self._metadata(state)))
+            conn.execute(AgentConversation.__table__.insert().values(id=state['id'], owner_id=self.owner_id, revision=0, preferences={}, state=self._metadata(state)))
             conn.execute(AgentTrip.__table__.insert().values(id=state['id'], itinerary=None))
         return state
 
     @staticmethod
     def _metadata(state):
-        return {key: deepcopy(value) for key, value in state.items() if key not in {'id', 'revision', 'preferences', 'itinerary', 'history', 'versions', 'undo_parent'}}
+        return {key: deepcopy(value) for key, value in state.items() if key not in {'id', 'owner_id', 'revision', 'preferences', 'itinerary', 'history', 'versions', 'undo_parent'}}
 
     def _load(self, conn, trip_id):
         from sqlalchemy import select
         from backend.db.models import AgentConversation, AgentMessage, AgentTrip, AgentItineraryVersion
         conversations, messages, trips, versions = (entry.__table__ for entry in (AgentConversation, AgentMessage, AgentTrip, AgentItineraryVersion))
         row = conn.execute(select(conversations).where(conversations.c.id == trip_id)).mappings().first()
-        if row is None:
+        if row is None or (self.owner_id is not None and row['owner_id'] != self.owner_id):
             raise KeyError(trip_id)
-        state = dict(row['state'], id=trip_id, revision=row['revision'], preferences=row['preferences'])
+        state = dict(row['state'], id=trip_id, owner_id=row['owner_id'], revision=row['revision'], preferences=row['preferences'])
         state['itinerary'] = conn.scalar(select(trips.c.itinerary).where(trips.c.id == trip_id))
         state['history'] = [dict(item) for item in conn.execute(select(messages.c.role, messages.c.content).where(messages.c.conversation_id == trip_id).order_by(messages.c.position)).mappings()]
         state['versions'] = [dict(item) for item in conn.execute(select(versions.c.number, versions.c.parent_number, versions.c.itinerary, versions.c.budget).where(versions.c.trip_id == trip_id).order_by(versions.c.number)).mappings()]
@@ -107,7 +128,7 @@ class PostgresTripStore:
         conversations, messages, trips, versions = (entry.__table__ for entry in (AgentConversation, AgentMessage, AgentTrip, AgentItineraryVersion))
         with self.engine.begin() as conn:
             # Compare-and-swap acquires the row lock before reading the old trip/history.
-            changed = conn.execute(update(conversations).where(conversations.c.id == state['id'], conversations.c.revision == expected_revision).values(revision=expected_revision + 1))
+            changed = conn.execute(update(conversations).where(conversations.c.id == state['id'], conversations.c.revision == expected_revision, conversations.c.owner_id == self.owner_id if self.owner_id is not None else True).values(revision=expected_revision + 1))
             if changed.rowcount != 1:
                 raise StoreConflict('Conversation changed; retry the turn')
             old = self._load(conn, state['id'])
@@ -123,6 +144,23 @@ class PostgresTripStore:
             conn.execute(update(conversations).where(conversations.c.id == state['id']).values(preferences=state['preferences'], state=self._metadata(state)))
             state['versions'] = [dict(item) for item in conn.execute(select(versions.c.number, versions.c.parent_number, versions.c.itinerary, versions.c.budget).where(versions.c.trip_id == state['id']).order_by(versions.c.number)).mappings()]
         state['revision'] = expected_revision + 1
+
+    def list_trips(self):
+        from sqlalchemy import select
+        from backend.db.models import AgentConversation, AgentTrip
+        with self.engine.connect() as conn:
+            rows = conn.execute(select(AgentTrip.id, AgentTrip.itinerary).join(AgentConversation).where(AgentConversation.owner_id == self.owner_id)).mappings()
+            return [dict(row) for row in rows]
+
+    def delete(self, trip_id):
+        from sqlalchemy import delete
+        from backend.db.models import AgentConversation, AgentMessage, AgentTrip, AgentItineraryVersion
+        with self.engine.begin() as conn:
+            self._load(conn, trip_id)
+            conn.execute(delete(AgentItineraryVersion).where(AgentItineraryVersion.trip_id == trip_id))
+            conn.execute(delete(AgentMessage).where(AgentMessage.conversation_id == trip_id))
+            conn.execute(delete(AgentTrip).where(AgentTrip.id == trip_id))
+            conn.execute(delete(AgentConversation).where(AgentConversation.id == trip_id, AgentConversation.owner_id == self.owner_id if self.owner_id is not None else True))
 
     def versions(self, trip_id):
         return self.load(trip_id)['versions']

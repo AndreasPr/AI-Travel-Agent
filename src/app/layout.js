@@ -1,3 +1,4 @@
+import { AuthProvider } from "@/components/AuthProvider";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 export const metadata = {
@@ -5,5 +6,5 @@ export const metadata = {
   description: "Plan and refine a sourced itinerary, one conversation at a time.",
 };
 export default function RootLayout({ children }) {
-  return <html lang="en"><body>{children}</body></html>;
+  return <html lang="en"><body><AuthProvider>{children}</AuthProvider></body></html>;
 }

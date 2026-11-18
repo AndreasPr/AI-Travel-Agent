@@ -74,15 +74,21 @@ def key(kind, value):
 
 
 class UsageGuard:
-    def __init__(self, store, settings, clock=time.time):
+    def __init__(self, store, settings, clock=time.time, enforce_daily=True):
         self.store, self.settings, self.clock = store, settings, clock
+        self.enforce_daily = enforce_daily
 
     def admit(self, session, user, *, tokens=0, requests=0):
         day = int(self.clock()) // 86400
-        self.store.charge([Charge(key('session', session), 0, requests, tokens,
-                                 self.settings['session_requests'], self.settings['session_tokens']),
-                           Charge(key('user', user), day, requests, tokens,
-                                  self.settings['user_daily_requests'], self.settings['user_daily_tokens'])])
+        charges = [Charge(key('session', session), 0, requests, tokens,
+                          self.settings['session_requests'], self.settings['session_tokens'])]
+        if self.enforce_daily:
+            charges.append(Charge(key('user', user), day, requests, tokens,
+                                  self.settings['user_daily_requests'], self.settings['user_daily_tokens']))
+        try:
+            self.store.charge(charges)
+        except LimitExceeded:
+            raise LimitExceeded(86400 - int(self.clock()) % 86400) from None
 
     def rate(self, ip, user):
         period = self.settings['rate_window_seconds']

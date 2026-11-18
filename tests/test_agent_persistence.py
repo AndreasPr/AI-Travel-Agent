@@ -43,12 +43,17 @@ def store(tmp_path, request):
             connection.execute(text(f'SET LOCAL search_path TO "{schema}", public'))
             with Operations.context(MigrationContext.configure(connection)):
                 migration.upgrade()
+                auth_spec = importlib.util.spec_from_file_location('auth_migration', path.parent / '20261118_auth.py')
+                auth_migration = importlib.util.module_from_spec(auth_spec)
+                auth_spec.loader.exec_module(auth_migration)
+                auth_migration.upgrade()
                 from backend.security.limits import usage_table
                 usage_table.create(connection)
         yield PostgresTripStore(scoped)
         with engine.begin() as connection:
             connection.execute(text(f'SET LOCAL search_path TO "{schema}", public'))
             with Operations.context(MigrationContext.configure(connection)):
+                auth_migration.downgrade()
                 migration.downgrade()
     finally:
         with engine.begin() as connection:
@@ -210,6 +215,8 @@ def test_versions_and_undo_endpoints(store):
     app = FastAPI()
     app.include_router(router)
     app.dependency_overrides[get_agent] = lambda: agent
+    from auth_helpers import authenticate_app
+    authenticate_app(app, agent)
     client = TestClient(app)
     listed = client.get('/api/trips/' + state['id'] + '/versions')
     assert listed.status_code == 200 and len(listed.json()['versions']) == 2

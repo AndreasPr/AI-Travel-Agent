@@ -2,6 +2,7 @@
 import argparse
 from datetime import datetime, timezone
 import json
+import os
 
 import httpx
 
@@ -17,9 +18,13 @@ def main():
     args = parser.parse_args()
     payload = {'message': args.message, 'trip_id': args.trip_id}
     timeout = load_config()['agent']['request_timeout_seconds'] + 30
+    token = os.getenv('TRAVEL_ACCESS_TOKEN')
+    if not token:
+        raise SystemExit('Set TRAVEL_ACCESS_TOKEN to a current access token; see docs/auth.md (M12).')
+    headers = {'Authorization': 'Bearer ' + token}
     terminal = False
     try:
-        with httpx.Client(timeout=timeout) as client, client.stream('POST', args.url, json=payload) as response:
+        with httpx.Client(timeout=timeout) as client, client.stream('POST', args.url, json=payload, headers=headers) as response:
             response.raise_for_status()
             data = []
             for line in response.iter_lines():

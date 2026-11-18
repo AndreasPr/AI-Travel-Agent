@@ -12,19 +12,23 @@ from sqlalchemy import text
 
 from backend.db import schemas as db_schemas, utils as db_utils
 from backend.db.connect import SessionLocal, get_db_session
-from backend.env import config
 from backend.agent.api import router as agent_router
 from backend.rag.search import search as rag_search
 
-FRONTEND_ORIGINS = config(
-    "FRONTEND_ORIGINS",
-    cast=lambda x: [s.strip() for s in x.split(",") if s.strip()],
-    default="",
-)
+from contextlib import asynccontextmanager
+from backend.auth.api import router as auth_router, install_auth_handlers
+from backend.auth.service import settings as auth_settings
+
+
+@asynccontextmanager
+async def lifespan(app):
+    auth_settings()  # Fail before accepting requests when production credentials are unsafe.
+    yield
 
 
 install_log_redaction()
-app = FastAPI(title="AI Travel Agent API")
+app = FastAPI(title="AI Travel Agent API", lifespan=lifespan)
+install_auth_handlers(app)
 app.add_middleware(BodyLimitMiddleware, max_bytes=load_config()['guardrails']['max_body_bytes'])
 
 
@@ -35,15 +39,10 @@ async def invalid_request(request, exc):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=FRONTEND_ORIGINS or [
-        "http://localhost:3100",
-        "http://127.0.0.1:3100",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=list(auth_settings().origins),
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-CSRF-Protection"],
 )
 
 
@@ -108,6 +107,7 @@ def read_flight_price(
     return df_flight_value
 
 
+app.include_router(auth_router)
 app.include_router(agent_router)
 
 

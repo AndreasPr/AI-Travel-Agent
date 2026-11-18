@@ -106,6 +106,8 @@ def app_for(agent):
     app = FastAPI()
     app.include_router(router)
     app.dependency_overrides[get_agent] = lambda: agent
+    from auth_helpers import authenticate_app
+    authenticate_app(app, agent)
     return app
 
 
