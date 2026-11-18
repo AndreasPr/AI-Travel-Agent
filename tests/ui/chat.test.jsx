@@ -1,11 +1,17 @@
 import { beforeEach, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { login } from '@/lib/auth';
 import ChatApp from '@/components/ChatApp';
 import { event, frame, itinerary, streamResponse, successEvents, tripId } from './fixtures';
 
 vi.mock('@/components/TripMap', () => ({ default: () => <div>Map placeholder in synthetic UI test</div> }));
-beforeEach(() => { localStorage.clear(); vi.stubEnv('NEXT_PUBLIC_API_URL', '/backend'); });
+beforeEach(async () => {
+  localStorage.clear(); vi.stubEnv('NEXT_PUBLIC_API_URL', '/backend');
+  fetch.mockResolvedValueOnce(new Response(JSON.stringify({access_token: 'synthetic-test-token', user: {id: 'synthetic-test-user'}})));
+  await login('synthetic@example.invalid', 'Synthetic test passphrase');
+  fetch.mockClear();
+});
 
 async function submit(text = 'Plan a synthetic trip') {
   await userEvent.type(screen.getByRole('textbox', { name: 'Your next idea' }), text);

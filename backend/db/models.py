@@ -193,6 +193,7 @@ class StoredToolResult(Base):
 
 class AgentConversation(Base):
     __tablename__ = 'agent_conversations'
+    owner_id = Column(String(36), ForeignKey('auth_users.id'), nullable=True, index=True)
     id = Column(String(36), primary_key=True)
     revision = Column(Integer, nullable=False)
     preferences = Column(JSON, nullable=False)
@@ -230,3 +231,44 @@ class SecurityUsage(Base):
     window = Column(BigInteger, primary_key=True)
     requests = Column(BigInteger, nullable=False)
     tokens = Column(BigInteger, nullable=False)
+
+
+class AuthUser(Base):
+    __tablename__ = 'auth_users'
+    id = Column(String(36), primary_key=True)
+    email = Column(String(254), unique=True, nullable=False)
+    password_hash = Column(Text, nullable=False)
+    created_at = Column(BigInteger, nullable=False)
+
+
+class AuthSession(Base):
+    __tablename__ = 'auth_sessions'
+    id = Column(String(36), primary_key=True)
+    user_id = Column(String(36), ForeignKey('auth_users.id', ondelete='CASCADE'), nullable=False, index=True)
+    expires_at = Column(BigInteger, nullable=False)
+    revoked = Column(Boolean, nullable=False, default=False)
+
+
+class AuthRefresh(Base):
+    __tablename__ = 'auth_refresh_tokens'
+    token_hash = Column(String(64), primary_key=True)
+    session_id = Column(String(36), ForeignKey('auth_sessions.id', ondelete='CASCADE'), nullable=False, index=True)
+    expires_at = Column(BigInteger, nullable=False)
+    used = Column(Boolean, nullable=False, default=False)
+
+
+class AuthDailyUsage(Base):
+    __tablename__ = 'auth_usage_daily'
+    user_id = Column(String(36), ForeignKey('auth_users.id', ondelete='CASCADE'), primary_key=True)
+    day = Column(BigInteger, primary_key=True)
+    messages = Column(BigInteger, nullable=False)
+    tokens = Column(BigInteger, nullable=False)
+
+
+class AuthLoginAttempt(Base):
+    __tablename__ = 'auth_login_attempts'
+    key = Column(String(64), primary_key=True)
+    window = Column(BigInteger, primary_key=True)
+    attempts = Column(Integer, nullable=False)
+    failures = Column(Integer, nullable=False)
+    next_allowed = Column(BigInteger, nullable=False)

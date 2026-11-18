@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { authFetch } from "@/lib/auth";
 import { consumeSSE } from "@/lib/sse";
 import { changesBetween, itineraryICS } from "@/lib/trip";
 import ItineraryCard from "./ItineraryCard";
@@ -10,13 +11,8 @@ const STORAGE = "travel-planner.trips.v1";
 const blankTrip = () => ({ id: null, title: "New trip", messages: [], itinerary: null, citations: [], budget: null });
 const toolLabels = { search_destinations: "Searching destinations…", get_weather: "Checking weather…", convert_currency: "Converting currency…", geocode_place: "Locating places…", search_flights: "Searching synthetic flights…", search_hotels: "Searching synthetic hotels…", validate_itinerary: "Validating budget…" };
 const starter = "Plan five days in Lisbon from 2027-04-10 through 2027-04-14 under $1,500 USD, with museums and food. Use synthetic hotel quotes and leave unknown activity costs unpriced.";
-function endpoint(path) {
-  const base = process.env.NEXT_PUBLIC_API_URL;
-  if (!base) throw new Error("Set NEXT_PUBLIC_API_URL and restart the frontend to connect to the planner.");
-  return `${base.replace(/\/$/, "")}${path}`;
-}
-
-export default function ChatApp() {
+export default function ChatApp({ userId }) {
+  const storageKey = userId ? `${STORAGE}.${userId}` : STORAGE;
   const [trip, setTrip] = useState(blankTrip);
   const [history, setHistory] = useState([]);
   const [draft, setDraft] = useState("");
@@ -33,18 +29,18 @@ export default function ChatApp() {
 
   useEffect(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE) || "[]");
+      const saved = JSON.parse(localStorage.getItem(storageKey) || "[]");
       if (!Array.isArray(saved)) throw new Error();
       setHistory(saved.filter(value => value && typeof value.id === "string" && typeof value.title === "string" && Array.isArray(value.messages) && Array.isArray(value.citations)).slice(0, 20));
     } catch { setStorageError("Browser history could not be read. You can still plan a new trip."); }
     return () => controller.current?.abort();
-  }, []);
+  }, [storageKey]);
 
   function remember(value) {
     if (!value.id) return;
     setHistory(previous => {
       const next = [value, ...previous.filter(entry => entry.id !== value.id)].slice(0, 20);
-      try { localStorage.setItem(STORAGE, JSON.stringify(next)); }
+      try { localStorage.setItem(storageKey, JSON.stringify(next)); }
       catch { setStorageError("Browser storage is unavailable or full. This trip may not appear here after reload."); }
       return next;
     });
@@ -59,7 +55,7 @@ export default function ChatApp() {
     setTrip(current); setDraft(""); setError(""); setPartial(""); setProgress([]); setProposal(null);
     setBusy(true); setPhase("Planning your trip…");
     try {
-      const response = await fetch(endpoint("/api/chat/stream"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message, trip_id: trip.id }), signal: abort.signal });
+      const response = await authFetch("/api/chat/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message, trip_id: trip.id }), signal: abort.signal });
       await consumeSSE(response, event => {
         if (event.type === "token") setPartial(previous => previous + event.text);
         if (event.type === "tool_start") {
@@ -96,7 +92,7 @@ export default function ChatApp() {
     retry.current = null;
     setBusy(true); setError(""); setPhase(undo ? "Restoring the previous version…" : "Checking the latest saved version…");
     try {
-      const response = await fetch(endpoint(`/api/trips/${trip.id}/${undo ? "undo" : "versions"}`), { method: undo ? "POST" : "GET", signal: abort.signal });
+      const response = await authFetch(`/api/trips/${trip.id}/${undo ? "undo" : "versions"}`, { method: undo ? "POST" : "GET", signal: abort.signal });
       if (!response.ok) {
         const failure = await response.json().catch(() => ({}));
         if (undo && response.status === 409 && failure.detail === "No earlier itinerary version")
@@ -132,7 +128,7 @@ export default function ChatApp() {
       <button className="new-trip" disabled={busy} onClick={() => selectTrip(blankTrip())}><span>＋</span> New trip</button>
       <p className="eyebrow history-label">Your journeys</p>
       <nav aria-label="Saved trips">{history.length ? history.map(saved => <button key={saved.id} disabled={busy} className={`history-item ${trip.id === saved.id ? "selected" : ""}`} aria-current={trip.id === saved.id ? "page" : undefined} onClick={() => selectTrip(saved)}><span aria-hidden="true">↗</span><span>{saved.title}<small>{saved.itinerary?.trip.start_date || "Conversation"}</small></span></button>) : <p className="history-empty">A fresh page.<br />Your trips will collect here.</p>}</nav>
-      <div className="sidebar-note"><span className="small-compass" aria-hidden="true">✳</span><p>Good trips start<br />with good questions.</p><small>History is saved in this browser. Avoid entering sensitive personal information.</small><button disabled={busy} className="text-button" onClick={() => { try { localStorage.removeItem(STORAGE); setHistory([]); selectTrip(blankTrip()); setDraft(""); setCitation(null); setStorageError(""); } catch { setStorageError("Could not clear browser history."); } }}>Clear browser history</button>{storageError && <p role="status">{storageError}</p>}</div>
+      <div className="sidebar-note"><span className="small-compass" aria-hidden="true">✳</span><p>Good trips start<br />with good questions.</p><small>History is saved in this browser. Avoid entering sensitive personal information.</small><button disabled={busy} className="text-button" onClick={() => { try { localStorage.removeItem(storageKey); setHistory([]); selectTrip(blankTrip()); setDraft(""); setCitation(null); setStorageError(""); } catch { setStorageError("Could not clear browser history."); } }}>Clear browser history</button>{storageError && <p role="status">{storageError}</p>}</div>
     </aside>
     <main id="planner" className="workspace">
       <header className="topbar"><span className="eyebrow">THE TRIP STUDIO</span><span className="grounded-label"><span aria-hidden="true">●</span> Sources, not guesses</span></header>

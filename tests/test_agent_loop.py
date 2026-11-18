@@ -198,6 +198,8 @@ def test_chat_endpoint_returns_expected_shape():
     app = FastAPI()
     app.include_router(router)
     app.dependency_overrides[get_agent] = lambda: agent
+    from auth_helpers import authenticate_app
+    authenticate_app(app, agent)
     response = TestClient(app).post('/api/chat', json={'message': 'Synthetic sample trip'})
     assert response.status_code == 200
     assert {'trip_id', 'message', 'itinerary', 'diff', 'citations', 'tool_trace', 'budget_met', 'usage'} <= response.json().keys()
@@ -722,6 +724,8 @@ def test_edit_requires_explicit_existing_day_without_creating_version(message, c
     app = FastAPI()
     app.include_router(router)
     app.dependency_overrides[get_agent] = lambda: agent
+    from auth_helpers import authenticate_app
+    authenticate_app(app, agent)
     response = TestClient(app).post(f"/api/trips/{state['id']}/undo")
     assert response.status_code == 409
     assert response.json()['detail'] == 'No earlier itinerary version'

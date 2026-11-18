@@ -141,6 +141,8 @@ def test_streaming_http_and_agent_share_trace(exporter):
     app = FastAPI()
     app.include_router(router)
     app.dependency_overrides[get_agent] = lambda: agent
+    from auth_helpers import authenticate_app
+    authenticate_app(app, agent)
     t.instrument_app(app)
     response = TestClient(app).post("/api/chat/stream", json={"message": "Synthetic trip request under 1500 USD"})
     assert response.status_code == 200
