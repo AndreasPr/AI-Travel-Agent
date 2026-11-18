@@ -1,3 +1,4 @@
+from typing import Any
 from sqlalchemy import (
     BigInteger,
     Boolean,
@@ -141,7 +142,7 @@ class Document(Base):
     season = Column(String(50), nullable=True)
     topic = Column(String(255), nullable=True)
     text = Column(Text, nullable=False)
-    embedding = Column(Vector(384), nullable=True)
+    embedding: Column[Any] = Column(Vector(384), nullable=True)
     search_vector = Column(TSVECTOR, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
@@ -161,7 +162,7 @@ class DocumentChunk(Base):
     source_url = Column(String(500), nullable=True)
     license = Column(String(128), nullable=True)
     text = Column(Text, nullable=False)
-    embedding = Column(Vector(384), nullable=True)
+    embedding: Column[Any] = Column(Vector(384), nullable=True)
     search_vector = Column(TSVECTOR, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 

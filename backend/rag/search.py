@@ -182,6 +182,7 @@ def search(
         if variant in vector_cache:
             return vector_cache[variant]
         try:
+            assert embedder is not None
             query_vector = embedder.encode_query(variant)
         except RuntimeError as exc:
             raise RuntimeError(

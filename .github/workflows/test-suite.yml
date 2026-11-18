@@ -1,0 +1,48 @@
+name: Test suite
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements-docker-cpu.txt -r requirements.txt -r requirements-dev.txt
+      - run: make lint typecheck
+      - run: make test-ci
+        env:
+          HF_HUB_OFFLINE: '1'
+          TRANSFORMERS_OFFLINE: '1'
+      - run: make test-containers
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: coverage.xml
+  browser-synthetic:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: pip install pytest playwright
+      - run: python -m playwright install --with-deps chromium
+      - name: Start isolated synthetic stack
+        run: |
+          echo "TEST_JWT_SECRET=$(python -c 'import secrets; print(secrets.token_urlsafe(48))')" >> "$GITHUB_ENV"
+      - run: docker compose -f compose.test.yaml up --build -d --wait
+      - run: make test-e2e
+      - name: Remove only test stack
+        if: always()
+        run: docker compose -f compose.test.yaml down

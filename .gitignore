@@ -74,3 +74,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Environment-specific synthetic performance outputs
+perf/results/*-synthetic.json

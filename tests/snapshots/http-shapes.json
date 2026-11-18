@@ -1,0 +1,276 @@
+{
+  "chat": {
+    "budget_met": "NoneType",
+    "citations": [],
+    "diff": "NoneType",
+    "issues": [
+      {
+        "item_ids": [
+          "str"
+        ],
+        "message": "str",
+        "name": "str",
+        "severity": "str"
+      }
+    ],
+    "itinerary": {
+      "days": [
+        {
+          "date": "str",
+          "items": [
+            {
+              "allow_outside_visiting_window": "bool",
+              "category": "str",
+              "chunk_ids": [],
+              "coord_tool_result_id": "NoneType",
+              "coords": "NoneType",
+              "cost": "NoneType",
+              "currency": "str",
+              "end": "str",
+              "id": "str",
+              "place": "str",
+              "start": "str",
+              "tool_result_ids": [],
+              "travel_mode": "str"
+            }
+          ]
+        }
+      ],
+      "trip": {
+        "currency": "str",
+        "end_date": "str",
+        "start_date": "str"
+      }
+    },
+    "message": "str",
+    "preference_proposal": "NoneType",
+    "tool_trace": [
+      {
+        "cache_hit": "bool",
+        "data": {
+          "currency": "str",
+          "issues": [
+            {
+              "item_ids": [
+                "str"
+              ],
+              "message": "str",
+              "name": "str",
+              "severity": "str"
+            }
+          ],
+          "total_cost": "str",
+          "valid": "bool"
+        },
+        "fetched_at": "str",
+        "source": "str",
+        "status": "str",
+        "tool": "str",
+        "tool_result_id": "str"
+      },
+      {
+        "cache_hit": "bool",
+        "data": {
+          "synthetic": "bool"
+        },
+        "fetched_at": "str",
+        "source": "str",
+        "status": "str",
+        "tool": "str",
+        "tool_result_id": "str"
+      }
+    ],
+    "trip_id": "str",
+    "usage": {
+      "cached_tokens": "int",
+      "calls": [
+        {
+          "cached_tokens": "int",
+          "model": "str",
+          "provider": "str",
+          "tokens_in": "int",
+          "tokens_out": "int"
+        }
+      ],
+      "tokens_in": "int",
+      "tokens_out": "int",
+      "uncached_tokens": "int"
+    }
+  },
+  "login": {
+    "access_token": "str",
+    "expires_in": "int",
+    "token_type": "str",
+    "user": {
+      "email": "str",
+      "id": "str"
+    }
+  },
+  "logout": {
+    "message": "str"
+  },
+  "me": {
+    "email": "str",
+    "id": "str"
+  },
+  "refresh": {
+    "access_token": "str",
+    "expires_in": "int",
+    "token_type": "str",
+    "user": {
+      "email": "str",
+      "id": "str"
+    }
+  },
+  "trip": {
+    "citations": [],
+    "history": [
+      {
+        "content": "str",
+        "role": "str"
+      }
+    ],
+    "id": "str",
+    "itinerary": {
+      "days": [
+        {
+          "date": "str",
+          "items": [
+            {
+              "allow_outside_visiting_window": "bool",
+              "category": "str",
+              "chunk_ids": [],
+              "coord_tool_result_id": "NoneType",
+              "coords": "NoneType",
+              "cost": "NoneType",
+              "currency": "str",
+              "end": "str",
+              "id": "str",
+              "place": "str",
+              "start": "str",
+              "tool_result_ids": [],
+              "travel_mode": "str"
+            }
+          ]
+        }
+      ],
+      "trip": {
+        "currency": "str",
+        "end_date": "str",
+        "start_date": "str"
+      }
+    },
+    "preferences": {}
+  },
+  "trips": {
+    "trips": [
+      {
+        "id": "str",
+        "itinerary": {
+          "days": [
+            {
+              "date": "str",
+              "items": [
+                {
+                  "allow_outside_visiting_window": "bool",
+                  "category": "str",
+                  "chunk_ids": [],
+                  "coord_tool_result_id": "NoneType",
+                  "coords": "NoneType",
+                  "cost": "NoneType",
+                  "currency": "str",
+                  "end": "str",
+                  "id": "str",
+                  "place": "str",
+                  "start": "str",
+                  "tool_result_ids": [],
+                  "travel_mode": "str"
+                }
+              ]
+            }
+          ],
+          "trip": {
+            "currency": "str",
+            "end_date": "str",
+            "start_date": "str"
+          }
+        }
+      }
+    ]
+  },
+  "unauthorized": {
+    "detail": "str"
+  },
+  "undo": {
+    "itinerary": {
+      "days": [
+        {
+          "date": "str",
+          "items": [
+            {
+              "allow_outside_visiting_window": "bool",
+              "category": "str",
+              "chunk_ids": [],
+              "coord_tool_result_id": "NoneType",
+              "coords": "NoneType",
+              "cost": "NoneType",
+              "currency": "str",
+              "end": "str",
+              "id": "str",
+              "place": "str",
+              "start": "str",
+              "tool_result_ids": [],
+              "travel_mode": "str"
+            }
+          ]
+        }
+      ],
+      "trip": {
+        "currency": "str",
+        "end_date": "str",
+        "start_date": "str"
+      }
+    },
+    "trip_id": "str",
+    "version": "int"
+  },
+  "versions": {
+    "trip_id": "str",
+    "versions": [
+      {
+        "budget": "str",
+        "itinerary": {
+          "days": [
+            {
+              "date": "str",
+              "items": [
+                {
+                  "allow_outside_visiting_window": "bool",
+                  "category": "str",
+                  "chunk_ids": [],
+                  "coord_tool_result_id": "NoneType",
+                  "coords": "NoneType",
+                  "cost": "NoneType",
+                  "currency": "str",
+                  "end": "str",
+                  "id": "str",
+                  "place": "str",
+                  "start": "str",
+                  "tool_result_ids": [],
+                  "travel_mode": "str"
+                }
+              ]
+            }
+          ],
+          "trip": {
+            "currency": "str",
+            "end_date": "str",
+            "start_date": "str"
+          }
+        },
+        "number": "int",
+        "parent_number": "NoneType"
+      }
+    ]
+  }
+}

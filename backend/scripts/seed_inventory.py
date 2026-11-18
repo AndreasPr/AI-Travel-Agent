@@ -1,5 +1,7 @@
 """Load only generated synthetic inventory and offline airport reference data."""
 from __future__ import annotations
+from typing import cast
+from sqlalchemy import Table
 
 import airportsdata
 from sqlalchemy import select, update
@@ -28,18 +30,18 @@ def seed_inventory(connection, inventory: dict | None = None) -> dict[str, int]:
             raise ValueError("Seed accepts only explicitly labeled synthetic-v1 rows")
         for start in range(0, len(records), 100):
             batch = records[start:start + 100]
-            stmt = insert(table).values(batch)
+            stmt = insert(cast(Table, table)).values(batch)
             mutable = {name: stmt.excluded[name] for name in batch[0] if name not in key}
             connection.execute(stmt.on_conflict_do_update(index_elements=key, set_=mutable))
     mapping = read_config("airports.yaml")
     airports = airportsdata.load("IATA")
     codes = sorted(set(mapping["origin_hubs"]) | set(mapping["cities"].values()))
     for code in codes:
-        row = airports[code]
+        row = dict(airports[code])
         values = {column.name: row[column.name] for column in Airport.__table__.columns if column.name in row}
         exists = connection.scalar(select(Airport.id).where(Airport.iata == code).limit(1))
         if exists is None:
-            connection.execute(Airport.__table__.insert().values(**values))
+            connection.execute(cast(Table, Airport.__table__).insert().values(**values))
         else:
             connection.execute(update(Airport).where(Airport.iata == code).values(**values))
     return {"flights": len(rows["flights"]), "hotels": len(rows["hotels"]), "airports": len(codes)}

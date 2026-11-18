@@ -1,5 +1,6 @@
 """Generate deterministic synthetic-v1 inventory without network or model calls."""
 from __future__ import annotations
+from typing import Mapping, Any
 
 import argparse
 import json
@@ -20,7 +21,7 @@ def read_config(name: str, config_dir: Path = ROOT / "config") -> dict:
     return yaml.safe_load((config_dir / name).read_text(encoding="utf-8"))
 
 
-def great_circle_km(origin: dict, destination: dict) -> float:
+def great_circle_km(origin: Mapping[str, Any], destination: Mapping[str, Any]) -> float:
     lat1, lat2 = map(math.radians, (origin["lat"], destination["lat"]))
     dlat = lat2 - lat1
     dlon = math.radians(destination["lon"] - origin["lon"])

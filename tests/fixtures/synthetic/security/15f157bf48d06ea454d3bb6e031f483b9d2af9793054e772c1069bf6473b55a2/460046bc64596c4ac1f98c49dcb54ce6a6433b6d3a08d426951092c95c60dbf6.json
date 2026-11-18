@@ -1,0 +1,1 @@
+{"provenance": "synthetic: scripted tests of the pipeline, not model behavior", "response": {"text": "", "tool_calls": [{"name": "validate_itinerary", "arguments": {"itinerary": {}, "budget": 9999}, "id": null}], "tokens_in": 0, "tokens_out": 0, "cached_tokens": 0, "latency_ms": 0.0, "provider": "synthetic", "model": "synthetic-security", "finish_reason": null, "raw_id": null}}

@@ -1,10 +1,11 @@
-"""Synthetic adversarial response fixtures, rebound to request hashes for ReplayProvider.
+"""Committed synthetic adversarial response fixtures for ReplayProvider.
 
 No recordings are fabricated: these are intentionally scripted model outputs, not
 claims about a live model's injection resistance. Live mode reuses only the poisoned
 local tool runtime and the assertions, not the scripted provider responses.
 """
 import asyncio
+import hashlib
 from copy import deepcopy
 from decimal import Decimal
 import json
@@ -35,7 +36,8 @@ class SyntheticReplay:
     provider, model = 'synthetic', 'synthetic-security'
 
     def __init__(self, entries, directory):
-        self.entries, self.directory = list(entries), Path(directory)
+        self.entries = list(entries)
+        self.directory = Path('tests/fixtures/synthetic/security') / hashlib.sha256(json.dumps(entries, sort_keys=True).encode()).hexdigest()
         self.replay = ReplayProvider(self.provider, self.model, self.directory)
 
     def generate(self, messages, tools=None, response_schema=None, **opts):
@@ -44,7 +46,9 @@ class SyntheticReplay:
         value = self.entries.pop(0)
         response = Response(provider=self.provider, model=self.model, **value)
         key = fixture_key(self.provider, self.model, messages, tools, response_schema)
-        (self.directory / f'{key}.json').write_text(json.dumps({'provenance': 'synthetic adversarial fixture, not a recording', 'response': response.model_dump(mode='json')}))
+        saved = json.loads((self.directory / f'{key}.json').read_text())
+        if saved['response'] != response.model_dump(mode='json'):
+            raise AssertionError('Committed synthetic security fixture differs from script')
         return self.replay.generate(messages, tools=tools, response_schema=response_schema, **opts)
 
 

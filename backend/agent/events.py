@@ -75,7 +75,7 @@ class Done(BaseEvent):
 
 StreamEvent = Annotated[MessageStart | Token | ToolStart | ToolEnd | ItineraryUpdate | Citations | ErrorEvent | Done,
                         Field(discriminator='type')]
-EVENT_ADAPTER = TypeAdapter(StreamEvent)
+EVENT_ADAPTER: TypeAdapter = TypeAdapter(StreamEvent)
 
 
 def argument_summary(tool, arguments):

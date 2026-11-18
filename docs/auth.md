@@ -141,8 +141,8 @@ verification, account recovery and background expiry-row cleanup are not include
 export PYTHONPATH=.
 make lint
 pytest -q
-pytest -v tests/test_auth.py
-pytest -q -m integration tests/test_auth.py tests/test_agent_persistence.py
+pytest -v tests/unit/test_auth.py
+pytest -q -m integration tests/unit/test_auth.py tests/unit/test_agent_persistence.py
 npm test
 npm run lint
 npm run build
@@ -168,7 +168,7 @@ Manual browser check:
 7. Use offline/integration quota and brute-force tests for exhaustion paths rather
    than consuming live model quota. The frontend displays the server retry time.
 
-Use the exact required cases in `tests/test_auth.py` as the acceptance checklist.
+Use the exact required cases in `tests/unit/test_auth.py` as the acceptance checklist.
 No browser screenshots or live planning success are claimed by these instructions.
 
 References: [PyJWT validation](https://pyjwt.readthedocs.io/en/latest/usage.html)
