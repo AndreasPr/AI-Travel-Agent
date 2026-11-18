@@ -1,4 +1,5 @@
 """Bounded context and stable static prefix; no explicit provider cache dependency."""
+from backend.observability.telemetry import traced
 import json
 import math
 
@@ -30,6 +31,7 @@ class ContextBuilder:
         ratio = self.settings['chars_per_token'].get(provider, self.settings['chars_per_token']['default'])
         return math.ceil(len(json.dumps(value, ensure_ascii=True, default=str)) / ratio)
 
+    @traced('agent.context_build')
     async def build(self, state, message, provider, generate):
         budget = self.settings['token_budget']
         history = state['history'][state['summarized_count']:]

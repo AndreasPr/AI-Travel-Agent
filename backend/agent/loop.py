@@ -1,4 +1,5 @@
 """Bounded plan/act loop, deterministic final gate and single-day repairs."""
+from backend.observability.telemetry import chat_turn, model_call, tool_call, span
 import asyncio
 import json
 import logging
@@ -41,6 +42,7 @@ class Agent:
         self.definitions = [{'name': name, 'description': entry.description, 'parameters': entry.input_model.model_json_schema(by_alias=True)} for name, entry in sorted(REGISTRY.items())]
         self.context = ContextBuilder(self.definitions, self.settings['context'])
 
+    @chat_turn
     async def chat(self, request, *, event_sink=None, request_id=None, usage=None, user_id="local-cli"):
         request = request.model_copy(update={'message': redact(visible(request.message))})
         state = self.store.load(request.trip_id) if request.trip_id else self.store.create()
@@ -64,6 +66,7 @@ class Agent:
             output.message = 'Please omit health details, identification, payment information and secrets. Use general travel preferences instead.'
             return output
 
+        @model_call
         async def generate(role, messages, tools=None, response_schema=None):
             nonlocal stage, turn_tokens
             stage = {'Intent': 'intent', 'Summary': 'summary', 'Itinerary': 'itinerary', 'DayPatch': 'edit'}.get((response_schema.get('title', '') if isinstance(response_schema, dict) else getattr(response_schema, '__name__', '')), role)
@@ -101,6 +104,7 @@ class Agent:
                                     tokens_out=response.tokens_out, cached_tokens=response.cached_tokens))
             return response
 
+        @tool_call
         async def execute(name, arguments):
             from backend.agent.events import ToolStart, ToolEnd, argument_summary
             call_id, started = uuid4(), time.monotonic()
@@ -338,7 +342,8 @@ class Agent:
             issues = []
             candidate, diff = None, None
             try:
-                response = await generate('plan', messages, response_schema=final_schema)
+                with span('agent.repair' if attempt else 'agent.validation_attempt', **{'travel.repair.attempt':attempt}):
+                    response = await generate('plan', messages, response_schema=final_schema)
                 if schema is DayPatch:
                     patch = DayPatch.model_validate_json(response.text)
                     for operation in patch.operations:

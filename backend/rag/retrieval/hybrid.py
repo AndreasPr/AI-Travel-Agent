@@ -4,6 +4,7 @@ import re
 from collections import defaultdict
 from typing import Any, Protocol
 
+from backend.observability.telemetry import traced
 from backend.rag.config import read_city_country_map
 
 
@@ -99,6 +100,7 @@ def rewrite_user_query(user_request: str, rewriter: QueryRewriter | None = None)
     return (rewriter or DefaultQueryRewriter()).rewrite(user_request)
 
 
+@traced('retrieval.fusion')
 def reciprocal_rank_fusion(*rankings: list[str], k: int = 60) -> list[tuple[str, float]]:
     """Fuse rankings with reciprocal rank fusion."""
     if not rankings:

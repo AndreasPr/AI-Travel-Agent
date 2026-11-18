@@ -1,0 +1,277 @@
+{
+  "uid": "travel-llm",
+  "title": "Travel LLM observability",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "15s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Tokens per trip turn",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.5, sum by (le,type) (rate(travel_trip_tokens_bucket[5m])))",
+          "legendFormat": "{{model}} {{route}} {{tool}} {{type}} {{source}} {{check}}"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Shadow cost estimate per trip turn (actual cost $0)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "rate(travel_trip_shadow_cost_usd_sum[5m]) / rate(travel_trip_shadow_cost_usd_count[5m])",
+          "legendFormat": "{{model}} {{route}} {{tool}} {{type}} {{source}} {{check}}"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Missing configured shadow prices",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "increase(travel_shadow_cost_unknown_total[5m])",
+          "legendFormat": "{{model}} {{route}} {{tool}} {{type}} {{source}} {{check}}"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "p50 latency by route",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.5, sum by (le,route) (rate(travel_request_duration_seconds_bucket[5m])))",
+          "legendFormat": "{{model}} {{route}} {{tool}} {{type}} {{source}} {{check}}"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "p95 latency by route",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le,route) (rate(travel_request_duration_seconds_bucket[5m])))",
+          "legendFormat": "{{model}} {{route}} {{tool}} {{type}} {{source}} {{check}}"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "p99 latency by route",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.99, sum by (le,route) (rate(travel_request_duration_seconds_bucket[5m])))",
+          "legendFormat": "{{model}} {{route}} {{tool}} {{type}} {{source}} {{check}}"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "p50 latency by model",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.5, sum by (le,model) (rate(travel_model_duration_seconds_bucket[5m])))",
+          "legendFormat": "{{model}} {{route}} {{tool}} {{type}} {{source}} {{check}}"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "p95 latency by model",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 24,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le,model) (rate(travel_model_duration_seconds_bucket[5m])))",
+          "legendFormat": "{{model}} {{route}} {{tool}} {{type}} {{source}} {{check}}"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "p99 latency by model",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 32,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.99, sum by (le,model) (rate(travel_model_duration_seconds_bucket[5m])))",
+          "legendFormat": "{{model}} {{route}} {{tool}} {{type}} {{source}} {{check}}"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Tool error rate",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 32,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (tool) (rate(travel_tool_errors_total[5m])) / sum by (tool) (rate(travel_tool_calls_total[5m]))",
+          "legendFormat": "{{model}} {{route}} {{tool}} {{type}} {{source}} {{check}}"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Eval scores (source labeled)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 40,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "travel_eval_score",
+          "legendFormat": "{{model}} {{route}} {{tool}} {{type}} {{source}} {{check}}"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Daily quota fraction",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 40,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "travel_quota_requests_used / travel_quota_requests_limit",
+          "legendFormat": "{{model}} {{route}} {{tool}} {{type}} {{source}} {{check}}"
+        }
+      ]
+    }
+  ]
+}

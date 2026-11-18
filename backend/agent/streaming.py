@@ -133,7 +133,8 @@ class AgentStreamResponse(StreamingResponse):
 
 
 def response_for(agent, request, *, user_id="local-cli"):
-    request_id = uuid4()
+    from backend.observability.telemetry import identity
+    request_id = (identity.get() or {}).get('request_id') or uuid4()
     return AgentStreamResponse(stream_events(agent, request, request_id, user_id=user_id), media_type='text/event-stream',
                                headers={'Cache-Control': 'no-cache, no-transform', 'X-Accel-Buffering': 'no',
                                         'X-Request-ID': str(request_id)})

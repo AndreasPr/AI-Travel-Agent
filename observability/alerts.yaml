@@ -1,0 +1,26 @@
+groups:
+- name: travel
+  rules:
+  - alert: TravelHighErrorRate
+    expr: sum(rate(travel_requests_total{status="error"}[5m])) / clamp_min(sum(rate(travel_requests_total[5m])),
+      0.001) > 0.1
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: TravelHighErrorRate
+  - alert: TravelHighP95Latency
+    expr: histogram_quantile(0.95, sum by (le, route) (rate(travel_request_duration_seconds_bucket[5m])))
+      > 120
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: TravelHighP95Latency
+  - alert: TravelQuotaNearlyExhausted
+    expr: travel_quota_requests_used / travel_quota_requests_limit > 0.9
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: TravelQuotaNearlyExhausted

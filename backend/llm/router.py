@@ -1,4 +1,5 @@
 """Role routing with bounded retries, quota admission and streaming failover."""
+from backend.observability.telemetry import model_attempt, model_event
 import json
 import os
 
@@ -36,12 +37,14 @@ class ManagedProvider:
             self.inner.preflight(messages, tools, response_schema, opts)
 
         async def attempt():
+            model_attempt(self.provider, self.model)
             self.bucket.reserve(reserved)
             try:
-                await self.counter.areserve(self.provider, self.model, self.limits["rpd"])
+                remaining = await self.counter.areserve(self.provider, self.model, self.limits["rpd"])
             except BaseException:
                 self.bucket.refund(reserved)
                 raise
+            model_attempt(self.provider, self.model, remaining, self.limits["rpd"])
             # Once dispatched, a cancelled/failed request may have consumed provider quota.
             # Without final usage keep the conservative charge; minute tokens refill normally.
             result = await self.inner.agenerate(messages, tools=tools, response_schema=response_schema, **opts)
@@ -58,8 +61,10 @@ class ManagedProvider:
         reserved = len(json.dumps([messages, tools, schema_dict(response_schema)], ensure_ascii=False).encode()) + opts["max_output_tokens"]
 
         def attempt():
+            model_attempt(self.provider, self.model)
             self.bucket.reserve(reserved)
-            self.counter.reserve(self.provider, self.model, self.limits["rpd"])
+            remaining = self.counter.reserve(self.provider, self.model, self.limits["rpd"])
+            model_attempt(self.provider, self.model, remaining, self.limits["rpd"])
             result = self.inner.generate(messages, tools=tools, response_schema=response_schema, stream=stream, **opts)
             if stream:
                 iterator = iter(result)
@@ -121,13 +126,15 @@ class Router:
 
     async def agenerate(self, messages, tools=None, response_schema=None, **opts):
         last = None
-        for entry in self.chain:
+        for index, entry in enumerate(self.chain):
             try:
                 provider = self.factory(entry["provider"], entry["model"])
                 response = await provider.agenerate(messages, tools=tools, response_schema=response_schema, **opts)
                 self.chosen = provider
                 return response
             except FALLBACK_ERRORS as exc:
+                if index + 1 < len(self.chain):
+                    model_event('fallback')
                 last = exc
         raise last or ProviderUnavailable("No provider available for role")
 
@@ -135,19 +142,21 @@ class Router:
         if stream:
             return self._stream(messages, tools, response_schema, opts)
         last = None
-        for entry in self.chain:
+        for index, entry in enumerate(self.chain):
             try:
                 provider = self.factory(entry["provider"], entry["model"])
                 response = provider.generate(messages, tools=tools, response_schema=response_schema, **opts)
                 self.chosen = provider
                 return response
             except FALLBACK_ERRORS as exc:
+                if index + 1 < len(self.chain):
+                    model_event('fallback')
                 last = exc
         raise last or ProviderUnavailable("No provider available for role")
 
     def _stream(self, messages, tools, response_schema, opts):
         last = None
-        for entry in self.chain:
+        for index, entry in enumerate(self.chain):
             emitted = False
             iterator = None
             try:
@@ -163,6 +172,8 @@ class Router:
             except FALLBACK_ERRORS as exc:
                 if emitted:
                     raise
+                if index + 1 < len(self.chain):
+                    model_event('fallback')
                 last = exc
             finally:
                 close = getattr(iterator, "close", None)

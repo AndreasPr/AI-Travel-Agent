@@ -12,9 +12,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt /tmp/requirements.txt
+COPY requirements.txt requirements-docker-cpu.txt /tmp/
 RUN python -m pip install --upgrade pip && \
-    python -m pip install -r /tmp/requirements.txt
+    python -m pip install -r /tmp/requirements-docker-cpu.txt && \
+    python -m pip install -r /tmp/requirements.txt && \
+    python -m pip check && \
+    HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python -c "import torch; from sentence_transformers import SentenceTransformer; assert torch.version.cuda is None; assert torch.tensor([2, 3]).sum().item() == 5"
 
 FROM python:3.12-slim AS runtime
 
