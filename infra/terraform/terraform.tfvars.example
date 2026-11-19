@@ -1,0 +1,23 @@
+# PLACEHOLDERS ONLY. Not deployable values; never replace with real values in git.
+region                    = "<AWS_REGION>"
+account_id                = "<ACCOUNT_ID>"
+availability_zones        = ["<AZ_A>", "<AZ_B>"]
+vpc_cidr                  = "<VPC_IPV4_CIDR>"
+default_route_cidr        = "<IPV4_DEFAULT_ROUTE_CIDR>"
+client_cidrs              = []
+egress_cidrs              = []
+enable_nat                = false
+kms_key_arn               = "<EXISTING_KMS_KEY_ARN>"
+flow_log_bucket_arn       = "<EXISTING_FLOW_LOG_BUCKET_ARN>"
+alb_log_bucket_name       = "<EXISTING_ALB_LOG_BUCKET_NAME>"
+certificate_arn           = "<EXISTING_ACM_CERTIFICATE_ARN>"
+web_acl_arn               = "<EXISTING_REGIONAL_WEB_ACL_ARN>"
+monitoring_role_arn       = "<EXISTING_RDS_MONITORING_ROLE_ARN>"
+postgres_version          = "<SUPPORTED_POSTGRES_MINOR_VERSION>"
+postgres_parameter_family = "<MATCHING_POSTGRES_PARAMETER_FAMILY>"
+frontend_origin           = "https://<FRONTEND_DOMAIN>"
+images = {
+  api = "<PUBLIC_API_IMAGE>@sha256:<DIGEST>"
+  web = "<PUBLIC_WEB_IMAGE>@sha256:<DIGEST>"
+}
+desired_count = 0

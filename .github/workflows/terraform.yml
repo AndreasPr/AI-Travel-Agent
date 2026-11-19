@@ -1,0 +1,74 @@
+name: Terraform validation
+on:
+  pull_request:
+    paths:
+      - 'infra/terraform/**'
+      - 'tests/terraform/**'
+      - '.github/workflows/terraform.yml'
+      - 'docs/security-exceptions.md'
+  push:
+    branches: [master]
+    paths:
+      - 'infra/terraform/**'
+      - 'tests/terraform/**'
+      - '.github/workflows/terraform.yml'
+      - 'docs/security-exceptions.md'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: terraform-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.7
+          terraform_wrapper: false
+      - name: Check formatting
+        run: terraform -chdir=infra/terraform fmt -check -recursive
+      - name: Initialize local provider schema only
+        run: terraform -chdir=infra/terraform init -backend=false -input=false -lockfile=readonly
+      - name: Validate configuration only
+        run: terraform -chdir=infra/terraform validate -no-color
+      - uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.65.0
+      - name: TFLint including local modules
+        run: tflint --chdir=infra/terraform --recursive --config="$PWD/infra/terraform/.tflint.hcl"
+  security:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install isolated pinned scanner
+        run: |
+          python -m venv "$RUNNER_TEMP/terraform-checkov"
+          "$RUNNER_TEMP/terraform-checkov/bin/pip" install checkov==3.3.30
+      - name: Verify private database guard with synthetic fixtures
+        run: |
+          "$RUNNER_TEMP/terraform-checkov/bin/checkov" -d tests/terraform/private_database/pass --framework terraform --skip-download --check CKV_AWS_17 --compact
+          set +e
+          "$RUNNER_TEMP/terraform-checkov/bin/checkov" -d tests/terraform/private_database/fail --framework terraform --skip-download --check CKV_AWS_17 --compact
+          result=$?
+          set -e
+          test "$result" -eq 1
+      - name: Checkov all policies without a platform key
+        # Fail all non-skipped findings, including unscored policies: stricter than HIGH only.
+        run: |
+          "$RUNNER_TEMP/terraform-checkov/bin/checkov" -d infra/terraform --framework terraform --skip-download --download-external-modules false --compact -o cli -o json --output-file-path "$RUNNER_TEMP/terraform-checkov-results"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: terraform-security-findings
+          path: ${{ runner.temp }}/terraform-checkov-results/
+      - name: Remove isolated scanner
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/terraform-checkov"
