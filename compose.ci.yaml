@@ -1,0 +1,6 @@
+# Reuse the images built by this workflow; no duplicate browser-job builds.
+services:
+  api:
+    image: travel-ci-api:test
+  web:
+    image: travel-ci-web:test

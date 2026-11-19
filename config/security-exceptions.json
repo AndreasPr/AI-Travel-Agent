@@ -1,0 +1,824 @@
+{
+  "exceptions": [
+    {
+      "package": "bsdutils",
+      "version": "1:2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-76642",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "bsdutils",
+      "version": "1:2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78408",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "bsdutils",
+      "version": "1:2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78409",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "bsdutils",
+      "version": "1:2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78410",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "jaraco.context",
+      "version": "5.3.0",
+      "advisory": "CVE-2026-23949",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "Vulnerable copy is vendored inside setuptools; upgrading standalone package does not replace it. Build-tool major migration deferred pending approval.",
+      "reachability": "Package archive extraction in setuptools vendored tooling; no application endpoint invokes package extraction. Risk remains for malicious build/install inputs.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libacl1",
+      "version": "2.3.2-2+b1",
+      "advisory": "CVE-2026-54369",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Installed base-image component; exploitability in this app has not been established. Runtime uses an unprivileged app user; this is not proof of non-reachability.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libblkid1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-76642",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libblkid1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78408",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libblkid1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78409",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libblkid1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78410",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "liblastlog2-2",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-76642",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "liblastlog2-2",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78408",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "liblastlog2-2",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78409",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "liblastlog2-2",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78410",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libmount1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-76642",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libmount1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78408",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libmount1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78409",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libmount1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78410",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libncursesw6",
+      "version": "6.5+20250216-2",
+      "advisory": "CVE-2025-69720",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Installed base-image component; exploitability in this app has not been established. Runtime uses an unprivileged app user; this is not proof of non-reachability.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libsmartcols1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-76642",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libsmartcols1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78408",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libsmartcols1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78409",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libsmartcols1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78410",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libsqlite3-0",
+      "version": "3.46.1-7+deb13u2",
+      "advisory": "CVE-2026-119373",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Production persistence uses Postgres. SQLite is used in tests; no user-supplied SQLite database or changeset endpoint identified.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libsqlite3-0",
+      "version": "3.46.1-7+deb13u2",
+      "advisory": "CVE-2026-119374",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Production persistence uses Postgres. SQLite is used in tests; no user-supplied SQLite database or changeset endpoint identified.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libsqlite3-0",
+      "version": "3.46.1-7+deb13u2",
+      "advisory": "CVE-2026-119379",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Production persistence uses Postgres. SQLite is used in tests; no user-supplied SQLite database or changeset endpoint identified.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libsystemd0",
+      "version": "257.13-1~deb13u1",
+      "advisory": "CVE-2026-16742",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Finding concerns systemd-homed; container starts uvicorn directly, not systemd-homed. Shared libraries remain installed.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libtinfo6",
+      "version": "6.5+20250216-2",
+      "advisory": "CVE-2025-69720",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Installed base-image component; exploitability in this app has not been established. Runtime uses an unprivileged app user; this is not proof of non-reachability.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libudev1",
+      "version": "257.13-1~deb13u1",
+      "advisory": "CVE-2026-16742",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Finding concerns systemd-homed; container starts uvicorn directly, not systemd-homed. Shared libraries remain installed.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libuuid1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-76642",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libuuid1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78408",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libuuid1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78409",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "libuuid1",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78410",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "login",
+      "version": "1:4.16.0-2+really2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-76642",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "login",
+      "version": "1:4.16.0-2+really2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78408",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "login",
+      "version": "1:4.16.0-2+really2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78409",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "login",
+      "version": "1:4.16.0-2+really2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78410",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "mount",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-76642",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "mount",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78408",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "mount",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78409",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "mount",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78410",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "ncurses-base",
+      "version": "6.5+20250216-2",
+      "advisory": "CVE-2025-69720",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Installed base-image component; exploitability in this app has not been established. Runtime uses an unprivileged app user; this is not proof of non-reachability.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "ncurses-bin",
+      "version": "6.5+20250216-2",
+      "advisory": "CVE-2025-69720",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Installed base-image component; exploitability in this app has not been established. Runtime uses an unprivileged app user; this is not proof of non-reachability.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "perl-base",
+      "version": "5.40.1-6+deb13u1",
+      "advisory": "CVE-2026-9538",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Installed base-image component; exploitability in this app has not been established. Runtime uses an unprivileged app user; this is not proof of non-reachability.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "pyarrow",
+      "version": "19.0.1",
+      "advisory": "CVE-2026-25087",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "HIGH",
+      "reason": "ML migration deferred by owner to chore/upgrade-ml-stack.",
+      "reachability": "Advisory concerns C++ IPC pre-buffering, which the advisory says is not exposed through Python bindings. No backend pyarrow import found.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "sentence-transformers",
+      "version": "4.1.0",
+      "advisory": "CVE-2026-68770",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "CRITICAL",
+      "reason": "ML migration deferred by owner to chore/upgrade-ml-stack; unresolved model-artifact trust risk.",
+      "reachability": "Model loading is reachable in backend/rag/embeddings.py and retrieval/rerank.py. A poisoned writable model directory can exploit this; configured model names do not eliminate the risk.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "setuptools",
+      "version": "70.3.0",
+      "advisory": "CVE-2025-47273",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "Scanner identifies pip vendored SBOM build metadata, not the installed setuptools runtime; retain finding rather than suppress entire package.",
+      "reachability": "Located version string in pip/_vendor/bom.cdx.json; importlib.metadata reports runtime setuptools 78.1.1 and no 70.3.0 installation directory.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "setuptools",
+      "version": "78.1.1",
+      "advisory": "CVE-2026-59890",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "MEDIUM",
+      "reason": "Fixed version requires an additional unapproved build-tool major migration; scoped temporary exception.",
+      "reachability": "Affected sdist MANIFEST handling or Windows legacy wheel namespace handling. App does not expose package build/install operations; Linux runtime. Developer package-building risk remains.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "setuptools",
+      "version": "78.1.1",
+      "advisory": "GHSA-xmj3-9gf7-h52w",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "LOW",
+      "reason": "Fixed version requires an additional unapproved build-tool major migration; scoped temporary exception.",
+      "reachability": "Affected sdist MANIFEST handling or Windows legacy wheel namespace handling. App does not expose package build/install operations; Linux runtime. Developer package-building risk remains.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "starlette",
+      "version": "0.46.1",
+      "advisory": "CVE-2025-54121",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "MEDIUM",
+      "reason": "Framework migration deferred by owner to chore/upgrade-web-stack; review before expiry.",
+      "reachability": "Multipart upload parsing; no UploadFile or request.form call found in backend.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "starlette",
+      "version": "0.46.1",
+      "advisory": "CVE-2025-62727",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "HIGH",
+      "reason": "Framework migration deferred by owner to chore/upgrade-web-stack; review before expiry.",
+      "reachability": "FileResponse Range parsing; no FileResponse or StaticFiles endpoint found in backend.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "starlette",
+      "version": "0.46.1",
+      "advisory": "CVE-2026-48710",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "MEDIUM",
+      "reason": "Framework migration deferred by owner to chore/upgrade-web-stack; review before expiry.",
+      "reachability": "URL reconstruction exists in framework; backend ownership checks use authenticated IDs, not reconstructed URL paths. Reachability of other framework uses is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "starlette",
+      "version": "0.46.1",
+      "advisory": "CVE-2026-48817",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "MEDIUM",
+      "reason": "Framework migration deferred by owner to chore/upgrade-web-stack; review before expiry.",
+      "reachability": "HTTPEndpoint method dispatch; backend uses FastAPI route functions, no HTTPEndpoint subclass found.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "starlette",
+      "version": "0.46.1",
+      "advisory": "CVE-2026-48818",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "HIGH",
+      "reason": "Framework migration deferred by owner to chore/upgrade-web-stack; review before expiry.",
+      "reachability": "Windows StaticFiles UNC handling; runtime is Linux and backend has no StaticFiles route.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "starlette",
+      "version": "0.46.1",
+      "advisory": "CVE-2026-54282",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "LOW",
+      "reason": "Framework migration deferred by owner to chore/upgrade-web-stack; review before expiry.",
+      "reachability": "URL reconstruction exists in framework; no request.url hostname authorization found in backend. Framework exposure is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "starlette",
+      "version": "0.46.1",
+      "advisory": "CVE-2026-54283",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "HIGH",
+      "reason": "Framework migration deferred by owner to chore/upgrade-web-stack; review before expiry.",
+      "reachability": "URL-encoded form parsing; no request.form call found in backend; auth endpoints use JSON models.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "transformers",
+      "version": "4.57.6",
+      "advisory": "CVE-2025-14929",
+      "scanners": [
+        "pip"
+      ],
+      "severity": "UNKNOWN",
+      "reason": "ML migration deferred by owner to chore/upgrade-ml-stack; unresolved artifact-loading risk.",
+      "reachability": "Indirect dependency of active sentence-transformers loading. No Trainer, checkpoint-conversion, save_pretrained, or custom-generation call found in backend; malicious model configuration remains a trust boundary.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "transformers",
+      "version": "4.57.6",
+      "advisory": "CVE-2026-1839",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "MEDIUM",
+      "reason": "ML migration deferred by owner to chore/upgrade-ml-stack; unresolved artifact-loading risk.",
+      "reachability": "Indirect dependency of active sentence-transformers loading. No Trainer, checkpoint-conversion, save_pretrained, or custom-generation call found in backend; malicious model configuration remains a trust boundary.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "transformers",
+      "version": "4.57.6",
+      "advisory": "CVE-2026-4372",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "HIGH",
+      "reason": "ML migration deferred by owner to chore/upgrade-ml-stack; unresolved artifact-loading risk.",
+      "reachability": "Indirect dependency of active sentence-transformers loading. No Trainer, checkpoint-conversion, save_pretrained, or custom-generation call found in backend; malicious model configuration remains a trust boundary.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "transformers",
+      "version": "4.57.6",
+      "advisory": "CVE-2026-5241",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "HIGH",
+      "reason": "ML migration deferred by owner to chore/upgrade-ml-stack; unresolved artifact-loading risk.",
+      "reachability": "Indirect dependency of active sentence-transformers loading. No Trainer, checkpoint-conversion, save_pretrained, or custom-generation call found in backend; malicious model configuration remains a trust boundary.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "transformers",
+      "version": "4.57.6",
+      "advisory": "CVE-2026-80047",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "HIGH",
+      "reason": "ML migration deferred by owner to chore/upgrade-ml-stack; unresolved artifact-loading risk.",
+      "reachability": "Indirect dependency of active sentence-transformers loading. No Trainer, checkpoint-conversion, save_pretrained, or custom-generation call found in backend; malicious model configuration remains a trust boundary.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "transformers",
+      "version": "4.57.6",
+      "advisory": "CVE-2026-9856",
+      "scanners": [
+        "trivy",
+        "pip"
+      ],
+      "severity": "HIGH",
+      "reason": "ML migration deferred by owner to chore/upgrade-ml-stack; unresolved artifact-loading risk.",
+      "reachability": "Indirect dependency of active sentence-transformers loading. No Trainer, checkpoint-conversion, save_pretrained, or custom-generation call found in backend; malicious model configuration remains a trust boundary.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "util-linux",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-76642",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "util-linux",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78408",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "util-linux",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78409",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "util-linux",
+      "version": "2.41.5-0+deb13u1",
+      "advisory": "CVE-2026-78410",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "No fixed version listed by the refreshed Debian advisory feed; review base image updates before expiry.",
+      "reachability": "Privileged mount/nsenter operations are not invoked by backend code. Container runs as app, without privileged mode; local/container escape risk is not ruled out.",
+      "review_date": "2026-12-19"
+    },
+    {
+      "package": "wheel",
+      "version": "0.45.1",
+      "advisory": "CVE-2026-24049",
+      "scanners": [
+        "trivy"
+      ],
+      "severity": "HIGH",
+      "reason": "Vulnerable copy is vendored inside setuptools; upgrading standalone package does not replace it. Build-tool major migration deferred pending approval.",
+      "reachability": "Package archive extraction in setuptools vendored tooling; no application endpoint invokes package extraction. Risk remains for malicious build/install inputs.",
+      "review_date": "2026-12-19"
+    }
+  ]
+}
