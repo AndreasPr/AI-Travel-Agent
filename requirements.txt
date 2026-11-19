@@ -25,7 +25,7 @@ executing==2.2.0
 fastapi==0.115.11
 fastjsonschema==2.21.1
 fqdn==1.5.1
-fsspec==2026.6.0
+fsspec==2026.9.0
 h11==0.16.0
 httpcore==1.0.9
 httpx==0.28.1
