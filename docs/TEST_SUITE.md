@@ -26,7 +26,12 @@ explicit integration marks. Existing assertions are preserved during relocation.
 
 CI enforces .coveragerc's 70% floor across backend/ with branch coverage enabled.
 Ruff checks the repository; mypy checks backend/ with incremental non-strict typing.
-The only targeted mypy exemption covers heterogeneous SQLAlchemy migration types.
+Mypy has a targeted exemption for heterogeneous SQLAlchemy migration types and
+skips imports under `transformers.models.*` to avoid mypy 1.13 internal crashes
+in third-party model processors (observed in Dia, CSM and Voxtral). Types imported
+from that implementation namespace become `Any`, reducing dependency type precision.
+Backend files and other dependencies retain the existing checks; this does not
+change runtime model loading. Revisit this boundary when upgrading the type checker.
 Tool and chat/SSE schemas are committed snapshots. Update them deliberately after
 reviewing API compatibility; tests never rewrite snapshots.
 
