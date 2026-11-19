@@ -182,7 +182,7 @@ jobs:
     uses: ./.github/workflows/eval-gate.yml
   smoke:
     needs: docker
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 7
     steps:
       - uses: actions/checkout@v4
@@ -194,7 +194,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-1.51.0
+          key: playwright-ubuntu-24.04-${{ runner.arch }}-1.51.0
       - run: python -m playwright install --with-deps chromium
       - uses: actions/download-artifact@v4
         with:
@@ -219,7 +219,7 @@ jobs:
       - name: Short synthetic SSE ramp
         run: PERF_SESSIONS=2 PERF_HOLD=10s make perf
         env:
-          PERF_HARDWARE_DESCRIPTION: GitHub hosted ubuntu-latest; synthetic pipeline; Docker default allocation
+          PERF_HARDWARE_DESCRIPTION: GitHub hosted ubuntu-24.04; synthetic pipeline; Docker default allocation
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -227,7 +227,11 @@ jobs:
           path: perf/results/*-synthetic.json
       - name: Container diagnostics
         if: failure()
-        run: docker compose -f compose.test.yaml -f compose.ci.yaml logs --tail=100
+        run: |
+          export TEST_JWT_SECRET="${TEST_JWT_SECRET:-unused-compose-cleanup}"
+          docker compose -f compose.test.yaml -f compose.ci.yaml logs --tail=100
       - name: Remove isolated test stack
         if: always()
-        run: docker compose -f compose.test.yaml -f compose.ci.yaml down
+        run: |
+          export TEST_JWT_SECRET="${TEST_JWT_SECRET:-unused-compose-cleanup}"
+          docker compose -f compose.test.yaml -f compose.ci.yaml down

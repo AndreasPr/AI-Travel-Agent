@@ -1,7 +1,11 @@
 # CI on public pull requests
 
 `.github/workflows/ci.yml` runs on pull requests, pushes to master and manual dispatch.
-It uses hosted Ubuntu runners with read-only repository permissions. No PR job uses
+It uses hosted Ubuntu runners with read-only repository permissions. The smoke job
+is pinned to Ubuntu 24.04 for compatibility with Playwright 1.51; its browser cache
+includes the Ubuntu release and architecture. Diagnostics and cleanup use a
+non-secret interpolation placeholder if failure occurs before the temporary JWT key
+is generated. That placeholder is never used to start the stack. No PR job uses
 repository secrets, paid providers, live models, model downloads, registry pushes,
 `pull_request_target`, or `continue-on-error`. Test signing keys are generated in the
 job, masked and discarded. The manual live evaluation workflow remains separate.
