@@ -12,10 +12,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt requirements-docker-cpu.txt /tmp/
+COPY requirements-docker-cpu.txt /tmp/
 RUN python -m pip install --upgrade pip && \
-    python -m pip install -r /tmp/requirements-docker-cpu.txt && \
-    python -m pip install -r /tmp/requirements.txt && \
+    python -m pip install -r /tmp/requirements-docker-cpu.txt
+
+COPY requirements.txt /tmp/
+RUN python -m pip install -r /tmp/requirements.txt && \
     python -m pip check && \
     HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python -c "import torch; from sentence_transformers import SentenceTransformer; assert torch.version.cuda is None; assert torch.tensor([2, 3]).sum().item() == 5"
 
@@ -28,8 +30,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y --no-install-recommends --only-upgrade zlib1g && rm -rf /var/lib/apt/lists/*
+
 RUN groupadd --system app && useradd --system --gid app --create-home --home-dir /home/app app
 
+# COPY merges directories; clear base-image package metadata before copying the
+# verified builder environment so obsolete pip metadata cannot survive the merge.
+RUN rm -rf /usr/local/lib/python3.12/site-packages/*
 COPY --from=builder /usr/local /usr/local
 COPY backend /app/backend
 COPY config /app/config
