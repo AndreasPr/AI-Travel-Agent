@@ -98,3 +98,13 @@ coverage/performance artifacts, and record total elapsed time. Configure require
 checks for the new CI jobs, replacing obsolete Test suite names. Confirm README
 badges render. Check a fork PR without repository secrets. These hosted/settings
 checks cannot be claimed from local runs alone.
+
+The k6 step alone sets `K6_BROWSER_ARGS=no-sandbox` for its disposable Chromium
+process. This avoids the hosted Ubuntu user-namespace sandbox launch restriction
+when using the Playwright-downloaded Chromium. It reduces isolation of that browser;
+use it only for the verified local synthetic stack. Host AppArmor settings, application
+containers and other jobs are not changed. The CPU `scaling_cur_freq` message in a
+Chromium crash log alone does not establish the original crash cause; verify the
+next hosted run. k6 must complete at least one successful SSE session, retain zero
+SSE errors, and exit successfully. An aborted or zero-sample run is marked failed
+in its JSON artifact, even if an empty error-rate metric displays zero.

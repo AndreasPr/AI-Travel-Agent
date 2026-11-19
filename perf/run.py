@@ -8,6 +8,23 @@ import subprocess
 from datetime import datetime, timezone
 
 
+def finalize_report(output, returncode):
+    """A zero-sample or aborted run is never successful performance evidence."""
+    if not output.exists():
+        return returncode or 1
+    report = json.loads(output.read_text())
+    metrics = report.get('metrics', {})
+    completed = metrics.get('sse_completed_sessions', {}).get('values', {}).get('count', 0)
+    errors = metrics.get('sse_error_rate', {}).get('values', {})
+    valid = completed > 0 and errors.get('passes', 0) + errors.get('fails', 0) > 0
+    passed = returncode == 0 and valid and errors.get('rate') == 0
+    report['status'] = 'passed' if passed else 'failed'
+    report['k6_exit_code'] = returncode
+    report['completed_sessions'] = completed
+    output.write_text(json.dumps(report, indent=2) + '\n')
+    return 0 if passed else (returncode or 1)
+
+
 def main():
     environment = dict(os.environ)
     # Verify the configured stack before traffic; never accept a generic live target.
@@ -40,8 +57,9 @@ def main():
         with sync_playwright() as playwright:
             environment['K6_BROWSER_EXECUTABLE_PATH'] = playwright.chromium.executable_path
     result = subprocess.run(['k6', 'run', 'perf/synthetic_sse.js'], env=environment)
-    print(f'Synthetic environment-specific measurements: {output}')
-    raise SystemExit(result.returncode)
+    exit_code = finalize_report(output, result.returncode)
+    print(f'Synthetic performance run {"FAILED" if exit_code else "PASSED"}; report: {output}')
+    raise SystemExit(exit_code)
 
 
 if __name__ == '__main__':

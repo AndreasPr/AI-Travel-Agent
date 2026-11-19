@@ -40,6 +40,19 @@ def test_smoke_runner_and_browser_cache_use_supported_ubuntu():
     assert '${{ runner.arch }}' in cache['with']['key']
 
 
+def test_browser_sandbox_exception_is_limited_to_synthetic_load_step():
+    config = yaml.safe_load(Path('.github/workflows/ci.yml').read_text())
+    assert 'K6_BROWSER_ARGS' not in config.get('env', {})
+    found = []
+    for job_name, job in config['jobs'].items():
+        assert 'K6_BROWSER_ARGS' not in job.get('env', {})
+        for step in job.get('steps', []):
+            if 'K6_BROWSER_ARGS' in step.get('env', {}):
+                found.append((job_name, step['name'], step['env']['K6_BROWSER_ARGS']))
+                assert step['run'] == 'PERF_SESSIONS=2 PERF_HOLD=10s make perf'
+    assert found == [('smoke', 'Short synthetic SSE ramp', 'no-sandbox')]
+
+
 @pytest.mark.parametrize('step_name', ['Container diagnostics', 'Remove isolated test stack'])
 @pytest.mark.parametrize('existing_key', [None, 'synthetic-existing-test-key'])
 def test_synthetic_smoke_cleanup_handles_early_failure(tmp_path, step_name, existing_key):

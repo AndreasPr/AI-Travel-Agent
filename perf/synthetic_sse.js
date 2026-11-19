@@ -1,20 +1,22 @@
 // Synthetic scripted tests of the pipeline, not model behavior.
 import { browser } from 'k6/browser';
-import { Trend, Rate } from 'k6/metrics';
+import { Trend, Rate, Counter } from 'k6/metrics';
 import { sleep } from 'k6';
 const ttft = new Trend('sse_time_to_first_token_ms', true);
 const errors = new Rate('sse_error_rate');
+const completed = new Counter('sse_completed_sessions');
 const sessions = Number(__ENV.PERF_SESSIONS || 2);
 export const options = {
   scenarios: { synthetic: { executor: 'ramping-vus', startVUs: 0,
     stages: [{duration: '5s', target: sessions}, {duration: __ENV.PERF_HOLD || '10s', target: sessions}, {duration: '5s', target: 0}],
     gracefulRampDown: '15s', options: {browser: {type: 'chromium'}} } },
-  thresholds: {sse_error_rate: ['rate==0']},
+  thresholds: {sse_error_rate: ['rate==0'], sse_completed_sessions: ['count>0']},
 };
 let identity;
 export default async function () {
-  const page = await browser.newPage();
+  let page;
   try {
+    page = await browser.newPage();
     await page.goto(__ENV.TEST_WEB_URL || 'http://localhost:13100');
     const result = await page.evaluate(async ({api, identity, vu, run}) => {
       const headers = {'Content-Type': 'application/json', 'X-CSRF-Protection': '1'};
@@ -66,9 +68,10 @@ export default async function () {
     }, {api: __ENV.TEST_API_URL || 'http://localhost:18100', identity, vu: __VU, run: __ENV.PERF_RUN_ID});
     identity = result.identity;
     errors.add(result.error);
+    if (!result.error) completed.add(1);
     if (result.first !== null && result.first !== undefined) ttft.add(result.first);
   } catch (_) { errors.add(true); }
-  finally { await page.close(); }
+  finally { if (page) await page.close(); }
   sleep(5);
 }
 export function handleSummary(data) {

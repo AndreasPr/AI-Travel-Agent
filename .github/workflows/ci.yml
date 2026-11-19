@@ -219,6 +219,8 @@ jobs:
       - name: Short synthetic SSE ramp
         run: PERF_SESSIONS=2 PERF_HOLD=10s make perf
         env:
+          # Only the disposable synthetic load browser; no host security changes.
+          K6_BROWSER_ARGS: no-sandbox
           PERF_HARDWARE_DESCRIPTION: GitHub hosted ubuntu-24.04; synthetic pipeline; Docker default allocation
       - uses: actions/upload-artifact@v4
         if: always()
