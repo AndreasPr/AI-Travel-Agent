@@ -40,7 +40,7 @@ make lint
 PYTHONPATH=. pytest -q
 
 # Full migration chain and double-seed check in a temporary schema, rolled back.
-PYTHONPATH=. pytest -q -m integration tests/test_inventory_integration.py
+PYTHONPATH=. pytest -q -m integration tests/integration/test_inventory_integration.py
 ```
 
 `make up` builds the services, runs migrations and seeds synthetic inventory. `make down` removes database volumes; running `make down && make up` also removes the RAG corpus and other stored application data. Do not use that command to preserve an existing corpus. No model or API key is needed for synthetic inventory generation or these inventory tests.

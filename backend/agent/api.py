@@ -17,6 +17,9 @@ router = APIRouter(prefix='/api')
 @lru_cache
 def get_agent():
     from backend.agent.store import PostgresTripStore
+    from backend.testing.synthetic import enabled, synthetic_agent
+    if enabled():
+        return synthetic_agent(store=PostgresTripStore())
     return Agent(store=PostgresTripStore())
 
 

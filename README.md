@@ -140,3 +140,11 @@ Missing measurements are "not run". Rates are check-weighted; spread is populati
 
 
 <!-- EVAL:END -->
+
+## Test suite
+
+See [test suite instructions](docs/TEST_SUITE.md) for offline checks, disposable
+Postgres integration, Playwright and local k6 SSE measurements. Synthetic scenarios
+are **scripted tests of the pipeline**, not model behavior. CI enforces a 70% backend
+coverage floor. Real full-chat replay coverage remains skipped until matching
+recordings exist; synthetic fixtures are never reported under real model names.

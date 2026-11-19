@@ -62,7 +62,7 @@ export PYTHONPATH=.
 python -m pip install -r requirements-dev.txt
 alembic -c backend/alembic.ini upgrade head
 make test-tools
-pytest -q -m integration tests/test_agent_tools_integration.py
+pytest -q -m integration tests/integration/test_agent_tools_integration.py
 python -m backend.tools.cli schemas
 python -m backend.tools.cli search_hotels --city Lisbon --check_in 2027-04-10 --check_out 2027-04-15 --max_price_per_night 120
 ```

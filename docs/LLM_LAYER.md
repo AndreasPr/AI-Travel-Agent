@@ -51,7 +51,7 @@ source venv/bin/activate
 python -m pip install -r requirements.txt -r requirements-dev.txt
 PYTHONPATH=. alembic -c backend/alembic.ini upgrade head
 make test-llm
-PYTHONPATH=. pytest -q -m integration tests/test_llm_integration.py
+PYTHONPATH=. pytest -q -m integration tests/integration/test_llm_integration.py
 python -m backend.llm.cli --role extract --show-limits
 python -m backend.llm.cli --role extract --prompt "say hi"
 # Optional: add --provider and --model using values already declared in models.yaml.

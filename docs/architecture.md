@@ -80,7 +80,7 @@ export PYTHONPATH=.
 alembic -c backend/alembic.ini upgrade head
 python -m backend.scripts.seed_inventory
 make test-agent
-pytest -q --tb=short -m integration tests/test_agent_persistence.py
+pytest -q --tb=short -m integration tests/unit/test_agent_persistence.py
 uvicorn backend.main:app --reload
 ```
 
@@ -92,7 +92,7 @@ python -m backend.agent.cli 'Plan five days in Lisbon from 2027-04-10 through 20
 
 This dated CLI example completed with local Ollama on 2026-11-03. Its unknown activity costs leave `budget_met=null`; missing verified coordinates produce travel-check warnings. This smoke check is not a quality benchmark or a guarantee for other requests. Destination retrieval needs the existing corpus and local retrieval models. M4 covers optional live geocoding setup. M3 covers Gemini access; no live recording was performed for this change. Only record real fixtures after explicit confirmation that `GEMINI_API_KEY` is set. `--replay` never records or reaches a model; it fails clearly if a matching fixture is absent. Existing simple LLM recordings do not constitute complete agent conversations.
 
-Tests in `tests/test_agent_loop.py` and `tests/test_agent_persistence.py` use scripted synthetic responses. Temporary ReplayProvider fixtures are explicitly labeled synthetic, not represented as provider recordings. Default tests use SQLite for the SQL store; the integration variants apply/downgrade the actual migration in isolated Postgres schemas.
+Tests in `tests/unit/test_agent_loop.py` and `tests/unit/test_agent_persistence.py` use scripted synthetic responses. Temporary ReplayProvider fixtures are explicitly labeled synthetic, not represented as provider recordings. Default tests use SQLite for the SQL store; the integration variants apply/downgrade the actual migration in isolated Postgres schemas.
 
 Provider tool-message formatting follows the [official Ollama tool-calling examples](https://docs.ollama.com/capabilities/tool-calling): assistant function-call objects and tool responses containing `tool_name`. The same normalized messages are translated by the existing Gemini adapter. Protocol-shape tests do not substitute for a live end-to-end provider check.
 

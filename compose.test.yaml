@@ -1,0 +1,43 @@
+# Synthetic scripted tests of the pipeline, not model behavior.
+name: travel-test-suite
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: synthetic_tests
+      POSTGRES_USER: synthetic
+      POSTGRES_PASSWORD: synthetic-local-only
+    tmpfs: [/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U synthetic -d synthetic_tests']
+      interval: 2s
+      retries: 30
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg://synthetic:synthetic-local-only@db:5432/synthetic_tests
+      APP_ENV: development
+      JWT_SECRET: ${TEST_JWT_SECRET:?Generate a temporary TEST_JWT_SECRET for this isolated stack}
+      FRONTEND_ORIGINS: http://localhost:${TEST_WEB_PORT:-13100}
+      LLM_STUB: '1'
+      TEST_SUITE_MODE: '1'
+      GEMINI_API_KEY: ''
+      RECORD: '0'
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+    volumes:
+      - ./tests/fixtures/synthetic:/app/tests/fixtures/synthetic:ro
+    command: [sh, -c, 'python -m alembic -c backend/alembic.ini upgrade head && uvicorn backend.main:app --host 0.0.0.0 --port 8080']
+    ports: ['127.0.0.1:${TEST_API_PORT:-18100}:8080']
+    depends_on:
+      db: {condition: service_healthy}
+  web:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:${TEST_API_PORT:-18100}
+    ports: ['127.0.0.1:${TEST_WEB_PORT:-13100}:3000']
+    depends_on:
+      api: {condition: service_healthy}

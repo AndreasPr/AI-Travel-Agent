@@ -65,7 +65,7 @@ Keep the existing database volumes. Apply the new migration before starting this
 source venv/bin/activate
 export PYTHONPATH=.
 python -m alembic -c backend/alembic.ini upgrade head
-pytest -q -m integration tests/security/test_limits_integration.py tests/test_agent_persistence.py
+pytest -q -m integration tests/security/test_limits_integration.py tests/unit/test_agent_persistence.py
 ```
 
 For the Docker API, rebuild the API image with `docker compose up --build -d api`, then use `make migrate` instead of the host Alembic command. The rate-limited endpoints fail closed while the counter table is missing. No new keys, signup or model download is required. Set limits under `guardrails` in `config/models.yaml`; API body size is also configured there.

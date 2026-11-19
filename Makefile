@@ -55,19 +55,19 @@ rag-diagnose:
 
 .PHONY: test-llm
 test-llm:
-	pytest -q tests/test_llm.py tests/test_llm_integration.py
+	pytest -q tests/unit/test_llm.py tests/integration/test_llm_integration.py
 
 .PHONY: test-tools
 test-tools:
-	pytest -q tests/test_agent_tools.py tests/test_agent_tools_integration.py
+	pytest -q tests/unit/test_agent_tools.py tests/integration/test_agent_tools_integration.py
 
 .PHONY: test-agent
 test-agent:
-	pytest -q tests/test_agent_loop.py tests/test_agent_persistence.py
+	pytest -q tests/unit/test_agent_loop.py tests/unit/test_agent_persistence.py
 
 .PHONY: test-streaming
 test-streaming:
-	pytest -q tests/test_agent_streaming.py
+	pytest -q tests/unit/test_agent_streaming.py
 
 .PHONY: test-security security-report security-live
 test-security:
@@ -102,3 +102,26 @@ eval-report:
 
 eval-gate: eval
 	python -m eval.gate
+
+.PHONY: test-ci typecheck record test-contract test-containers test-e2e perf
+# Coverage is enforced over backend code; no live providers in this target.
+test-ci:
+	python -m pytest -q --cov=backend --cov-report=term-missing --cov-report=xml
+
+typecheck:
+	mypy backend
+
+record:
+	RECORD=1 python -m backend.llm.record_fixtures
+
+test-contract:
+	python -m pytest -q tests/contract
+
+test-containers:
+	python -m pytest -q -m integration tests/integration/test_synthetic_container.py tests/integration/test_recorded_container.py
+
+test-e2e:
+	python -m pytest -q -m e2e tests/e2e
+
+perf:
+	python perf/run.py

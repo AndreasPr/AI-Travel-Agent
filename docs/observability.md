@@ -18,7 +18,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:4318 docker compose up -d --build a
 curl --fail http://localhost:8100/healthz
 curl --fail http://localhost:8100/metrics
 docker compose exec prometheus promtool check config /etc/prometheus/prometheus.yml
-pytest -q tests/test_observability.py
+pytest -q tests/unit/test_observability.py
 ```
 
 This preserves database volumes. Existing migrations, retrieval data and model

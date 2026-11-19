@@ -64,7 +64,7 @@ pytest -q
 Postgres-only quota checks (isolated schemas; no model calls):
 
 ```bash
-pytest -q --tb=short -m integration tests/test_llm_integration.py
+pytest -q --tb=short -m integration tests/integration/test_llm_integration.py
 ```
 
 The streaming unit tests use synthetic scripted responses, synthetic ReplayProvider fixtures and mocked HTTP/SDK clients. No real model, network access or model download is used by unit tests. M3/Gemini fixture recording is not required.

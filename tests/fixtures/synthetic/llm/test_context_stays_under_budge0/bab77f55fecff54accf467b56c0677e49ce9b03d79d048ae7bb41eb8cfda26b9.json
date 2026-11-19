@@ -1,0 +1,1 @@
+{"provenance": "synthetic scripted test, not a provider recording", "response": {"text": "{\"summary\": \"Synthetic summary: museums and food.\"}", "tool_calls": [], "tokens_in": 0, "tokens_out": 0, "cached_tokens": 0, "latency_ms": 0, "provider": "synthetic", "model": "synthetic-test", "finish_reason": null, "raw_id": null}}

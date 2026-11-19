@@ -23,7 +23,9 @@ def _safe_city_name(city: str) -> str:
 
 def assert_rag_tables_exist() -> None:
     with SessionLocal() as session:
-        tables = set(inspect(session.bind).get_table_names())
+        inspector = inspect(session.bind)
+        assert inspector is not None
+        tables = set(inspector.get_table_names())
     missing = {"documents", "document_chunks"} - tables
     if missing:
         raise RuntimeError(

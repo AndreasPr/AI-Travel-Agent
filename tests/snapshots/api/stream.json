@@ -1,0 +1,779 @@
+{
+  "$defs": {
+    "ArgumentSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "fields": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fields",
+          "type": "array"
+        },
+        "omitted_fields": {
+          "minimum": 0,
+          "title": "Omitted Fields",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "fields",
+        "omitted_fields"
+      ],
+      "title": "ArgumentSummary",
+      "type": "object"
+    },
+    "Chunk": {
+      "additionalProperties": false,
+      "properties": {
+        "attribution": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Attribution"
+        },
+        "chunk_id": {
+          "title": "Chunk Id",
+          "type": "string"
+        },
+        "excerpt": {
+          "maxLength": 600,
+          "title": "Excerpt",
+          "type": "string"
+        },
+        "license": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "License"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Title"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Url"
+        }
+      },
+      "required": [
+        "chunk_id",
+        "title",
+        "url",
+        "license",
+        "attribution",
+        "excerpt"
+      ],
+      "title": "Chunk",
+      "type": "object"
+    },
+    "Citations": {
+      "additionalProperties": false,
+      "properties": {
+        "citations": {
+          "items": {
+            "$ref": "#/$defs/Chunk"
+          },
+          "title": "Citations",
+          "type": "array"
+        },
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "citations",
+          "default": "citations",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "citations"
+      ],
+      "title": "Citations",
+      "type": "object"
+    },
+    "Coordinates": {
+      "additionalProperties": false,
+      "properties": {
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "title": "Coordinates",
+      "type": "object"
+    },
+    "Day": {
+      "additionalProperties": false,
+      "properties": {
+        "date": {
+          "format": "date",
+          "title": "Date",
+          "type": "string"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/$defs/Item"
+          },
+          "title": "Items",
+          "type": "array"
+        }
+      },
+      "required": [
+        "date",
+        "items"
+      ],
+      "title": "Day",
+      "type": "object"
+    },
+    "Done": {
+      "additionalProperties": false,
+      "properties": {
+        "budget_met": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Budget Met"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "preference_proposal": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Preferences"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "trip_id": {
+          "title": "Trip Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "done",
+          "default": "done",
+          "title": "Type",
+          "type": "string"
+        },
+        "usage": {
+          "$ref": "#/$defs/Usage"
+        }
+      },
+      "required": [
+        "request_id",
+        "trip_id",
+        "usage",
+        "message",
+        "budget_met"
+      ],
+      "title": "Done",
+      "type": "object"
+    },
+    "ErrorEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "enum": [
+            "tool_unavailable",
+            "sensitive_content",
+            "usage_limit",
+            "timeout",
+            "not_found",
+            "conflict",
+            "provider_unavailable",
+            "rate_limited",
+            "quota_exhausted",
+            "invalid_output",
+            "step_limit",
+            "internal_error"
+          ],
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "error",
+          "default": "error",
+          "title": "Type",
+          "type": "string"
+        },
+        "usage": {
+          "$ref": "#/$defs/Usage"
+        }
+      },
+      "required": [
+        "request_id",
+        "code",
+        "message",
+        "usage"
+      ],
+      "title": "ErrorEvent",
+      "type": "object"
+    },
+    "Item": {
+      "additionalProperties": false,
+      "properties": {
+        "allow_outside_visiting_window": {
+          "default": false,
+          "title": "Allow Outside Visiting Window",
+          "type": "boolean"
+        },
+        "category": {
+          "title": "Category",
+          "type": "string"
+        },
+        "chunk_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Chunk Ids",
+          "type": "array"
+        },
+        "coord_tool_result_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Coord Tool Result Id"
+        },
+        "coords": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Coordinates"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "cost": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost"
+        },
+        "currency": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        },
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "place": {
+          "title": "Place",
+          "type": "string"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        },
+        "tool_result_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tool Result Ids",
+          "type": "array"
+        },
+        "travel_mode": {
+          "default": "walking",
+          "enum": [
+            "walking",
+            "transit"
+          ],
+          "title": "Travel Mode",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "start",
+        "end",
+        "place",
+        "category",
+        "currency"
+      ],
+      "title": "Item",
+      "type": "object"
+    },
+    "Itinerary": {
+      "additionalProperties": false,
+      "properties": {
+        "days": {
+          "items": {
+            "$ref": "#/$defs/Day"
+          },
+          "title": "Days",
+          "type": "array"
+        },
+        "trip": {
+          "$ref": "#/$defs/Trip"
+        }
+      },
+      "required": [
+        "trip",
+        "days"
+      ],
+      "title": "Itinerary",
+      "type": "object"
+    },
+    "ItineraryUpdate": {
+      "additionalProperties": false,
+      "properties": {
+        "diff": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Diff"
+        },
+        "itinerary": {
+          "$ref": "#/$defs/Itinerary"
+        },
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "itinerary_update",
+          "default": "itinerary_update",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "itinerary"
+      ],
+      "title": "ItineraryUpdate",
+      "type": "object"
+    },
+    "MessageStart": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "trip_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Trip Id"
+        },
+        "type": {
+          "const": "message_start",
+          "default": "message_start",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id"
+      ],
+      "title": "MessageStart",
+      "type": "object"
+    },
+    "Preferences": {
+      "additionalProperties": false,
+      "properties": {
+        "budget": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Budget"
+        },
+        "dietary_needs": {
+          "items": {
+            "enum": [
+              "vegetarian",
+              "vegan",
+              "halal",
+              "kosher",
+              "gluten-free"
+            ],
+            "type": "string"
+          },
+          "title": "Dietary Needs",
+          "type": "array"
+        },
+        "interests": {
+          "items": {
+            "enum": [
+              "museums",
+              "food",
+              "nature",
+              "history",
+              "art",
+              "shopping",
+              "beaches",
+              "nightlife"
+            ],
+            "type": "string"
+          },
+          "title": "Interests",
+          "type": "array"
+        },
+        "mobility": {
+          "anyOf": [
+            {
+              "enum": [
+                "standard",
+                "step-free",
+                "short-walks"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mobility"
+        },
+        "pace": {
+          "anyOf": [
+            {
+              "enum": [
+                "relaxed",
+                "moderate",
+                "busy"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pace"
+        }
+      },
+      "title": "Preferences",
+      "type": "object"
+    },
+    "Token": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "type": {
+          "const": "token",
+          "default": "token",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "text"
+      ],
+      "title": "Token",
+      "type": "object"
+    },
+    "ToolEnd": {
+      "additionalProperties": false,
+      "properties": {
+        "call_id": {
+          "format": "uuid",
+          "title": "Call Id",
+          "type": "string"
+        },
+        "duration_ms": {
+          "minimum": 0,
+          "title": "Duration Ms",
+          "type": "number"
+        },
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "no_data",
+            "error"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "tool": {
+          "title": "Tool",
+          "type": "string"
+        },
+        "type": {
+          "const": "tool_end",
+          "default": "tool_end",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "call_id",
+        "tool",
+        "status",
+        "duration_ms"
+      ],
+      "title": "ToolEnd",
+      "type": "object"
+    },
+    "ToolStart": {
+      "additionalProperties": false,
+      "properties": {
+        "argument_summary": {
+          "$ref": "#/$defs/ArgumentSummary"
+        },
+        "call_id": {
+          "format": "uuid",
+          "title": "Call Id",
+          "type": "string"
+        },
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "tool": {
+          "title": "Tool",
+          "type": "string"
+        },
+        "type": {
+          "const": "tool_start",
+          "default": "tool_start",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "call_id",
+        "tool",
+        "argument_summary"
+      ],
+      "title": "ToolStart",
+      "type": "object"
+    },
+    "Trip": {
+      "additionalProperties": false,
+      "properties": {
+        "currency": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        },
+        "end_date": {
+          "format": "date",
+          "title": "End Date",
+          "type": "string"
+        },
+        "start_date": {
+          "format": "date",
+          "title": "Start Date",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start_date",
+        "end_date",
+        "currency"
+      ],
+      "title": "Trip",
+      "type": "object"
+    },
+    "Usage": {
+      "additionalProperties": false,
+      "properties": {
+        "cached_tokens": {
+          "default": 0,
+          "title": "Cached Tokens",
+          "type": "integer"
+        },
+        "calls": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Calls",
+          "type": "array"
+        },
+        "tokens_in": {
+          "default": 0,
+          "title": "Tokens In",
+          "type": "integer"
+        },
+        "tokens_out": {
+          "default": 0,
+          "title": "Tokens Out",
+          "type": "integer"
+        },
+        "uncached_tokens": {
+          "default": 0,
+          "title": "Uncached Tokens",
+          "type": "integer"
+        }
+      },
+      "title": "Usage",
+      "type": "object"
+    }
+  },
+  "discriminator": {
+    "mapping": {
+      "citations": "#/$defs/Citations",
+      "done": "#/$defs/Done",
+      "error": "#/$defs/ErrorEvent",
+      "itinerary_update": "#/$defs/ItineraryUpdate",
+      "message_start": "#/$defs/MessageStart",
+      "token": "#/$defs/Token",
+      "tool_end": "#/$defs/ToolEnd",
+      "tool_start": "#/$defs/ToolStart"
+    },
+    "propertyName": "type"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/MessageStart"
+    },
+    {
+      "$ref": "#/$defs/Token"
+    },
+    {
+      "$ref": "#/$defs/ToolStart"
+    },
+    {
+      "$ref": "#/$defs/ToolEnd"
+    },
+    {
+      "$ref": "#/$defs/ItineraryUpdate"
+    },
+    {
+      "$ref": "#/$defs/Citations"
+    },
+    {
+      "$ref": "#/$defs/ErrorEvent"
+    },
+    {
+      "$ref": "#/$defs/Done"
+    }
+  ]
+}

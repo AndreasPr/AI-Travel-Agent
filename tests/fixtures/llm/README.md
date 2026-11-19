@@ -1,7 +1,13 @@
-# LLM fixtures
+# Real provider recordings
 
-The checked-in JSON is a synthetic unit-test fixture, not a live provider recording. Its provenance field states that explicitly. The request is `[{"role":"user","content":"Synthetic replay greeting"}]`, provider `synthetic`, model `synthetic-test-model`, with no tools or schema; these are test identifiers only.
+Five committed Gemini responses have `provenance: recorded`. They cover the five
+small requests declared in backend/llm/record_fixtures.py. They do not constitute a
+full chat transcript. Replay is offline, hashes the exact request, and fails when
+its fixture is missing. Tests requiring unavailable recordings explicitly skip
+with `no recording; run make eval-record`.
 
-Real recordings are written only by an explicitly enabled Recorder. Filenames hash provider, model, messages, tools and schema; files store normalized responses, not request bodies or headers. Review all generated files for personal data before committing.
+Synthetic scripted tests of the pipeline are separate in ../synthetic/ and never
+represent model behavior. Claude/Bedrock recordings remain unavailable.
 
-Claude and Bedrock recordings are not present. Their classes are replay-only and remain unverified until actual recordings are supplied.
+`make record` requires explicit opt-in and GEMINI_API_KEY (M3); it calls the real
+configured free provider. Review responses for sensitive content before committing.

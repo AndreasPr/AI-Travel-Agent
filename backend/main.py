@@ -9,9 +9,10 @@ from backend.security.content import install_log_redaction
 from backend.security.middleware import BodyLimitMiddleware
 from backend.llm.config import load_config
 from sqlalchemy import text
+from sqlalchemy.orm import Session
 
 from backend.db import schemas as db_schemas, utils as db_utils
-from backend.db.connect import SessionLocal, get_db_session
+from backend.db.connect import get_db_session
 from backend.agent.api import router as agent_router
 from backend.rag.search import search as rag_search
 
@@ -22,6 +23,8 @@ from backend.auth.service import settings as auth_settings
 
 @asynccontextmanager
 async def lifespan(app):
+    from backend.testing.synthetic import enabled
+    enabled()  # Reject unsafe test-provider configuration before serving.
     auth_settings()  # Fail before accepting requests when production credentials are unsafe.
     yield
 
@@ -52,7 +55,7 @@ def healthz():
 
 
 @app.get("/readyz")
-def readyz(db_session: SessionLocal = Depends(get_db_session)):  # noqa: B008
+def readyz(db_session: Session = Depends(get_db_session)):  # noqa: B008
     try:
         db_session.execute(text("SELECT 1"))
         return {"status": "ready"}
@@ -82,7 +85,7 @@ def rag_search_endpoint(query: str, limit: int = 5):
 def read_airports(
     offset: int = 0,
     limit: int = 100,
-    db_session: SessionLocal = Depends(get_db_session),  # noqa: B008
+    db_session: Session = Depends(get_db_session),  # noqa: B008
 ):
     return db_utils.get_airports(db_session, offset=offset, limit=limit)
 
@@ -91,14 +94,14 @@ def read_airports(
 def read_flights(
     offset: int = 0,
     limit: int = 100,
-    db_session: SessionLocal = Depends(get_db_session),  # noqa: B008
+    db_session: Session = Depends(get_db_session),  # noqa: B008
 ):
     return db_utils.get_flight_prices(db_session, offset=offset, limit=limit)
 
 
 @app.get("/flights/{flight_price}", response_model=db_schemas.FlightPriceDetailSchema)
 def read_flight_price(
-    flight_price: int, db_session: SessionLocal = Depends(get_db_session)  # noqa: B008
+    flight_price: int, db_session: Session = Depends(get_db_session)  # noqa: B008
 ):
     df_flight_value = db_utils.get_flight_price(db_session, flight_price)
     if df_flight_value is None:
