@@ -46,3 +46,29 @@ def test_committed_recordings_replay_offline(monkeypatch):
                 replayed += 1
                 break
     assert replayed == len(recordings), 'Recording requests must remain reproducible'
+
+
+def test_ci_installs_cpu_dependencies_in_separate_pip_processes(tmp_path):
+    """Execute the workflow install commands with a recording pip stand-in."""
+    import os
+    import subprocess
+    import sys
+    import yaml
+
+    workflow = yaml.safe_load(Path('.github/workflows/test-suite.yml').read_text())
+    commands = [step['run'] for step in workflow['jobs']['offline']['steps']
+                if 'run' in step and 'requirements' in step['run']]
+    executable = tmp_path / 'python'
+    calls_file = tmp_path / 'calls.jsonl'
+    executable.write_text('#!' + sys.executable + '\n' +
+                          'import json, os, sys\n'
+                          'with open(os.environ["PIP_CALL_LOG"], "a") as log:\n'
+                          '    log.write(json.dumps(sys.argv[1:]) + "\\n")\n')
+    executable.chmod(0o755)
+    environment = dict(os.environ, PATH=str(tmp_path) + os.pathsep + os.environ['PATH'], PIP_CALL_LOG=str(calls_file))
+    for command in commands:
+        subprocess.run(command, shell=True, executable='/bin/sh', env=environment, check=True)
+    calls = [json.loads(line) for line in calls_file.read_text().splitlines()]
+    assert len(calls) == 2
+    assert calls[0] == ['-m', 'pip', 'install', '-r', 'requirements-docker-cpu.txt']
+    assert calls[1] == ['-m', 'pip', 'install', '-r', 'requirements.txt', '-r', 'requirements-dev.txt']
