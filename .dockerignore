@@ -11,3 +11,11 @@ __pycache__
 *.pyd
 .env
 .env.*
+
+.venv-ci
+.venv
+.cache
+.hf_cache
+.pytest_cache
+perf/results
+coverage.xml

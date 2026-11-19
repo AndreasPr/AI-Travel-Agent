@@ -1,5 +1,8 @@
 # AI Travel Agent
 
+[![CI](https://github.com/AndreasPr/AI-Travel-Agent/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/AndreasPr/AI-Travel-Agent/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/AndreasPr/AI-Travel-Agent/actions/workflows/github-code-scanning/codeql/badge.svg?branch=master)](https://github.com/AndreasPr/AI-Travel-Agent/security/code-scanning)
+
 This repository is being rebuilt as a portfolio-grade AI travel application.
 
 ## Current focus

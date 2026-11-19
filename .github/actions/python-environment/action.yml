@@ -1,0 +1,33 @@
+name: Offline Python environment
+description: Cached CPU-only environment; never downloads model weights
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: pip
+        cache-dependency-path: |
+          requirements.txt
+          requirements-dev.txt
+          requirements-docker-cpu.txt
+    - uses: actions/cache@v4
+      id: environment
+      with:
+        path: .venv-ci
+        key: python-${{ runner.os }}-${{ runner.arch }}-3.11-${{ hashFiles('requirements*.txt') }}-v1
+    - name: Install dependencies in separate index scopes
+      if: steps.environment.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        python -m venv .venv-ci
+        .venv-ci/bin/python -m pip install -r requirements-docker-cpu.txt
+        .venv-ci/bin/python -m pip install -r requirements.txt -r requirements-dev.txt
+    - shell: bash
+      run: |
+        echo "$GITHUB_WORKSPACE/.venv-ci/bin" >> "$GITHUB_PATH"
+        .venv-ci/bin/python -m pip check
+    - uses: actions/cache@v4
+      with:
+        path: ~/.cache/huggingface
+        key: hf-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('config/models.yaml', 'requirements.txt') }}

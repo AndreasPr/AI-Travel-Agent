@@ -1,0 +1,3 @@
+# Intentionally empty. No advisory-wide native suppressions.
+# Version/package/scanner-scoped exceptions live in config/security-exceptions.json
+# and docs/ci-security-exceptions.md; scripts/ci_security.py enforces expiry and scope.

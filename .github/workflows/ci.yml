@@ -1,0 +1,233 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+env:
+  HF_HUB_OFFLINE: '1'
+  TRANSFORMERS_OFFLINE: '1'
+  RECORD: '0'
+  NEXT_TELEMETRY_DISABLED: '1'
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install ruff==0.8.0
+      - run: make lint
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+  type-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/python-environment
+      - run: make typecheck
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/python-environment
+      - run: make test-ci
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: coverage.xml
+          if-no-files-found: error
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/python-environment
+      - run: make test-containers
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    env:
+      NEXT_PUBLIC_API_URL: http://localhost:18100
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: api
+            dockerfile: backend/Dockerfile
+          - image: web
+            dockerfile: Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          tags: travel-ci-${{ matrix.image }}:test
+          push: false
+          build-args: NEXT_PUBLIC_API_URL=http://localhost:18100
+          outputs: type=docker,dest=/tmp/${{ matrix.image }}.tar
+          cache-from: type=gha,scope=ci-${{ matrix.image }}
+          cache-to: type=gha,mode=max,scope=ci-${{ matrix.image }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: image-${{ matrix.image }}
+          path: /tmp/${{ matrix.image }}.tar
+          compression-level: 0
+          retention-days: 1
+  trivy:
+    needs: docker
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [api, web]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: image-${{ matrix.image }}
+          path: /tmp/images
+      - uses: actions/cache@v4
+        with:
+          path: .cache/trivy
+          key: trivy-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: trivy-${{ runner.os }}-
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Scan image including unfixed HIGH and CRITICAL findings
+        run: |
+          python scripts/ci_security.py --scanner trivy --report trivy-${{ matrix.image }}.json -- docker run --rm -v "$PWD:/work" -v /tmp/images:/images:ro aquasec/trivy:0.76.2 image \
+            --input /images/${{ matrix.image }}.tar --cache-dir /work/.cache/trivy \
+            --scanners vuln --exit-code 1 \
+            --ignorefile /work/.trivyignore --format json --output /work/trivy-${{ matrix.image }}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trivy-${{ matrix.image }}
+          path: trivy-${{ matrix.image }}.json
+  pip-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/python-environment
+      - name: Audit project environment without changing its dependencies
+        run: |
+          python -m venv /tmp/audit-tools
+          /tmp/audit-tools/bin/python -m pip install pip-audit
+          python scripts/ci_security.py --scanner pip --report pip-audit.json -- /tmp/audit-tools/bin/pip-audit --path .venv-ci/lib/python3.11/site-packages --format json --output pip-audit.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pip-audit
+          path: pip-audit.json
+  npm-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm audit --audit-level=high --json > npm-audit.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: npm-audit
+          path: npm-audit.json
+  gitleaks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan history with the free CLI, no license secret
+        run: |
+          docker run --rm -v "$PWD:/repo:ro" ghcr.io/gitleaks/gitleaks:v8.30.1 git /repo --redact --exit-code 1
+  eval:
+    uses: ./.github/workflows/eval-gate.yml
+  smoke:
+    needs: docker
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install pytest==9.0.3 playwright==1.51.0
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-1.51.0
+      - run: python -m playwright install --with-deps chromium
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: image-*
+          path: /tmp/images
+          merge-multiple: true
+      - name: Load the exact built images and start the synthetic stack
+        run: |
+          docker load -i /tmp/images/api.tar
+          docker load -i /tmp/images/web.tar
+          TEST_JWT_SECRET="$(python -c 'from secrets import token_urlsafe; print(token_urlsafe(48))')"
+          export TEST_JWT_SECRET
+          echo "::add-mask::$TEST_JWT_SECRET"
+          echo "TEST_JWT_SECRET=$TEST_JWT_SECRET" >> "$GITHUB_ENV"
+          docker compose -f compose.test.yaml -f compose.ci.yaml up --no-build -d --wait
+      - run: make test-e2e
+      - name: Install free local k6
+        run: |
+          curl --fail --location --retry 3 -o /tmp/k6.tar.gz https://github.com/grafana/k6/releases/download/v2.4.0/k6-v2.4.0-linux-amd64.tar.gz
+          tar -xzf /tmp/k6.tar.gz -C /tmp
+          sudo install /tmp/k6-v2.4.0-linux-amd64/k6 /usr/local/bin/k6
+      - name: Short synthetic SSE ramp
+        run: PERF_SESSIONS=2 PERF_HOLD=10s make perf
+        env:
+          PERF_HARDWARE_DESCRIPTION: GitHub hosted ubuntu-latest; synthetic pipeline; Docker default allocation
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: synthetic-sse-performance
+          path: perf/results/*-synthetic.json
+      - name: Container diagnostics
+        if: failure()
+        run: docker compose -f compose.test.yaml -f compose.ci.yaml logs --tail=100
+      - name: Remove isolated test stack
+        if: always()
+        run: docker compose -f compose.test.yaml -f compose.ci.yaml down
