@@ -1,4 +1,4 @@
-FROM python:3.12-slim AS builder
+FROM python:3.15-slim AS builder
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -21,7 +21,7 @@ RUN python -m pip install -r /tmp/requirements.txt && \
     python -m pip check && \
     HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python -c "import torch; from sentence_transformers import SentenceTransformer; assert torch.version.cuda is None; assert torch.tensor([2, 3]).sum().item() == 5"
 
-FROM python:3.12-slim AS runtime
+FROM python:3.15-slim AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
