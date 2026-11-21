@@ -51,6 +51,7 @@ class Agent:
         output = ChatResponse(trip_id=state['id'], message='')
         stage = 'intent'
         turn_tokens = 0
+        tool_calls = 0
         usage = usage if usage is not None else Usage()
         output.usage = usage
         try:
@@ -106,6 +107,11 @@ class Agent:
 
         @tool_call
         async def execute(name, arguments):
+            nonlocal tool_calls
+            if getattr(self, 'planning_day', None) is not None and name != 'validate_itinerary':
+                tool_calls += 1
+                if tool_calls > self.config['deep_plan']['tools_per_day']:
+                    return {'tool': name, 'status': 'error', 'data': {'error': {'code': 'tool_budget', 'message': 'Day tool budget exhausted'}}}
             from backend.agent.events import ToolStart, ToolEnd, argument_summary
             call_id, started = uuid4(), time.monotonic()
             if event_sink is not None:
@@ -218,6 +224,12 @@ class Agent:
         messages.append({'role': 'user', 'content': data_block({'budget': budget, 'intent': intent.intent, 'edit_day': intent.day})})
         scope_message = request_facts(state.get('trip_request', '')) if intent.intent != 'new_trip' else request_facts(request.message)
         allowed = scoped_tools(ALLOWLISTS[intent.intent], request_facts(request.message), scope_message)
+        planning_day = getattr(self, 'planning_day', None)
+        lodging_owner = planning_day is None or planning_day == requested_dates(request.message)[0]
+        if not lodging_owner:
+            allowed -= {'search_hotels', 'search_flights'}
+        if planning_day:
+            messages.append({'role': 'system', 'content': f'Plan only the assigned day {planning_day}. Keep the original trip date range. Transport and full-stay lodging quotes belong only to the first worker; do not duplicate them on other days.'})
         allowed = step_tools(allowed, scope_message + ' ' + request_facts(request.message), [])
         target_items = []
         if intent.intent == 'edit_trip' and state['itinerary'] and intent.day and 1 <= intent.day <= len(state['itinerary']['days']):
@@ -245,7 +257,7 @@ class Agent:
             response = await generate('plan', messages, tools=definitions or None)
             if not response.tool_calls:
                 hotel_rows = [row for row in output.tool_trace if row['tool'] == 'search_hotels']
-                if intent.intent == 'new_trip' and requested_hotels(request.message) and not any(row['status'] in {'ok', 'no_data'} for row in hotel_rows):
+                if lodging_owner and intent.intent == 'new_trip' and requested_hotels(request.message) and not any(row['status'] in {'ok', 'no_data'} for row in hotel_rows):
                     messages.append({'role': 'user', 'content': 'The requested hotel lookup is incomplete. Call search_hotels using the requested city and dates. Optional numeric arguments must be JSON null or numbers, never the string null. Correct earlier argument errors before finalizing.'})
                     continue
                 if intent.intent == 'new_trip' and requested_retrieval(request.message) and not any(row['tool'] == 'search_destinations' and row['status'] in {'ok', 'no_data'} for row in output.tool_trace):
@@ -337,6 +349,9 @@ class Agent:
             activity_places = await extract_attractions(state['citations'], generate, [requested_city(request.message)])
             messages.append({'role': 'user', 'content': 'For activity items, choose named places from this verified excerpt list. Hotel quotes are accommodation only. ' + data_block(activity_places)})
         final_schema = bind_itinerary_schema(schema, request.message, list(evidence.values()), state['citations'], state['itinerary'], intent.day, activity_places)
+        if planning_day:
+            final_schema['properties']['days'].update(minItems=1, maxItems=1)
+            final_schema['$defs']['Day']['properties']['date'] = {'type': 'string', 'const': planning_day}
         best = None
         for attempt in range(3):
             issues = []
@@ -364,7 +379,7 @@ class Agent:
                     candidate = Itinerary.model_validate(candidate).model_dump(mode='json')
                     separate_generated_visits(candidate, request.message)
                     assign_item_ids(candidate)
-                    issues.extend(requirement_issues(candidate, request.message, hotel_results, state['citations']))
+                    issues.extend(requirement_issues(candidate, request.message, hotel_results if lodging_owner else set(), state['citations']))
                 issues.extend(grounded_activity_issues(candidate, state['citations']))
                 encoded_candidate = json.dumps(candidate, ensure_ascii=False)
                 if redact(encoded_candidate) != encoded_candidate:
@@ -374,9 +389,15 @@ class Agent:
                 if candidate_has_unknown_url(candidate, trusted_urls(state['citations'])):
                     issues.append(dict(name='untrusted_url', severity='error', message='Use only URLs returned by tools.'))
                 issues.extend(quoted_item_issues(candidate, list(evidence.values())))
+                if planning_day and lodging_owner:
+                    # Only this worker owns lodging, so one nightly price cannot cover a multi-night stay.
+                    from backend.agent.deep_plan import lodging_total_issues
+                    issues.extend(lodging_total_issues(candidate, list(evidence.values())))
                 dates = {day['date'] for day in candidate['days']}
                 typed = Itinerary.model_validate(candidate)
                 expected_dates = {(typed.trip.start_date + timedelta(days=i)).isoformat() for i in range((typed.trip.end_date - typed.trip.start_date).days + 1)}
+                if planning_day:
+                    expected_dates = {planning_day}
                 if dates != expected_dates or not any(day['items'] for day in candidate['days']):
                     issues.append(dict(name='incomplete_itinerary', severity='error', message='Include every trip day and at least one item'))
                 known = set(state['evidence'])

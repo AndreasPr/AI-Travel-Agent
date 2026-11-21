@@ -141,3 +141,13 @@ auth:
   login_attempts: 10
   login_delay_base_seconds: 1
   login_delay_max_seconds: 30
+
+# A deep request reserves all day attempts before any provider is called.
+deep_plan:
+  enabled: true
+  max_days: 7
+  concurrency: 3
+  tools_per_day: 12
+  tokens_per_attempt: 500000
+  day_timeout_seconds: 90
+  request_timeout_seconds: 600

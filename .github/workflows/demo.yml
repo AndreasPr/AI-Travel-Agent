@@ -1,0 +1,41 @@
+name: Demo configuration
+on: [pull_request, push, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  definition:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: node scripts/validate_asl.cjs
+  container-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate isolated test credential
+        run: |
+          secret=$(openssl rand -hex 48)
+          echo "::add-mask::$secret"
+          echo "TEST_JWT_SECRET=$secret" >> "$GITHUB_ENV"
+      - name: Build API and web images and start synthetic stack
+        run: docker compose -f compose.test.yaml -f compose.demo-smoke.yaml up --build -d --wait --wait-timeout 180
+      - name: Verify health and demo config
+        run: |
+          curl --fail http://localhost:18100/healthz
+          curl --fail http://localhost:18100/api/config > /tmp/demo-config.json
+          python -c 'import json; c=json.load(open("/tmp/demo-config.json")); assert c["demo_mode"] and c["retrieval_mode"] == "fts"'
+      - name: Container logs
+        if: failure()
+        run: docker compose -f compose.test.yaml -f compose.demo-smoke.yaml logs --tail=100
+      - name: Stop isolated stack
+        if: always()
+        env:
+          TEST_JWT_SECRET: ${{ env.TEST_JWT_SECRET || 'unused-cleanup-value' }}
+        run: docker compose -f compose.test.yaml -f compose.demo-smoke.yaml down

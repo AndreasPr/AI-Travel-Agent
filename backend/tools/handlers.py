@@ -25,7 +25,8 @@ def search_destinations(request, ctx):
         raise TimeoutError()
     try:
         ctx.check()
-        rows = search(request.query, limit=request.k, rerank=True, city=request.city, country=request.country, season=request.season, topic=request.topic)
+        from backend.demo import enabled
+        rows = search(request.query, limit=request.k, rerank=not enabled(), city=request.city, country=request.country, season=request.season, topic=request.topic)
     finally:
         _RETRIEVAL_LOCK.release()
     chunks = [{"chunk_id": str(row["chunk_id"]), "title": row.get("title"), "url": row.get("source_url"),

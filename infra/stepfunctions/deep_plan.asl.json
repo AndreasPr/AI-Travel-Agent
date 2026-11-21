@@ -1,0 +1,47 @@
+{
+  "Comment": "Validation only; not deployed. Function ARNs are runtime inputs, never account identifiers in source.",
+  "StartAt": "PlanDays",
+  "TimeoutSeconds": 600,
+  "States": {
+    "PlanDays": {
+      "Type": "Map", "ItemsPath": "$.days", "MaxConcurrency": 3,
+      "Parameters": {"day.$": "$$.Map.Item.Value", "request.$": "$.request", "functions.$": "$.functions", "tool_budget": 12},
+      "Iterator": {
+        "StartAt": "PlanDay",
+        "States": {
+          "PlanDay": {
+            "Type": "Task", "Resource": "arn:aws:states:::lambda:invoke",
+            "Parameters": {"FunctionName.$": "$.functions.plan_day", "Payload.$": "$"},
+            "TimeoutSeconds": 90,
+            "Retry": [{"ErrorEquals": ["States.ALL"], "IntervalSeconds": 1, "MaxAttempts": 1, "BackoffRate": 1}],
+            "Catch": [{"ErrorEquals": ["States.ALL"], "ResultPath": "$.failure", "Next": "FailedDay"}],
+            "OutputPath": "$.Payload", "End": true
+          },
+          "FailedDay": {"Type": "Pass", "Parameters": {"failed": true, "day.$": "$.day"}, "End": true}
+        }
+      },
+      "ResultPath": "$.results", "Next": "Merge"
+    },
+    "Merge": {
+      "Type": "Task", "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {"FunctionName.$": "$.functions.merge", "Payload.$": "$"},
+      "TimeoutSeconds": 20, "ResultSelector": {"value.$": "$.Payload"}, "ResultPath": "$.merged", "Next": "Complete"
+    },
+    "Complete": {
+      "Type": "Choice", "Choices": [{"Variable": "$.merged.value.complete", "BooleanEquals": true, "Next": "GlobalValidation"}],
+      "Default": "PartialFailure"
+    },
+    "PartialFailure": {"Type": "Pass", "OutputPath": "$.merged.value", "End": true},
+    "GlobalValidation": {
+      "Type": "Task", "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {"FunctionName.$": "$.functions.validate", "Payload.$": "$.merged.value"},
+      "TimeoutSeconds": 20, "OutputPath": "$.Payload", "Next": "Validated"
+    },
+    "Validated": {
+      "Type": "Choice", "Choices": [{"Variable": "$.structurally_valid", "BooleanEquals": true, "Next": "Result"}],
+      "Default": "ValidationFailure"
+    },
+    "Result": {"Type": "Succeed"},
+    "ValidationFailure": {"Type": "Fail", "Error": "InvalidItinerary", "Cause": "Merged itinerary failed global validation"}
+  }
+}

@@ -162,6 +162,9 @@ def search(
     expand_queries: bool = True,
     trace: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
+    from backend.demo import enabled
+    if enabled():
+        mode, rerank = 'fts', False
     mode = mode if mode is not None else get_default_retrieval_mode()
     if mode not in {"vector", "fts", "bm25", "hybrid", "hybrid(bm25)"}:
         raise ValueError(f"Unknown retrieval mode: {mode}")
