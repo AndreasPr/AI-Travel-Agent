@@ -51,7 +51,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: make test-ci
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: coverage
@@ -102,7 +102,7 @@ jobs:
           outputs: type=docker,dest=/tmp/${{ matrix.image }}.tar
           cache-from: type=gha,scope=ci-${{ matrix.image }}
           cache-to: type=gha,mode=max,scope=ci-${{ matrix.image }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: image-${{ matrix.image }}
           path: /tmp/${{ matrix.image }}.tar
@@ -136,7 +136,7 @@ jobs:
             --input /images/${{ matrix.image }}.tar --cache-dir /work/.cache/trivy \
             --scanners vuln --exit-code 1 \
             --ignorefile /work/.trivyignore --format json --output /work/trivy-${{ matrix.image }}.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: trivy-${{ matrix.image }}
@@ -152,7 +152,7 @@ jobs:
           python -m venv /tmp/audit-tools
           /tmp/audit-tools/bin/python -m pip install pip-audit
           python scripts/ci_security.py --scanner pip --report pip-audit.json -- /tmp/audit-tools/bin/pip-audit --path .venv-ci/lib/python3.11/site-packages --format json --output pip-audit.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: pip-audit
@@ -168,7 +168,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm audit --audit-level=high --json > npm-audit.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: npm-audit
@@ -227,7 +227,7 @@ jobs:
           # Only the disposable synthetic load browser; no host security changes.
           K6_BROWSER_ARGS: no-sandbox
           PERF_HARDWARE_DESCRIPTION: GitHub hosted ubuntu-24.04; synthetic pipeline; Docker default allocation
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: synthetic-sse-performance
