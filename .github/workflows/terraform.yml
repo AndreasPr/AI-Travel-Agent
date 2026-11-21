@@ -64,7 +64,7 @@ jobs:
         # Fail all non-skipped findings, including unscored policies: stricter than HIGH only.
         run: |
           "$RUNNER_TEMP/terraform-checkov/bin/checkov" -d infra/terraform --framework terraform --skip-download --download-external-modules false --compact -o cli -o json --output-file-path "$RUNNER_TEMP/terraform-checkov-results"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: terraform-security-findings
