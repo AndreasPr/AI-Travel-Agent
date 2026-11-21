@@ -33,6 +33,14 @@ def failure_issue(exc, stage):
 
 def public_failure_detail(issues):
     """Select only fixed explanations; never expose provider or tool payloads."""
+    failed_days = [issue.get('day') for issue in issues if issue.get('name') == 'day_failed']
+    if failed_days:
+        from datetime import date
+        try:
+            dates = [date.fromisoformat(day).isoformat() for day in failed_days]
+            return 'Deep planning failed after two attempts for: ' + ', '.join(dates) + '. No partial itinerary was saved.'
+        except (TypeError, ValueError):
+            pass
     explanations = {
         'activity_extraction': 'No named attractions could be verified against the retrieved excerpts.',
         'invalid_json': 'The model returned invalid JSON.',

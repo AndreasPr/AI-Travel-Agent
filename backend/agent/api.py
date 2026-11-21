@@ -71,7 +71,7 @@ def admit_turn(request, agent, service, user):
             raise HTTPException(404, 'Trip not found') from None
     from sqlalchemy.exc import SQLAlchemyError
     try:
-        reservation = service.reserve_turn(user, agent.config['guardrails']['turn_tokens'])
+        reservation = service.reserve_turn(user, agent.reservation(request) if hasattr(agent, 'reservation') else agent.config['guardrails']['turn_tokens'])
     except SQLAlchemyError:
         raise HTTPException(503, 'Quota storage unavailable') from None
     return ReservedTurn(agent, service, reservation)
@@ -134,3 +134,39 @@ def delete_trip(trip_id: str, agent=Depends(owned_agent), user=Depends(admitted_
         agent.store.delete(trip_id)
     except KeyError:
         raise HTTPException(404, 'Trip not found') from None
+
+
+@router.get('/config')
+def public_config():
+    from backend.llm.config import load_config
+    from backend.demo import enabled
+    config = load_config()
+    first = config['roles']['plan']['chain'][0]
+    return {'provider': first['provider'], 'model': first['model'],
+            'provider_basis': 'configured primary; actual fallback is reported in response usage',
+            'demo_mode': enabled(), 'retrieval_mode': config['retrieval']['default_mode'],
+            'deep_plan': config['deep_plan']['enabled']}
+
+
+@router.post('/chat/deep-plan')
+async def deep_plan(request: ChatRequest, http_request: Request, agent=Depends(owned_agent),  # noqa: B008
+                    user=Depends(admitted_user), service=Depends(get_auth_service)):  # noqa: B008
+    from backend.agent.deep_plan import DeepPlanAgent
+    from backend.agent.streaming import response_for as stream_response
+    if not agent.config['deep_plan']['enabled']:
+        raise HTTPException(404, 'Deep planning is disabled')
+    planner = DeepPlanAgent(agent)
+    try:
+        planner.dates(request)
+    except ValueError as exc:
+        raise HTTPException(422, str(exc)) from None
+    admitted = await asyncio.to_thread(admit_turn, request, planner, service, user)
+    if 'text/event-stream' in http_request.headers.get('accept', ''):
+        return stream_response(admitted, request, user_id=user)
+    try:
+        async with asyncio.timeout(planner.settings['request_timeout_seconds']):
+            return await admitted.chat(request, user_id=user)
+    except TimeoutError:
+        raise HTTPException(504, 'Deep planning exceeded its deadline') from None
+    except StoreConflict:
+        raise HTTPException(409, 'Trip changed; retry the turn') from None

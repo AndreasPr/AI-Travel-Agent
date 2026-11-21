@@ -11,11 +11,12 @@ const STORAGE = "travel-planner.trips.v1";
 const blankTrip = () => ({ id: null, title: "New trip", messages: [], itinerary: null, citations: [], budget: null });
 const toolLabels = { search_destinations: "Searching destinations…", get_weather: "Checking weather…", convert_currency: "Converting currency…", geocode_place: "Locating places…", search_flights: "Searching synthetic flights…", search_hotels: "Searching synthetic hotels…", validate_itinerary: "Validating budget…" };
 const starter = "Plan five days in Lisbon from 2027-04-10 through 2027-04-14 under $1,500 USD, with museums and food. Use synthetic hotel quotes and leave unknown activity costs unpriced.";
-export default function ChatApp({ userId }) {
+export default function ChatApp({ userId, demoConfig = null }) {
   const storageKey = userId ? `${STORAGE}.${userId}` : STORAGE;
   const [trip, setTrip] = useState(blankTrip);
   const [history, setHistory] = useState([]);
   const [draft, setDraft] = useState("");
+  const [deepPlan, setDeepPlan] = useState(false);
   const [busy, setBusy] = useState(false);
   const [phase, setPhase] = useState("");
   const [error, setError] = useState("");
@@ -55,7 +56,7 @@ export default function ChatApp({ userId }) {
     setTrip(current); setDraft(""); setError(""); setPartial(""); setProgress([]); setProposal(null);
     setBusy(true); setPhase("Planning your trip…");
     try {
-      const response = await authFetch("/api/chat/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message, trip_id: trip.id }), signal: abort.signal });
+      const response = await authFetch(deepPlan && !trip.id ? "/api/chat/deep-plan" : "/api/chat/stream", { method: "POST", headers: { "Content-Type": "application/json", "Accept": "text/event-stream" }, body: JSON.stringify({ message, trip_id: trip.id }), signal: abort.signal });
       await consumeSSE(response, event => {
         if (event.type === "token") setPartial(previous => previous + event.text);
         if (event.type === "tool_start") {
@@ -148,6 +149,8 @@ export default function ChatApp({ userId }) {
             {trip.itinerary.days.map((day, index) => <ItineraryCard key={day.date} day={day} number={index + 1} citations={trip.citations} onCitation={setCitation} changed={changes.changed} />)}
             <div className="export-actions"><button onClick={download} disabled={busy}>↓ Export calendar</button><button onClick={() => window.print()} disabled={busy}>Print / Save PDF</button><button onClick={() => syncTrip(true)} disabled={busy || !trip.id}>↶ Undo last edit</button></div><p className="export-note">Calendar times are local destination times. Synthetic quotes are not booking offers.</p></>}
           {trip.id && <button className="text-button refresh-button" disabled={busy} onClick={() => syncTrip(false)}>Check latest saved itinerary</button>}
+          {demoConfig?.demo_mode && <p role="status">Public demo (free infrastructure) · Lightweight full-text retrieval; no embedding or reranking models.</p>}
+          {demoConfig?.deep_plan && <label><input type="checkbox" checked={deepPlan} disabled={busy || Boolean(trip.id)} onChange={event => setDeepPlan(event.target.checked)} /> Deep plan: parallel days (new trips; explicit dates and budget required)</label>}
           <form className="composer" onSubmit={event => { event.preventDefault(); send(draft); }}><label htmlFor="message">Your next idea</label><textarea ref={input} id="message" value={draft} onChange={event => setDraft(event.target.value)} maxLength={12000} rows={3} placeholder="A place, a date, a budget. Or just a feeling…" disabled={busy} required /><div className="composer-footer"><small>Grounded recommendations. Space to change your mind.</small>{busy ? <button type="button" className="stop-button" onClick={() => { controller.current?.abort(); setPhase("Stopping…"); }}>■ Stop</button> : <button className="primary" type="submit" disabled={!draft.trim()}>Let’s plan <span aria-hidden="true">↑</span></button>}</div></form>
         </div><aside className="trip-aside" aria-label="Trip overview"><TripMap itinerary={trip.itinerary} /><section className="principles-card"><span aria-hidden="true">✧</span><h3>A little transparency.</h3><p>Open a source badge to see where a recommendation comes from.</p><hr /><p>Flight and hotel prices use <strong>synthetic data</strong>. They’re generated examples, never live booking offers.</p></section></aside></div>
       </div>

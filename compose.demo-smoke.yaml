@@ -1,0 +1,13 @@
+# Synthetic pipeline smoke only; no models, secrets or public deployment.
+services:
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.demo
+    environment:
+      PUBLIC_DEMO: 'true'
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8080/healthz').read()"]
+      interval: 2s
+      timeout: 5s
+      retries: 30

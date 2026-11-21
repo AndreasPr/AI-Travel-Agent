@@ -19,3 +19,8 @@ __pycache__
 .pytest_cache
 perf/results
 coverage.xml
+
+# Exclude nested local credentials and downloaded validation providers from demo builds.
+**/.env
+**/.env.*
+**/.terraform

@@ -133,3 +133,14 @@ it('the museums shortcut requests clarification without silently choosing day 1'
   expect(screen.getByText('Synthetic Museum')).toBeInTheDocument();
   expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 });
+
+it('shows the public demo banner and sends a synthetic deep-plan request', async () => {
+  fetch.mockResolvedValueOnce(streamResponse(successEvents()));
+  render(<ChatApp demoConfig={{ demo_mode: true, deep_plan: true }} />);
+  expect(screen.getByText(/Public demo \(free infrastructure\)/)).toBeInTheDocument();
+  await userEvent.click(screen.getByRole('checkbox', { name: /Deep plan/ }));
+  await submit('Plan a synthetic three-day trip with dates and budget');
+  await waitFor(() => expect(fetch.mock.calls[0][0]).toBe('/backend/api/chat/deep-plan'));
+  expect(fetch.mock.calls[0][1].headers.Accept).toBe('text/event-stream');
+  await waitFor(() => expect(screen.getByRole('checkbox', { name: /Deep plan/ })).toBeDisabled());
+});
