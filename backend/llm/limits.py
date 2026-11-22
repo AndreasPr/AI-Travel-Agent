@@ -121,9 +121,11 @@ class PostgresDailyCounter:
                                          set_={"requests": table.c.requests + 1}, where=table.c.requests < limit).returning(table.c.requests)
         compiled = stmt.compile(dialect=self.engine.dialect)
         args, kwargs = self.engine.dialect.create_connect_args(self.engine.url)
-        kwargs.update(connect_timeout=5, options="-c statement_timeout=5000")
+        kwargs.update(connect_timeout=5)
         try:
             async with await AsyncConnection.connect(*args, **kwargs) as connection:
+                # Transaction-local settings work with pooled connections and reset on commit/rollback.
+                await connection.execute("SET LOCAL statement_timeout = 5000")
                 cursor = await connection.execute(str(compiled), compiled.params)
                 row = await cursor.fetchone()
             if row is None:

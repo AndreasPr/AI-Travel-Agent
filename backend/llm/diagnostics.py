@@ -4,6 +4,8 @@ import socket
 import ssl
 
 import httpx
+from psycopg import Error as PsycopgError
+from sqlalchemy.exc import SQLAlchemyError
 
 
 def log_provider_failure(exc):
@@ -16,6 +18,10 @@ def log_provider_failure(exc):
         seen.add(id(current))
         if str(current) == 'M3: export GEMINI_API_KEY for the free-tier project':
             reason = 'missing_api_key'
+        elif str(current) == 'Daily quota store unavailable; run database migrations':
+            reason = 'quota_database'
+        elif isinstance(current, (PsycopgError, SQLAlchemyError)):
+            reason = 'quota_database'
         elif isinstance(current, ImportError):
             reason = 'sdk_import'
         elif isinstance(current, (httpx.TimeoutException, TimeoutError)):
