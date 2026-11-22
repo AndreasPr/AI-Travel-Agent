@@ -38,3 +38,13 @@ def test_synthetic_provider_failure_is_not_reported_as_validation(caplog):
     assert 'connection' in caplog.text
     assert 'validation' not in public_failure_detail([issue])
     assert 'synthetic-secret' not in caplog.text
+
+
+def test_synthetic_quota_database_error_is_classified_without_secrets(caplog):
+    from psycopg import OperationalError
+    error = ProviderUnavailable('Daily quota store unavailable; run database migrations')
+    error.__cause__ = OperationalError('unsupported startup parameter; synthetic-secret')
+    with caplog.at_level(logging.WARNING):
+        result = log_provider_failure(error)
+    assert result['reason'] == 'quota_database'
+    assert 'synthetic-secret' not in caplog.text
