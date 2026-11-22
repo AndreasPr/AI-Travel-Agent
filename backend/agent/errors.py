@@ -25,6 +25,8 @@ def failure_issue(exc, stage):
     elif isinstance(exc, RateLimited):
         name, message = 'rate_limited', 'The provider is rate limited.'
     elif isinstance(exc, ProviderUnavailable):
+        from backend.llm.diagnostics import log_provider_failure
+        log_provider_failure(exc)
         name, message = 'provider_unavailable', 'The provider could not be reached or was unavailable.'
     else:
         name, message = 'configuration_or_context', 'The provider configuration or context could not be accepted.'
@@ -42,6 +44,10 @@ def public_failure_detail(issues):
         except (TypeError, ValueError):
             pass
     explanations = {
+        'provider_unavailable': 'The configured provider could not be reached or was unavailable.',
+        'rate_limited': 'The configured provider is rate limited.',
+        'quota_exhausted': 'The configured provider quota is exhausted.',
+        'provider_timeout': 'The provider exceeded the response deadline.',
         'activity_extraction': 'No named attractions could be verified against the retrieved excerpts.',
         'invalid_json': 'The model returned invalid JSON.',
         'schema_validation': 'The model output did not match the itinerary schema.',
