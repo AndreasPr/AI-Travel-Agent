@@ -30,7 +30,13 @@ def failure_issue(exc, stage):
         name, message = 'provider_unavailable', 'The provider could not be reached or was unavailable.'
     else:
         name, message = 'configuration_or_context', 'The provider configuration or context could not be accepted.'
-    return {'name': name, 'severity': 'error', 'stage': stage, 'message': message}
+    issue = {'name': name, 'severity': 'error', 'stage': stage, 'message': message}
+    if name == 'schema_validation':
+        import logging
+        details = safe_schema_details(exc)
+        safe_stage = stage if stage in {'intent', 'summary', 'itinerary', 'edit', 'extract', 'plan', 'attractions'} else 'unknown'
+        logging.getLogger(__name__).warning('Schema failure: stage=%s details=%s', safe_stage, details)
+    return issue
 
 
 def public_failure_detail(issues):
@@ -91,3 +97,31 @@ def validation_details(exc, allowed_fields=()):
         details.append({'path': path, 'type': error['type'],
                         'message': rule if rule in known_rules else 'Correct this field to match the schema.'})
     return details
+
+
+def safe_schema_details(exc):
+    """Expose only contract field names and validator rules, never rejected content."""
+    from jsonschema import ValidationError as JSONValidationError
+    fields = {'trip', 'days', 'items', 'start_date', 'end_date', 'currency', 'id',
+              'start', 'end', 'place', 'category', 'cost', 'chunk_ids', 'tool_result_ids',
+              'coords', 'coord_tool_result_id', 'lat', 'lon', 'travel_mode',
+              'allow_outside_visiting_window', 'day', 'operations', 'op', 'item', 'item_id',
+              'places', 'name', 'chunk_id'}
+    rules = {'required', 'type', 'enum', 'const', 'pattern', 'format', 'minItems', 'maxItems',
+             'additionalProperties', 'anyOf', 'oneOf', 'minimum', 'maximum'}
+    current, seen = exc, set()
+    for _ in range(8):
+        if current is None or id(current) in seen:
+            break
+        seen.add(id(current))
+        if isinstance(current, ValidationError):
+            return validation_details(current, fields)
+        if isinstance(current, JSONValidationError):
+            errors = list(current.context)[:8] or [current]
+            return [{'path': [p if type(p) is int or isinstance(p, str) and p in fields else '[field]' for p in e.absolute_path],
+                     'rule': e.validator if e.validator in rules else 'schema',
+                     'message': 'Correct this field using the requested schema.',
+                     'required_fields': [p for p in e.validator_value if p in fields] if e.validator == 'required' else []}
+                    for e in errors]
+        current = current.__cause__ or current.__context__
+    return []
