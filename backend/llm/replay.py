@@ -13,6 +13,8 @@ FIXTURES = Path(__file__).resolve().parents[2] / "tests/fixtures/llm"
 
 
 def fixture_key(provider, model, messages, tools=None, schema=None):
+    # Opaque live continuation state is not part of the normalized replay contract.
+    messages = [{key: value for key, value in row.items() if key != '_provider_continuation'} for row in messages]
     payload = {"provider": provider, "model": model, "messages": messages, "tools": tools, "schema": schema_dict(schema)}
     canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
     return hashlib.sha256(canonical.encode()).hexdigest()

@@ -265,6 +265,8 @@ class Agent:
                     continue
                 break
             messages.append({'role': 'assistant', 'content': '', 'tool_calls': [{'id': call.id or call.name, 'type': 'function', 'function': {'name': call.name, 'arguments': call.arguments}} for call in response.tool_calls]})
+            if response._continuation is not None:
+                messages[-1]['_provider_continuation'] = response._continuation
             calls = response.tool_calls
             step_allowed = step_tools(allowed, scope_message + ' ' + request_facts(request.message), output.tool_trace)
             prior_results = list(output.tool_trace)

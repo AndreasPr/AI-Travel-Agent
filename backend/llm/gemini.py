@@ -56,6 +56,11 @@ class GeminiProvider:
         contents, instructions = [], []
         for message in messages:
             role = message["role"]
+            continuation = message.get('_provider_continuation')
+            if role == 'assistant' and continuation and continuation.get('provider') == self.provider and continuation.get('model') == self.model:
+                from google.genai import types
+                contents.append(types.Content.model_validate(continuation['content']))
+                continue
             if role == "system":
                 instructions.append(message.get("content", ""))
                 continue
@@ -75,7 +80,11 @@ class GeminiProvider:
                     call = call.get("function", call)
                     args = call.get("arguments", {})
                     parts.append({"function_call": {"name": call["name"], "args": json.loads(args) if isinstance(args, str) else args}})
-            contents.append({"role": "model" if role == "assistant" else "user", "parts": parts})
+            # Parallel calls must be answered together in one user content turn.
+            if role == 'tool' and contents and isinstance(contents[-1], dict) and all('function_response' in part for part in contents[-1]['parts']):
+                contents[-1]['parts'].extend(parts)
+            else:
+                contents.append({"role": "model" if role == "assistant" else "user", "parts": parts})
         if instructions:
             config["system_instruction"] = "\n".join(instructions)
         return {"model": self.model, "contents": contents, "config": config}
@@ -92,12 +101,18 @@ class GeminiProvider:
                 calls.append(ToolCall(name=field(call, "name"), arguments=field(call, "args", {}) or {}, id=field(call, "id")))
         usage = field(raw, "usage_metadata")
         reason = field(candidate, "finish_reason")
-        return Response(text="".join(text), tool_calls=calls, provider=self.provider, model=self.model,
+        response = Response(text="".join(text), tool_calls=calls, provider=self.provider, model=self.model,
                         tokens_in=field(usage, "prompt_token_count", 0) or 0,
                         tokens_out=(field(usage, "candidates_token_count", 0) or 0) + (field(usage, "thoughts_token_count", 0) or 0),
                         cached_tokens=field(usage, "cached_content_token_count", 0) or 0,
                         latency_ms=(time.monotonic() - started) * 1000, raw_id=field(raw, "response_id"),
                         finish_reason=field(reason, "value", reason))
+        if calls:
+            from google.genai import types
+            content = types.Content.model_validate(field(candidate, 'content'))
+            response._continuation = {'provider': self.provider, 'model': self.model,
+                                      'content': content.model_dump(mode='json', exclude_none=True)}
+        return response
 
     async def agenerate(self, messages, tools=None, response_schema=None, **opts):
         request = self._request(messages, tools, response_schema, opts)

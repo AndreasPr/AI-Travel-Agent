@@ -142,6 +142,7 @@ def metric(name, labels=(), value=1, method="inc"):
 def redacted_prompt(messages):
     from backend.security.content import redact
 
+    messages = [{key: value for key, value in row.items() if key != '_provider_continuation'} for row in messages]
     text = redact(json.dumps(messages, default=str))
     for key, value in os.environ.items():
         if len(value) >= 8 and any(word in key.upper() for word in ("KEY", "SECRET", "PASSWORD", "TOKEN")):
