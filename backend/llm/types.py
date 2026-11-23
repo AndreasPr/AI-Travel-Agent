@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any, Iterator, Literal, Protocol
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, PrivateAttr
 
 
 class ToolCall(BaseModel):
@@ -13,6 +13,7 @@ class ToolCall(BaseModel):
 
 
 class Response(BaseModel):
+    _continuation: dict | None = PrivateAttr(default=None)
     text: str = ""
     tool_calls: list[ToolCall] = Field(default_factory=list)
     tokens_in: int = 0

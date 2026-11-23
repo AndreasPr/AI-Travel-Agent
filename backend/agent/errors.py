@@ -11,6 +11,8 @@ def failure_issue(exc, stage):
     elif isinstance(exc, TimeoutError):
         name, message = 'provider_timeout', 'The provider exceeded the response deadline.'
     elif isinstance(exc, InvalidOutput):
+        from backend.llm.diagnostics import log_provider_failure
+        log_provider_failure(exc)
         # These adapter messages are fixed literals; never echo arbitrary exception text.
         known = {
             'Provider returned invalid JSON': ('invalid_json', 'The provider returned invalid JSON.'),

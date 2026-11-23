@@ -29,6 +29,8 @@ class StructuredProvider:
         self.provider, self.model = inner.provider, inner.model
 
     def _prepare(self, messages, tools, response_schema, opts):
+        if self.provider != 'gemini':
+            messages = [{key: value for key, value in row.items() if key != '_provider_continuation'} for row in messages]
         native = self.spec.get('supports', {}).get('structured_output', False)
         requested_schema = generation_schema(response_schema)
         if self.provider == 'ollama' and isinstance(requested_schema, dict):
