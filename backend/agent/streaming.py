@@ -48,7 +48,7 @@ async def stream_events(agent, request, request_id, *, sleep=asyncio.sleep, user
                 result = await agent.chat(request, event_sink=emit, request_id=request_id, usage=usage, user_id=user_id)
                 errors = [issue for issue in result.issues if issue['severity'] == 'error']
                 if errors and result.itinerary is None:
-                    name = errors[0].get('name', '')
+                    name = errors[0].get('reason') or errors[0].get('name', '')
                     code = 'timeout' if name == 'provider_timeout' else name if name in ERROR_MESSAGES else 'invalid_output'
                     detail = public_failure_detail(errors)
                     logging.getLogger(__name__).warning('Agent turn failed: %s', detail)
