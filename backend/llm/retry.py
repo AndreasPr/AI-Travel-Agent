@@ -6,7 +6,7 @@ import time
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 
-from backend.llm.types import InvalidOutput, LLMError, ProviderUnavailable, RateLimited
+from backend.llm.types import LLMError, ProviderUnavailable, RateLimited, RequestRejected
 
 
 def retry_after_seconds(value):
@@ -27,7 +27,7 @@ def status_error(status, headers=None):
         return RateLimited("Provider rate limited the request", retry_after=delay)
     if status >= 500:
         return ProviderUnavailable("Provider server error", retry_after=delay)
-    return InvalidOutput(f"Provider rejected the request (HTTP {status})")
+    return RequestRejected(f"Provider rejected the request (HTTP {status})")
 
 
 def map_exception(exc):

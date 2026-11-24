@@ -58,6 +58,10 @@ class InvalidOutput(LLMError):
     pass
 
 
+class RequestRejected(InvalidOutput):
+    """Provider rejected the request before producing a repairable response."""
+
+
 class LLMProvider(Protocol):
     provider: str
     model: str

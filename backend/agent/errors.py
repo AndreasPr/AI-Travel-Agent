@@ -1,7 +1,7 @@
 """Safe diagnostic categories without provider payloads or exception text."""
 from pydantic import ValidationError
 
-from backend.llm.types import InvalidOutput, ProviderUnavailable, QuotaExhausted, RateLimited
+from backend.llm.types import InvalidOutput, ProviderUnavailable, QuotaExhausted, RateLimited, RequestRejected
 
 
 def failure_issue(exc, stage):
@@ -10,6 +10,10 @@ def failure_issue(exc, stage):
         name, message = 'usage_limit', 'The session, user or turn token limit has been reached.'
     elif isinstance(exc, TimeoutError):
         name, message = 'provider_timeout', 'The provider exceeded the response deadline.'
+    elif isinstance(exc, RequestRejected):
+        from backend.llm.diagnostics import log_provider_failure
+        log_provider_failure(exc)
+        name, message = "request_rejected", "The provider rejected the request configuration."
     elif isinstance(exc, InvalidOutput):
         from backend.llm.diagnostics import log_provider_failure
         log_provider_failure(exc)
@@ -52,6 +56,7 @@ def public_failure_detail(issues):
         except (TypeError, ValueError):
             pass
     explanations = {
+        'request_rejected': 'The provider rejected the request configuration.',
         'provider_unavailable': 'The configured provider could not be reached or was unavailable.',
         'rate_limited': 'The configured provider is rate limited.',
         'quota_exhausted': 'The configured provider quota is exhausted.',

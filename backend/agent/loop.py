@@ -20,7 +20,7 @@ from backend.agent.policy import ALLOWLISTS, apply_patch, data_block, sensitive,
 from backend.agent.providers import provider_for
 from backend.agent.store import PostgresTripStore
 from backend.llm.config import load_config
-from backend.llm.types import LLMError, InvalidOutput, ProviderUnavailable, QuotaExhausted, RateLimited
+from backend.llm.types import LLMError, InvalidOutput, ProviderUnavailable, QuotaExhausted, RateLimited, RequestRejected
 from backend.tools.models import Itinerary
 from backend.tools.registry import REGISTRY
 from backend.tools.runtime import ToolRuntime
@@ -430,7 +430,7 @@ class Agent:
                         best = (total, candidate, diff, issues)
             except LimitExceeded:
                 raise
-            except (ProviderUnavailable, QuotaExhausted, RateLimited):
+            except (ProviderUnavailable, QuotaExhausted, RateLimited, RequestRejected):
                 # Transport and quota retries belong to the provider, not JSON repair.
                 output.issues = []
                 raise

@@ -3,7 +3,7 @@ from pydantic import ValidationError
 
 from backend.agent.models import ActivityPlaces
 from backend.agent.policy import data_block
-from backend.llm.types import InvalidOutput
+from backend.llm.types import InvalidOutput, RequestRejected
 
 
 async def extract_attractions(citations, generate, excluded_names=()):
@@ -26,6 +26,8 @@ async def extract_attractions(citations, generate, excluded_names=()):
                             and row.name.strip().casefold() in chunks[row.chunk_id].casefold()})
             if names:
                 return names
+        except RequestRejected:
+            raise
         except (InvalidOutput, ValidationError):
             pass
         if attempt < 2:
